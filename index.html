@@ -3,34 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>📊 메타 광고 일일 리포트 누적</title>
+<title>Twennies 메타 광고 리포트</title>
 <style>
+  :root { color-scheme: light; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
-    background: #f5f5f7;
-    color: #1a1a1a;
-    min-height: 100vh;
+    background: #f5f5f7; color: #1a1a1a; min-height: 100vh;
   }
 
   /* === TOP NAV === */
   .topnav {
     position: sticky; top: 0; z-index: 200;
-    background: rgba(245,245,247,0.93);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(245,245,247,0.95);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid #e0e0e0;
     padding: 0 24px;
   }
   .topnav-inner {
-    max-width: 1120px; margin: 0 auto;
-    display: flex; align-items: center; gap: 0;
-    height: 52px;
+    max-width: 1180px; margin: 0 auto;
+    display: flex; align-items: center; gap: 0; height: 56px;
   }
-  .logo { font-size: 15px; font-weight: 800; margin-right: 24px; white-space: nowrap; }
   .date-tabs {
-    display: flex; gap: 2px; overflow-x: auto;
-    scrollbar-width: none; -ms-overflow-style: none; flex: 1;
+    display: flex; gap: 2px; overflow-x: auto; flex: 1;
+    scrollbar-width: none; -ms-overflow-style: none;
   }
   .date-tabs::-webkit-scrollbar { display: none; }
   .date-tab {
@@ -43,23 +39,65 @@
   .date-tab:hover { background: #e8e8e8; color: #1a1a1a; }
   .date-tab.active { background: #1a1a1a; color: #fff; }
 
+  /* Twennies Logo */
+  .twennies-logo {
+    display: flex; align-items: center; margin-left: 16px; flex-shrink: 0;
+  }
+
   /* === MAIN === */
-  .page { display: none; padding: 28px 24px 48px; }
+  .page { display: none; padding: 28px 24px 64px; }
   .page.active { display: block; }
-  .container { max-width: 1120px; margin: 0 auto; }
+  .container { max-width: 1180px; margin: 0 auto; }
 
   /* === PAGE HEADER === */
   .page-header {
     display: flex; align-items: baseline; gap: 12px;
-    margin-bottom: 24px; flex-wrap: wrap;
+    margin-bottom: 20px; flex-wrap: wrap;
   }
   .page-header h2 { font-size: 20px; font-weight: 800; }
   .page-header .subtitle { font-size: 12px; color: #888; }
 
+  /* === WEEKLY CPL TABLE === */
+  .weekly-section { margin-bottom: 28px; }
+  .weekly-section .sec-title {
+    font-size: 13px; font-weight: 800; color: #1a1a1a;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .weekly-scroll { overflow-x: auto; }
+  .weekly-table {
+    border-collapse: collapse; font-size: 11px;
+    min-width: 560px; width: 100%;
+    background: #fff; border-radius: 12px; overflow: hidden;
+    border: 1px solid #e5e5e5;
+  }
+  .weekly-table th {
+    background: #f8f8f8; padding: 8px 12px;
+    font-weight: 700; text-align: center; color: #555;
+    border-bottom: 1px solid #e5e5e5;
+    white-space: nowrap;
+  }
+  .weekly-table th.week-col { text-align: left; min-width: 90px; }
+  .weekly-table td {
+    padding: 7px 12px; text-align: center;
+    border-bottom: 1px solid #f0f0f0; white-space: nowrap;
+  }
+  .weekly-table td.week-label {
+    text-align: left; font-weight: 600; color: #666; font-size: 10px;
+  }
+  .weekly-table tr:last-child td { border-bottom: none; }
+  .weekly-table tr:hover td { background: #fafafa; }
+  .cpl-cell { font-weight: 700; font-size: 11px; }
+  .cpl-high { color: #e03e3e; }
+  .cpl-mid { color: #d97706; }
+  .cpl-low { color: #1a9e5f; }
+  .cpl-none { color: #ccc; }
+  .avg-row td { background: #f8f8f8; font-size: 10px; color: #888; font-style: italic; }
+  .avg-row td.week-label { font-weight: 700; color: #555; font-style: normal; }
+
   /* === KPI ROW === */
   .kpi-row {
     display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 10px; margin-bottom: 24px;
+    gap: 10px; margin-bottom: 20px;
   }
   .kpi-card {
     background: #fff; border-radius: 12px;
@@ -75,7 +113,7 @@
   /* === TARGET SUMMARY === */
   .target-row {
     display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 10px; margin-bottom: 28px;
+    gap: 10px; margin-bottom: 24px;
   }
   .ts-card {
     background: #fff; border-radius: 12px;
@@ -87,38 +125,56 @@
   .ts-val.red { color: #e03e3e; }
   .ts-val.green { color: #1a9e5f; }
   .ts-val.muted { color: #bbb; }
+  .ts-divider { height: 1px; background: #f0f0f0; margin: 7px 0; }
+
+  /* === CAMPAIGN TABLE === */
+  .camp-section { margin-bottom: 28px; }
+  .camp-table {
+    border-collapse: collapse; font-size: 11px; width: 100%;
+    background: #fff; border-radius: 12px; overflow: hidden;
+    border: 1px solid #e5e5e5;
+  }
+  .camp-table th {
+    background: #f8f8f8; padding: 8px 14px;
+    font-weight: 700; text-align: left; color: #555;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .camp-table th:not(:first-child) { text-align: right; }
+  .camp-table td {
+    padding: 8px 14px; border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+  }
+  .camp-table td:not(:first-child) { text-align: right; font-weight: 600; }
+  .camp-table tr:last-child td { border-bottom: none; }
+  .camp-table tr:hover td { background: #fafafa; }
+  .camp-name { font-weight: 600; color: #1a1a1a; }
+  .camp-tag {
+    display: inline-block; font-size: 9px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px; margin-right: 6px;
+    vertical-align: middle;
+  }
 
   /* === SECTION === */
   .section { margin-bottom: 28px; }
-  .section-hd {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 12px;
-  }
+  .section-hd { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
   .section-title { font-size: 14px; font-weight: 800; }
-  .badge {
-    font-size: 10px; font-weight: 700;
-    padding: 3px 10px; border-radius: 99px;
-  }
+  .badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
   .b-red { background: #fde8e8; color: #c0392b; }
   .b-green { background: #e0f5ec; color: #1a7f4b; }
   .b-amber { background: #fef3c7; color: #92400e; }
 
-  /* === CARDS === */
+  /* === AD CARDS === */
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 10px; }
   .ad-card {
     background: #fff; border-radius: 12px;
-    padding: 16px 18px; border: 1px solid #e5e5e5;
-    border-left-width: 4px;
+    padding: 16px 18px; border: 1px solid #e5e5e5; border-left-width: 4px;
   }
   .ad-card.off { border-left-color: #e03e3e; }
   .ad-card.caution { border-left-color: #f59e0b; }
   .ad-card.good { border-left-color: #1a9e5f; }
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
   .ad-name { font-size: 12px; font-weight: 700; line-height: 1.45; flex: 1; padding-right: 8px; }
-  .chip {
-    font-size: 10px; font-weight: 700;
-    padding: 2px 7px; border-radius: 5px; white-space: nowrap; flex-shrink: 0;
-  }
+  .chip { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
   .chip-hhy { background: #ede9fe; color: #5b21b6; }
   .chip-hhm { background: #dbeafe; color: #1e40af; }
   .chip-hjm { background: #fce7f3; color: #9d174d; }
@@ -150,41 +206,76 @@
 <!-- TOP NAV -->
 <nav class="topnav">
   <div class="topnav-inner">
-    <span class="logo">📊 메타 광고 리포트</span>
     <div class="date-tabs" id="dateTabs"></div>
+    <div class="twennies-logo">
+      <!-- Twennies Brand Logo -->
+      <svg width="118" height="34" viewBox="0 0 118 34" xmlns="http://www.w3.org/2000/svg">
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;display=swap');
+        </style>
+        <!-- sparkle star above the i -->
+        <g fill="#6EC8D8">
+          <polygon points="76,2 77.2,5.2 80.5,6 77.2,6.8 76,10 74.8,6.8 71.5,6 74.8,5.2" />
+        </g>
+        <text x="1" y="28"
+          font-family="Georgia, 'Times New Roman', serif"
+          font-size="23" font-weight="bold" fill="#6EC8D8"
+          letter-spacing="-0.5">twennies</text>
+      </svg>
+    </div>
   </div>
 </nav>
 
-<!-- PAGES are injected here by JS -->
 <div id="pages"></div>
 
 <script>
 // ============================================================
-// DATA — 매일 스케줄 태스크가 새 항목을 push()합니다
+// WEEKLY CPL DATA (월~일 기준, 3개월 집계)
+// ============================================================
+const WEEKLY_CPL = [
+  { week:"4/6~4/12",  "한한여":25944,  "한한남":76683,  "한일남":32490,  "한일여":null   },
+  { week:"4/13~4/19", "한한여":24037,  "한한남":102908, "한일남":45453,  "한일여":null   },
+  { week:"4/20~4/26", "한한여":29106,  "한한남":null,   "한일남":38377,  "한일여":null   },
+  { week:"4/27~5/3",  "한한여":43379,  "한한남":335915, "한일남":49775,  "한일여":null   },
+  { week:"5/4~5/10",  "한한여":42127,  "한한남":81520,  "한일남":54782,  "한일여":null   },
+  { week:"5/11~5/17", "한한여":124210, "한한남":null,   "한일남":68853,  "한일여":null   },
+  { week:"5/18~5/24", "한한여":85149,  "한한남":null,   "한일남":48301,  "한일여":null   },
+  { week:"5/25~5/31", "한한여":52088,  "한한남":59782,  "한일남":27812,  "한일여":128005 }
+];
+
+// 3M avg CPL per target (baseline for color coding)
+const AVG_3M = { "한한여":44439, "한한남":89455, "한일남":47122, "한일여":128005 };
+
+// ============================================================
+// REPORT DATA
 // ============================================================
 const REPORTS = [
   {
     date: "2026-06-30",
     label: "6월 30일",
-    kpi: {
-      off: 4, caution: 2, good: 8,
-      totalSpend: "734만원", totalLeads: 116
-    },
+    kpi: { off:4, caution:2, good:8, totalSpend:"734만원", totalLeads:116 },
     targets: [
-      { id:"한한여", emoji:"🟣", avg3mCPL:44439, day7CPL:61741, day7Leads:41, avg3mCTR:"1.25%", trend:"up" },
-      { id:"한한남", emoji:"🔵", avg3mCPL:89455, day7CPL:80810, day7Leads:3,  avg3mCTR:"2.62%", trend:"down" },
-      { id:"한일남", emoji:"🩷", avg3mCPL:47122, day7CPL:35254, day7Leads:72, avg3mCTR:"3.04%", trend:"good" },
-      { id:"한일여", emoji:"🟢", avg3mCPL:128005, day7CPL:null, day7Leads:0, avg3mCTR:"1.32%", trend:"none" }
+      { id:"한한여", emoji:"🟣", avg3mCPL:44439, day7CPL:61741,  day7Leads:41, avg3mCTR:"1.25%", trend:"up",   adCount:8,  spend7d:"253만원" },
+      { id:"한한남", emoji:"🔵", avg3mCPL:89455, day7CPL:80810,  day7Leads:3,  avg3mCTR:"2.62%", trend:"down", adCount:2,  spend7d:"24만원"  },
+      { id:"한일남", emoji:"🩷", avg3mCPL:47122, day7CPL:35254,  day7Leads:72, avg3mCTR:"3.04%", trend:"good", adCount:10, spend7d:"254만원" },
+      { id:"한일여", emoji:"🟢", avg3mCPL:128005,day7CPL:null,   day7Leads:0,  avg3mCTR:"1.32%", trend:"none", adCount:0,  spend7d:"0원"    }
+    ],
+    campaigns: [
+      { name:"한한여_잠재",    target:"한한여", adCount:8, spend7d:"253만원", leads7d:41 },
+      { name:"한한남_등록(구)", target:"한한남", adCount:2, spend7d:"2만원",   leads7d:0  },
+      { name:"한한남_등록(신)", target:"한한남", adCount:2, spend7d:"22만원",  leads7d:3  },
+      { name:"한일남_등록(구)", target:"한일남", adCount:7, spend7d:"139만원", leads7d:34 },
+      { name:"한일남_등록(신)", target:"한일남", adCount:9, spend7d:"115만원", leads7d:38 }
     ],
     off: [
-      { name:"내 딸이면_데보라_1",        target:"한한여", cpl7:115976, cpl3m:44439, ctr:"0.92%", pct:261, barW:100 },
-      { name:"[베리] 서재민_그대로",       target:"한한여", cpl7:79456,  cpl3m:44439, ctr:"1.00%", pct:179, barW:90  },
-      { name:"4월 2주차_한일 남성_AI_2(1차)", target:"한일남", cpl7:77693,  cpl3m:47122, ctr:"2.88%", pct:165, barW:82  },
-      { name:"내딸이면_제논",              target:"한한여", cpl7:65149,  cpl3m:44439, ctr:"1.15%", pct:147, barW:73  }
+      { name:"내 딸이면_데보라_1",          target:"한한여", cpl7:115976, cpl3m:44439, ctr:"0.92%", pct:261, barW:100 },
+      { name:"[베리] 서재민_그대로",         target:"한한여", cpl7:79456,  cpl3m:44439, ctr:"1.00%", pct:179, barW:90  },
+      { name:"4월 2주차_한일 남성_AI_2(1차)",target:"한일남", cpl7:77693,  cpl3m:47122, ctr:"2.88%", pct:165, barW:82  },
+      { name:"내딸이면_제논",                target:"한한여", cpl7:65149,  cpl3m:44439, ctr:"1.15%", pct:147, barW:73  }
     ],
     caution: [
-      { name:"내딸이면_데보라_2",   target:"한한여", cpl7:51330,  cpl3m:44439, ctr:"1.26%", pct:116, barW:58 },
-      { name:"능력남 몰리는 이유",   target:"한한남", cpl7:100066, cpl3m:89455, ctr:"2.08%", pct:112, barW:55 }
+      { name:"내딸이면_데보라_2",  target:"한한여", cpl7:51330,  cpl3m:44439, ctr:"1.26%", pct:116, barW:58 },
+      { name:"능력남 몰리는 이유", target:"한한남", cpl7:100066, cpl3m:89455, ctr:"2.08%", pct:112, barW:55 }
     ],
     good: [
       { name:"[베리]30대면 아줌마 아니에요",        target:"한한남", cpl7:42299, cpl3m:89455, ctr:"3.36%", pct:47, barW:47, trophy:true },
@@ -197,26 +288,133 @@ const REPORTS = [
       { name:"아이츠니_한남_일녀_잘맞는이유는",       target:"한일남", cpl7:41357, cpl3m:47122, ctr:"2.31%", pct:88, barW:88 }
     ]
   }
-  // 다음 날 데이터는 스케줄 태스크가 여기에 자동 추가합니다
+  // 새 날짜는 매일 스케줄 태스크가 여기에 자동 추가
 ];
 
 // ============================================================
-// CHIP CLASS
-// ============================================================
 const chipClass = { "한한여":"chip-hhy","한한남":"chip-hhm","한일남":"chip-hjm","한일여":"chip-hjf" };
+const campTagStyle = {
+  "한한여": "background:#ede9fe;color:#5b21b6",
+  "한한남": "background:#dbeafe;color:#1e40af",
+  "한일남": "background:#fce7f3;color:#9d174d",
+  "한일여": "background:#d1fae5;color:#065f46"
+};
 
 // ============================================================
-// RENDER
+// WEEKLY CPL TABLE
+// ============================================================
+function fmtCPL(v) {
+  if (v == null) return '<span class="cpl-none">—</span>';
+  const s = Math.round(v/10000*10)/10;
+  return (s % 1 === 0 ? s.toFixed(0) : s.toFixed(1)) + '만';
+}
+
+function cplClass(v, target) {
+  if (v == null) return 'cpl-none';
+  const avg = AVG_3M[target];
+  if (!avg) return 'cpl-cell';
+  if (v > avg * 1.2) return 'cpl-cell cpl-high';
+  if (v < avg * 0.9) return 'cpl-cell cpl-low';
+  return 'cpl-cell cpl-mid';
+}
+
+function renderWeeklyTable() {
+  const targets = ['한한여','한한남','한일남','한일여'];
+  const emojis  = { '한한여':'🟣','한한남':'🔵','한일남':'🩷','한일여':'🟢' };
+  let html = `
+  <div class="weekly-section">
+    <div class="sec-title">📅 주차별 평균 CPL <span style="font-size:10px;font-weight:400;color:#aaa;margin-left:4px">월~일 기준 · 3개월 누적 (4월~5월)</span></div>
+    <div class="weekly-scroll">
+    <table class="weekly-table">
+      <thead><tr>
+        <th class="week-col">주차</th>
+        ${targets.map(t => `<th>${emojis[t]} ${t}</th>`).join('')}
+      </tr></thead>
+      <tbody>`;
+
+  for (const row of WEEKLY_CPL) {
+    html += `<tr><td class="week-label">${row.week}</td>`;
+    for (const t of targets) {
+      const v = row[t];
+      html += `<td class="${cplClass(v,t)}">${fmtCPL(v)}</td>`;
+    }
+    html += `</tr>`;
+  }
+
+  // 3M avg row
+  html += `<tr class="avg-row"><td class="week-label">3M 평균</td>`;
+  for (const t of targets) {
+    const avg = AVG_3M[t];
+    html += `<td class="cpl-cell">${avg ? fmtCPL(avg) : '—'}</td>`;
+  }
+  html += `</tr></tbody></table></div></div>`;
+  return html;
+}
+
+// ============================================================
+// CAMPAIGN TABLE
+// ============================================================
+function renderCampaignTable(campaigns) {
+  if (!campaigns || !campaigns.length) return '';
+  const rows = campaigns.map(c => `
+    <tr>
+      <td class="camp-name">
+        <span class="camp-tag" style="${campTagStyle[c.target]}">${c.target}</span>${c.name}
+      </td>
+      <td>${c.adCount}개</td>
+      <td>${c.spend7d}</td>
+      <td>${c.leads7d}건</td>
+    </tr>`).join('');
+  return `
+  <div class="camp-section">
+    <div class="section-hd">
+      <span class="section-title">📋 캠페인별 현황 (7일)</span>
+    </div>
+    <table class="camp-table">
+      <thead><tr>
+        <th>캠페인</th>
+        <th style="text-align:right">소재수</th>
+        <th style="text-align:right">광고비</th>
+        <th style="text-align:right">상담</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+// ============================================================
+// TARGET CARD
+// ============================================================
+function renderTarget(t) {
+  const cplDisplay = t.day7CPL ? t.day7CPL.toLocaleString("ko-KR") + "원" : "집행 없음";
+  const cplClass = t.trend === "good" ? "green" : t.trend === "up" ? "red" : t.trend === "none" ? "muted" : "";
+  const arrow = t.trend === "good" ? " ↓" : t.trend === "up" ? " ↑" : "";
+  return `
+    <div class="ts-card">
+      <div class="ts-name">${t.emoji} ${t.id}</div>
+      <div class="ts-row"><span>3M 평균 CPL</span><span class="ts-val">${t.avg3mCPL.toLocaleString("ko-KR")}원</span></div>
+      <div class="ts-row"><span>7일 CPL</span><span class="ts-val ${cplClass}">${cplDisplay}${arrow}</span></div>
+      <div class="ts-row"><span>7일 상담</span><span class="ts-val">${t.day7Leads}건</span></div>
+      <div class="ts-row"><span>3M 평균 CTR</span><span class="ts-val">${t.avg3mCTR}</span></div>
+      <div class="ts-divider"></div>
+      <div class="ts-row"><span>운영 소재</span><span class="ts-val">${t.adCount}개</span></div>
+      <div class="ts-row"><span>7일 광고비</span><span class="ts-val">${t.spend7d}</span></div>
+    </div>`;
+}
+
+// ============================================================
+// AD CARD
 // ============================================================
 function renderCard(ad, type) {
-  const cls = type; // "off" | "caution" | "good"
   const valClass = type === "good" ? "green" : type === "off" ? "red" : "amber";
   const fillClass = type === "good" ? "fill-green" : type === "off" ? "fill-red" : "fill-amber";
-  const cpl7Fmt = ad.cpl7.toLocaleString("ko-KR") + "원";
+  const cpl7Fmt  = ad.cpl7.toLocaleString("ko-KR") + "원";
   const cpl3mFmt = ad.cpl3m.toLocaleString("ko-KR") + "원";
-  const pctLabel = type === "good" ? `평균 대비 ${ad.pct}% 수준${ad.trophy?" 🏆":""}` : `평균 대비 +${ad.pct-100}%${ad.pct>=220?" 🚨":""}`;
+  const pctLabel = type === "good"
+    ? `평균 대비 ${ad.pct}% 수준${ad.trophy?" 🏆":""}`
+    : `평균 대비 +${ad.pct-100}%${ad.pct>=220?" 🚨":""}`;
   return `
-    <div class="ad-card ${cls}">
+    <div class="ad-card ${type}">
       <div class="card-top">
         <div class="ad-name">${ad.name}</div>
         <span class="chip ${chipClass[ad.target]}">${ad.target}</span>
@@ -233,20 +431,9 @@ function renderCard(ad, type) {
     </div>`;
 }
 
-function renderTarget(t) {
-  const cplDisplay = t.day7CPL ? t.day7CPL.toLocaleString("ko-KR") + "원" : "집행 없음";
-  const cplClass = t.trend === "good" ? "green" : t.trend === "up" ? "red" : t.trend === "none" ? "muted" : "";
-  const arrow = t.trend === "good" ? " ↓" : t.trend === "up" ? " ↑" : "";
-  return `
-    <div class="ts-card">
-      <div class="ts-name">${t.emoji} ${t.id}</div>
-      <div class="ts-row"><span>3M 평균 CPL</span><span class="ts-val">${t.avg3mCPL.toLocaleString("ko-KR")}원</span></div>
-      <div class="ts-row"><span>7일 CPL</span><span class="ts-val ${cplClass}">${cplDisplay}${arrow}</span></div>
-      <div class="ts-row"><span>7일 상담</span><span class="ts-val">${t.day7Leads}건</span></div>
-      <div class="ts-row"><span>3M 평균 CTR</span><span class="ts-val">${t.avg3mCTR}</span></div>
-    </div>`;
-}
-
+// ============================================================
+// RENDER PAGE
+// ============================================================
 function renderPage(r) {
   return `
 <div class="page" id="page-${r.date}">
@@ -255,6 +442,8 @@ function renderPage(r) {
       <h2>📊 ${r.label} 리포트</h2>
       <span class="subtitle">최근 7일 기준 · 3개월 평균 CPL 대비 분석</span>
     </div>
+
+    ${renderWeeklyTable()}
 
     <div class="kpi-row">
       <div class="kpi-card c-red">
@@ -282,6 +471,8 @@ function renderPage(r) {
     <div class="target-row">
       ${r.targets.map(renderTarget).join("")}
     </div>
+
+    ${renderCampaignTable(r.campaigns)}
 
     <div class="divider"></div>
 
@@ -314,12 +505,12 @@ function renderPage(r) {
 </div>`;
 }
 
-// Build pages
+// ============================================================
+// BOOT
+// ============================================================
 const pagesEl = document.getElementById("pages");
-const tabsEl = document.getElementById("dateTabs");
-
-// newest first
-const sorted = [...REPORTS].sort((a,b) => b.date.localeCompare(a.date));
+const tabsEl  = document.getElementById("dateTabs");
+const sorted  = [...REPORTS].sort((a,b) => b.date.localeCompare(a.date));
 
 sorted.forEach((r, i) => {
   pagesEl.innerHTML += renderPage(r);
@@ -331,7 +522,6 @@ sorted.forEach((r, i) => {
   tabsEl.appendChild(btn);
 });
 
-// activate first
 if (sorted.length > 0) {
   document.getElementById("page-" + sorted[0].date).classList.add("active");
 }
