@@ -5,418 +5,776 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Twennies 메타 광고 리포트</title>
 <style>
-  :root {
-    --bg: #0f1117;
-    --card: #1a1d27;
-    --card2: #22263a;
-    --border: #2e3350;
-    --text: #e8eaf6;
-    --muted: #8b90b8;
-    --off: #ff4d6d;
-    --caution: #ffd166;
-    --good: #06d6a0;
-    --blue: #4cc9f0;
-    --purple: #b5179e;
-    --accent: #7209b7;
-  }
+  :root { color-scheme: light; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif; min-height: 100vh; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+    background: #f5f5f7; color: #1a1a1a; min-height: 100vh;
+  }
 
-  header { background: var(--card); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
-  header h1 { font-size: 18px; font-weight: 700; color: var(--text); }
-  header .subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .reload-btn { background: var(--card2); border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; }
-  .reload-btn:hover { color: var(--text); }
+  /* === TOP NAV === */
+  .topnav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(245,245,247,0.95);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid #e0e0e0;
+    padding: 0 24px;
+  }
+  .topnav-inner {
+    max-width: 1180px; margin: 0 auto;
+    display: flex; align-items: center; gap: 0; height: 56px;
+  }
+  .date-tabs {
+    display: flex; gap: 2px; overflow-x: auto; flex: 1;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .date-tabs::-webkit-scrollbar { display: none; }
+  .date-tab {
+    font-size: 12px; font-weight: 600;
+    padding: 6px 14px; border-radius: 8px;
+    cursor: pointer; white-space: nowrap;
+    border: none; background: transparent; color: #666;
+    transition: all .15s;
+  }
+  .date-tab:hover { background: #e8e8e8; color: #1a1a1a; }
+  .date-tab.active { background: #1a1a1a; color: #fff; }
 
-  .date-tabs { display: flex; gap: 8px; padding: 16px 24px 0; overflow-x: auto; }
-  .date-tab { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--card); color: var(--muted); cursor: pointer; font-size: 13px; white-space: nowrap; }
-  .date-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  /* Twennies Logo */
+  .twennies-logo {
+    display: flex; align-items: center; margin-left: 16px; flex-shrink: 0;
+  }
 
-  main { padding: 20px 24px; max-width: 1200px; margin: 0 auto; }
+  /* === MAIN === */
+  .page { display: none; padding: 28px 24px 64px; }
+  .page.active { display: block; }
+  .container { max-width: 1180px; margin: 0 auto; }
 
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
-  .kpi-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-  .kpi-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-  .kpi-value { font-size: 28px; font-weight: 700; }
-  .kpi-card.off .kpi-value { color: var(--off); }
-  .kpi-card.caution .kpi-value { color: var(--caution); }
-  .kpi-card.good .kpi-value { color: var(--good); }
-  .kpi-card.spend .kpi-value { color: var(--blue); }
-  .kpi-card.leads .kpi-value { color: var(--text); }
+  /* === PAGE HEADER === */
+  .page-header {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .page-header h2 { font-size: 20px; font-weight: 800; }
+  .page-header .subtitle { font-size: 12px; color: #888; }
 
-  .section-title { font-size: 14px; font-weight: 600; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+  /* === WEEKLY CPL TABLE === */
+  .weekly-section { margin-bottom: 28px; }
+  .weekly-section .sec-title {
+    font-size: 13px; font-weight: 800; color: #1a1a1a;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .weekly-scroll { overflow-x: auto; }
+  .weekly-table {
+    border-collapse: collapse; font-size: 11px;
+    min-width: 560px; width: 100%;
+    background: #fff; border-radius: 12px; overflow: hidden;
+    border: 1px solid #e5e5e5;
+  }
+  .weekly-table th {
+    background: #f8f8f8; padding: 8px 12px;
+    font-weight: 700; text-align: center; color: #555;
+    border-bottom: 1px solid #e5e5e5;
+    white-space: nowrap;
+  }
+  .weekly-table th.week-col { text-align: left; min-width: 90px; }
+  .weekly-table td {
+    padding: 7px 12px; text-align: center;
+    border-bottom: 1px solid #f0f0f0; white-space: nowrap;
+  }
+  .weekly-table td.week-label {
+    text-align: left; font-weight: 600; color: #666; font-size: 10px;
+  }
+  .weekly-table tr:last-child td { border-bottom: none; }
+  .weekly-table tr:hover td { background: #fafafa; }
+  .cpl-cell { font-weight: 700; font-size: 11px; }
+  .cpl-high { color: #e03e3e; }
+  .cpl-mid { color: #d97706; }
+  .cpl-low { color: #1a9e5f; }
+  .cpl-none { color: #ccc; }
+  .avg-row td { background: #f8f8f8; font-size: 10px; color: #888; font-style: italic; }
+  .avg-row td.week-label { font-weight: 700; color: #555; font-style: normal; }
 
-  .targets-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px; }
-  .target-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-  .target-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-  .target-name { font-size: 15px; font-weight: 700; }
-  .target-row { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; }
-  .target-row .label { color: var(--muted); }
-  .target-row .val { font-weight: 600; }
-  .trend-up { color: var(--off); }
-  .trend-down { color: var(--caution); }
-  .trend-good { color: var(--good); }
-  .trend-none { color: var(--muted); }
+  /* === KPI ROW === */
+  .kpi-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; margin-bottom: 20px;
+  }
+  .kpi-card {
+    background: #fff; border-radius: 12px;
+    padding: 16px 18px; border: 1px solid #e5e5e5;
+  }
+  .kpi-label { font-size: 10px; color: #999; margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+  .kpi-value { font-size: 24px; font-weight: 800; }
+  .kpi-sub { font-size: 10px; color: #bbb; margin-top: 3px; }
+  .kpi-card.c-red .kpi-value { color: #e03e3e; }
+  .kpi-card.c-green .kpi-value { color: #1a9e5f; }
+  .kpi-card.c-amber .kpi-value { color: #d97706; }
 
-  .ads-section { margin-bottom: 24px; }
-  .ads-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding: 10px 16px; border-radius: 8px; }
-  .ads-section-header.off-header { background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3); }
-  .ads-section-header.caution-header { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.3); }
-  .ads-section-header.good-header { background: rgba(6,214,160,0.1); border: 1px solid rgba(6,214,160,0.3); }
-  .ads-section-title { font-size: 14px; font-weight: 700; }
-  .ads-section-count { font-size: 12px; color: var(--muted); }
+  /* === TARGET SUMMARY === */
+  .target-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; margin-bottom: 24px;
+  }
+  .ts-card {
+    background: #fff; border-radius: 12px;
+    padding: 14px 16px; border: 1px solid #e5e5e5;
+  }
+  .ts-name { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+  .ts-row { display: flex; justify-content: space-between; font-size: 11px; color: #999; margin-bottom: 4px; }
+  .ts-val { font-weight: 700; color: #1a1a1a; }
+  .ts-val.red { color: #e03e3e; }
+  .ts-val.green { color: #1a9e5f; }
+  .ts-val.muted { color: #bbb; }
+  .ts-divider { height: 1px; background: #f0f0f0; margin: 7px 0; }
 
-  .ad-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 8px; }
-  .ad-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-  .ad-name { font-size: 13px; font-weight: 600; flex: 1; padding-right: 12px; line-height: 1.4; }
-  .ad-target-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--card2); color: var(--muted); white-space: nowrap; }
-  .ad-metrics { display: flex; gap: 20px; font-size: 12px; margin-bottom: 8px; }
-  .ad-metric .label { color: var(--muted); margin-bottom: 2px; }
-  .ad-metric .val { font-weight: 700; font-size: 14px; }
-  .ad-metric.bad .val { color: var(--off); }
-  .ad-metric.good-val .val { color: var(--good); }
-  .ad-metric.avg .val { color: var(--muted); }
-  .bar-wrapper { background: var(--card2); border-radius: 4px; height: 6px; overflow: hidden; }
-  .bar { height: 100%; border-radius: 4px; transition: width 0.3s; }
-  .bar.off-bar { background: var(--off); }
-  .bar.caution-bar { background: var(--caution); }
-  .bar.good-bar { background: var(--good); }
-  .pct-label { font-size: 11px; color: var(--muted); margin-top: 4px; display: flex; justify-content: space-between; }
-  .trophy { font-size: 14px; margin-left: 6px; }
+  /* === CAMPAIGN TABLE === */
+  .camp-section { margin-bottom: 28px; }
+  .camp-table {
+    border-collapse: collapse; font-size: 11px; width: 100%;
+    background: #fff; border-radius: 12px; overflow: hidden;
+    border: 1px solid #e5e5e5;
+  }
+  .camp-table th {
+    background: #f8f8f8; padding: 8px 14px;
+    font-weight: 700; text-align: left; color: #555;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .camp-table th:not(:first-child) { text-align: right; }
+  .camp-table td {
+    padding: 8px 14px; border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+  }
+  .camp-table td:not(:first-child) { text-align: right; font-weight: 600; }
+  .camp-table tr:last-child td { border-bottom: none; }
+  .camp-table tr:hover td { background: #fafafa; }
+  .camp-name { font-weight: 600; color: #1a1a1a; }
+  .camp-tag {
+    display: inline-block; font-size: 9px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px; margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  /* === SECTION === */
+  .section { margin-bottom: 28px; }
+  .section-hd { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .section-title { font-size: 14px; font-weight: 800; }
+  .badge { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+  .b-red { background: #fde8e8; color: #c0392b; }
+  .b-green { background: #e0f5ec; color: #1a7f4b; }
+  .b-amber { background: #fef3c7; color: #92400e; }
+
+  /* === AD CARDS === */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 10px; }
+  .ad-card {
+    background: #fff; border-radius: 12px;
+    padding: 16px 18px; border: 1px solid #e5e5e5; border-left-width: 4px;
+  }
+  .ad-card.off { border-left-color: #e03e3e; }
+  .ad-card.caution { border-left-color: #f59e0b; }
+  .ad-card.good { border-left-color: #1a9e5f; }
+  .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .ad-name { font-size: 12px; font-weight: 700; line-height: 1.45; flex: 1; padding-right: 8px; }
+  .chip { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px; white-space: nowrap; flex-shrink: 0; }
+  .chip-hhy { background: #ede9fe; color: #5b21b6; }
+  .chip-hhm { background: #dbeafe; color: #1e40af; }
+  .chip-hjm { background: #fce7f3; color: #9d174d; }
+  .chip-hjf { background: #d1fae5; color: #065f46; }
+  .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+  .m-label { font-size: 9px; color: #bbb; margin-bottom: 1px; font-weight: 500; }
+  .m-val { font-size: 13px; font-weight: 700; }
+  .m-val.red { color: #e03e3e; }
+  .m-val.green { color: #1a9e5f; }
+  .m-val.amber { color: #d97706; }
+  .bar-row { display: flex; align-items: center; gap: 8px; }
+  .bar-bg { flex: 1; height: 4px; background: #f0f0f0; border-radius: 99px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 99px; }
+  .fill-red { background: #e03e3e; }
+  .fill-amber { background: #f59e0b; }
+  .fill-green { background: #1a9e5f; }
+  .bar-label { font-size: 10px; color: #999; font-weight: 600; white-space: nowrap; }
+
+  .divider { height: 1px; background: #ebebeb; margin: 20px 0 24px; }
+
+  @media (max-width: 700px) {
+    .kpi-row, .target-row { grid-template-columns: repeat(2, 1fr); }
+    .cards { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
-<header>
-  <div>
-    <h1>🐰 Twennies 메타 광고 리포트</h1>
-    <div class="subtitle">자동 업데이트 · 매일 갱신</div>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="date-tabs" id="dateTabs"></div>
+    <div class="twennies-logo">
+      <!-- Twennies Brand Logo -->
+      <svg width="118" height="34" viewBox="0 0 118 34" xmlns="http://www.w3.org/2000/svg">
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;display=swap');
+        </style>
+        <!-- sparkle star above the i -->
+        <g fill="#6EC8D8">
+          <polygon points="76,2 77.2,5.2 80.5,6 77.2,6.8 76,10 74.8,6.8 71.5,6 74.8,5.2" />
+        </g>
+        <text x="1" y="28"
+          font-family="Georgia, 'Times New Roman', serif"
+          font-size="23" font-weight="bold" fill="#6EC8D8"
+          letter-spacing="-0.5">twennies</text>
+      </svg>
+    </div>
   </div>
-  <button class="reload-btn" onclick="location.reload()">↻ 새로고침</button>
-</header>
+</nav>
 
-<div class="date-tabs" id="dateTabs"></div>
-
-<main id="mainContent"></main>
+<div id="pages"></div>
 
 <script>
+// ============================================================
+// WEEKLY CPL DATA (월~일 기준, 3개월 집계)
+// ============================================================
+const WEEKLY_CPL = [
+  { week:"4/6~4/12",  "한한여":25944,  "한한남":76683,  "한일남":32490,  "한일여":null   },
+  { week:"4/13~4/19", "한한여":24037,  "한한남":102908, "한일남":45453,  "한일여":null   },
+  { week:"4/20~4/26", "한한여":29106,  "한한남":null,   "한일남":38377,  "한일여":null   },
+  { week:"4/27~5/3",  "한한여":43379,  "한한남":335915, "한일남":49775,  "한일여":null   },
+  { week:"5/4~5/10",  "한한여":42127,  "한한남":81520,  "한일남":54782,  "한일여":null   },
+  { week:"5/11~5/17", "한한여":124210, "한한남":null,   "한일남":68853,  "한일여":null   },
+  { week:"5/18~5/24", "한한여":85149,  "한한남":null,   "한일남":48301,  "한일여":null   },
+  { week:"5/25~5/31", "한한여":52088,  "한한남":59782,  "한일남":27812,  "한일여":128005 }
+];
+
+// 3M avg CPL per target (baseline for color coding)
+const AVG_3M = { "한한여":44439, "한한남":89455, "한일남":47122, "한일여":128005 };
+
+// ============================================================
+// REPORT DATA
+// ============================================================
 const REPORTS = [
 {
-  "date": "2026-07-02",
-  "label": "7월 2일",
+  "date": "2026-07-03",
+  "label": "7월 3일",
   "kpi": {
-    "off": 4,
-    "caution": 7,
-    "good": 4,
-    "totalSpend": "550만원",
-    "totalLeads": 118
+    "off": 3,
+    "caution": 5,
+    "good": 7,
+    "totalSpend": "573만원",
+    "totalLeads": 113
   },
   "targets": [
     {
       "id": "한한여",
       "emoji": "🟣",
       "avg3mCPL": 44226,
-      "day7CPL": 58831,
-      "day7Leads": 46,
+      "day7CPL": 56552,
+      "day7Leads": 49,
       "avg3mCTR": "1.21%",
-      "trend": "up"
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "277만원"
     },
     {
       "id": "한한남",
       "emoji": "🔵",
       "avg3mCPL": 97752,
-      "day7CPL": 64539,
-      "day7Leads": 5,
+      "day7CPL": 64151,
+      "day7Leads": 6,
       "avg3mCTR": "2.73%",
-      "trend": "good"
+      "trend": "good",
+      "adCount": 3,
+      "spend7d": "38만원"
     },
     {
       "id": "한일남",
-      "emoji": "🟤",
+      "emoji": "🩷",
       "avg3mCPL": 46022,
-      "day7CPL": 36836,
-      "day7Leads": 67,
+      "day7CPL": 44798,
+      "day7Leads": 55,
       "avg3mCTR": "2.79%",
-      "trend": "good"
+      "trend": "down",
+      "adCount": 8,
+      "spend7d": "246만원"
     },
     {
       "id": "한일여",
-      "emoji": "🟡",
+      "emoji": "🟢",
       "avg3mCPL": 122018,
-      "day7CPL": null,
-      "day7Leads": 0,
+      "day7CPL": 36773,
+      "day7Leads": 3,
       "avg3mCTR": "1.45%",
-      "trend": "none"
+      "trend": "good",
+      "adCount": 8,
+      "spend7d": "11만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한한여_잠재",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "277만원",
+      "leads7d": 49
+    },
+    {
+      "name": "한한남_등록",
+      "target": "한한남",
+      "adCount": 3,
+      "spend7d": "38만원",
+      "leads7d": 6
+    },
+    {
+      "name": "한일남_등록(구)",
+      "target": "한일남",
+      "adCount": 6,
+      "spend7d": "173만원",
+      "leads7d": 29
+    },
+    {
+      "name": "한일남_등록(신)",
+      "target": "한일남",
+      "adCount": 7,
+      "spend7d": "74만원",
+      "leads7d": 26
+    },
+    {
+      "name": "한일여_잠재",
+      "target": "한일여",
+      "adCount": 8,
+      "spend7d": "11만원",
+      "leads7d": 3
     }
   ],
   "off": [
     {
-      "name": "내 딸이면_데보라_1",
-      "target": "한한여",
-      "cpl7": 129172,
-      "cpl3m": 44226,
-      "ctr": "1.01%",
-      "pct": 292,
-      "barW": 100
-    },
-    {
       "name": "4월 2주차_한일 남성 타겟_AI_2(1차)",
       "target": "한일남",
-      "cpl7": 78253,
+      "cpl7": 100949,
       "cpl3m": 46022,
-      "ctr": "2.64%",
-      "pct": 170,
-      "barW": 100
-    },
-    {
-      "name": "[베리] 서재민_그대로",
-      "target": "한한여",
-      "cpl7": 70854,
-      "cpl3m": 44226,
-      "ctr": "1.14%",
-      "pct": 160,
+      "ctr": "2.51%",
+      "pct": 219,
       "barW": 100
     },
     {
       "name": "아이츠니_한남_일녀_잘맞는이유는",
       "target": "한일남",
-      "cpl7": 63071,
+      "cpl7": 82850,
       "cpl3m": 46022,
-      "ctr": "2.27%",
-      "pct": 137,
+      "ctr": "2.43%",
+      "pct": 180,
+      "barW": 100
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 60298,
+      "cpl3m": 46022,
+      "ctr": "2.38%",
+      "pct": 131,
       "barW": 100
     }
   ],
   "caution": [
     {
-      "name": "내딸이면_데보라_2",
+      "name": "[베리] 서재민_그대로",
       "target": "한한여",
-      "cpl7": 76575,
+      "cpl7": 65624,
       "cpl3m": 44226,
-      "ctr": "1.34%",
-      "pct": 173,
-      "barW": 100
-    },
-    {
-      "name": "내딸이면_제논",
-      "target": "한한여",
-      "cpl7": 65374,
-      "cpl3m": 44226,
-      "ctr": "1.72%",
+      "ctr": "1.22%",
       "pct": 148,
       "barW": 100
     },
     {
       "name": "연봉 1억이상_고기",
       "target": "한한여",
-      "cpl7": 42987,
+      "cpl7": 58855,
       "cpl3m": 44226,
-      "ctr": "1.15%",
-      "pct": 97,
-      "barW": 97
+      "ctr": "1.22%",
+      "pct": 133,
+      "barW": 100
     },
     {
-      "name": "능력남 몰리는 이유",
-      "target": "한한남",
-      "cpl7": 90874,
-      "cpl3m": 97752,
-      "ctr": "2.04%",
-      "pct": 93,
-      "barW": 93
-    },
-    {
-      "name": "4월 2주차_한일 남성 타겟_AI_1(1차)",
-      "target": "한일남",
-      "cpl7": 32046,
-      "cpl3m": 46022,
-      "ctr": "2.47%",
-      "pct": 70,
-      "barW": 70
-    },
-    {
-      "name": "소개팅 거절_평범",
-      "target": "한일남",
-      "cpl7": 19938,
-      "cpl3m": 46022,
-      "ctr": "1.67%",
-      "pct": 43,
-      "barW": 43
-    },
-    {
-      "name": "[베리] 결국 일본 여자를 선택하는 이유",
-      "target": "한일남",
-      "cpl7": 18517,
-      "cpl3m": 46022,
-      "ctr": "2.46%",
-      "pct": 40,
-      "barW": 40
-    }
-  ],
-  "good": [
-    {
-      "name": "[베리]30대면 아줌마 아니에요",
-      "target": "한한남",
-      "cpl7": 25037,
-      "cpl3m": 97752,
-      "ctr": "3.57%",
-      "pct": 26,
-      "barW": 26,
-      "trophy": true
-    },
-    {
-      "name": "연봉 1억이상_담벼락",
+      "name": "내딸이면_제논",
       "target": "한한여",
-      "cpl7": 27656,
+      "cpl7": 57833,
       "cpl3m": 44226,
-      "ctr": "1.33%",
-      "pct": 63,
-      "barW": 63,
-      "trophy": false
+      "ctr": "1.74%",
+      "pct": 131,
+      "barW": 100
     },
     {
-      "name": "일본 여자에 환상 가지지 마세요",
-      "target": "한일남",
-      "cpl7": 32652,
-      "cpl3m": 46022,
-      "ctr": "3.21%",
-      "pct": 71,
-      "barW": 71,
-      "trophy": false
+      "name": "내딸이면_데보라_2",
+      "target": "한한여",
+      "cpl7": 48963,
+      "cpl3m": 44226,
+      "ctr": "1.37%",
+      "pct": 111,
+      "barW": 100
     },
     {
       "name": "세나_한국남자들은 왜",
       "target": "한일남",
-      "cpl7": 37704,
+      "cpl7": 46128,
       "cpl3m": 46022,
-      "ctr": "2.98%",
-      "pct": 82,
-      "barW": 82,
-      "trophy": false
+      "ctr": "3.02%",
+      "pct": 100,
+      "barW": 100
     }
   ],
-  "unclassified": []
-}
+  "good": [
+    {
+      "name": "고굽남",
+      "target": "한일여",
+      "cpl7": 17017,
+      "cpl3m": 122018,
+      "ctr": "2.48%",
+      "pct": 14,
+      "barW": 14,
+      "trophy": true
+    },
+    {
+      "name": "[베리]30대면 아줌마 아니에요",
+      "target": "한한남",
+      "cpl7": 24303,
+      "cpl3m": 97752,
+      "ctr": "3.80%",
+      "pct": 25,
+      "barW": 25,
+      "trophy": true
+    },
+    {
+      "name": "소개팅 거절_평범",
+      "target": "한일남",
+      "cpl7": 19772,
+      "cpl3m": 46022,
+      "ctr": "1.76%",
+      "pct": 43,
+      "barW": 43,
+      "trophy": true
+    },
+    {
+      "name": "[베리] 결국 일본 여자를 선택하는 이유",
+      "target": "한일남",
+      "cpl7": 23895,
+      "cpl3m": 46022,
+      "ctr": "2.43%",
+      "pct": 52,
+      "barW": 52,
+      "trophy": true
+    },
+    {
+      "name": "4월 2주차_한일 남성 타겟_AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 33056,
+      "cpl3m": 46022,
+      "ctr": "2.49%",
+      "pct": 72,
+      "barW": 72
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 33681,
+      "cpl3m": 44226,
+      "ctr": "1.25%",
+      "pct": 76,
+      "barW": 76
+    },
+    {
+      "name": "능력남 몰리는 이유",
+      "target": "한한남",
+      "cpl7": 92707,
+      "cpl3m": 97752,
+      "ctr": "2.05%",
+      "pct": 95,
+      "barW": 95
+    }
+  ],
+  "unclassified": [
+    "리드 - 잠재 - 봄 프로모션 리타게팅"
+  ]
+},
+  {
+    date: "2026-06-30",
+    label: "6월 30일",
+    kpi: { off:4, caution:2, good:8, totalSpend:"734만원", totalLeads:116 },
+    targets: [
+      { id:"한한여", emoji:"🟣", avg3mCPL:44439, day7CPL:61741,  day7Leads:41, avg3mCTR:"1.25%", trend:"up",   adCount:8,  spend7d:"253만원" },
+      { id:"한한남", emoji:"🔵", avg3mCPL:89455, day7CPL:80810,  day7Leads:3,  avg3mCTR:"2.62%", trend:"down", adCount:2,  spend7d:"24만원"  },
+      { id:"한일남", emoji:"🩷", avg3mCPL:47122, day7CPL:35254,  day7Leads:72, avg3mCTR:"3.04%", trend:"good", adCount:10, spend7d:"254만원" },
+      { id:"한일여", emoji:"🟢", avg3mCPL:128005,day7CPL:null,   day7Leads:0,  avg3mCTR:"1.32%", trend:"none", adCount:0,  spend7d:"0원"    }
+    ],
+    campaigns: [
+      { name:"한한여_잠재",    target:"한한여", adCount:8, spend7d:"253만원", leads7d:41 },
+      { name:"한한남_등록(구)", target:"한한남", adCount:2, spend7d:"2만원",   leads7d:0  },
+      { name:"한한남_등록(신)", target:"한한남", adCount:2, spend7d:"22만원",  leads7d:3  },
+      { name:"한일남_등록(구)", target:"한일남", adCount:7, spend7d:"139만원", leads7d:34 },
+      { name:"한일남_등록(신)", target:"한일남", adCount:9, spend7d:"115만원", leads7d:38 }
+    ],
+    off: [
+      { name:"내 딸이면_데보라_1",          target:"한한여", cpl7:115976, cpl3m:44439, ctr:"0.92%", pct:261, barW:100 },
+      { name:"[베리] 서재민_그대로",         target:"한한여", cpl7:79456,  cpl3m:44439, ctr:"1.00%", pct:179, barW:90  },
+      { name:"4월 2주차_한일 남성_AI_2(1차)",target:"한일남", cpl7:77693,  cpl3m:47122, ctr:"2.88%", pct:165, barW:82  },
+      { name:"내딸이면_제논",                target:"한한여", cpl7:65149,  cpl3m:44439, ctr:"1.15%", pct:147, barW:73  }
+    ],
+    caution: [
+      { name:"내딸이면_데보라_2",  target:"한한여", cpl7:51330,  cpl3m:44439, ctr:"1.26%", pct:116, barW:58 },
+      { name:"능력남 몰리는 이유", target:"한한남", cpl7:100066, cpl3m:89455, ctr:"2.08%", pct:112, barW:55 }
+    ],
+    good: [
+      { name:"[베리]30대면 아줌마 아니에요",        target:"한한남", cpl7:42299, cpl3m:89455, ctr:"3.36%", pct:47, barW:47, trophy:true },
+      { name:"연봉 1억이상_담벼락",                  target:"한한여", cpl7:24349, cpl3m:44439, ctr:"1.52%", pct:55, barW:55, trophy:true },
+      { name:"소개팅 거절_평범",                     target:"한일남", cpl7:28106, cpl3m:47122, ctr:"1.64%", pct:60, barW:60 },
+      { name:"일본 여자에 환상 가지지 마세요",        target:"한일남", cpl7:30648, cpl3m:47122, ctr:"3.25%", pct:65, barW:65 },
+      { name:"4월 2주차_한일 남성_AI_1(1차)",        target:"한일남", cpl7:30803, cpl3m:47122, ctr:"2.41%", pct:65, barW:65 },
+      { name:"[베리] 결국 일본 여자를 선택하는 이유", target:"한일남", cpl7:31933, cpl3m:47122, ctr:"2.57%", pct:68, barW:68 },
+      { name:"세나_한국남자들은 왜",                  target:"한일남", cpl7:33443, cpl3m:47122, ctr:"3.01%", pct:71, barW:71 },
+      { name:"아이츠니_한남_일녀_잘맞는이유는",       target:"한일남", cpl7:41357, cpl3m:47122, ctr:"2.31%", pct:88, barW:88 }
+    ]
+  }
+  // 새 날짜는 매일 스케줄 태스크가 여기에 자동 추가
 ];
 
-let currentIdx = 0;
+// ============================================================
+const chipClass = { "한한여":"chip-hhy","한한남":"chip-hhm","한일남":"chip-hjm","한일여":"chip-hjf" };
+const campTagStyle = {
+  "한한여": "background:#ede9fe;color:#5b21b6",
+  "한한남": "background:#dbeafe;color:#1e40af",
+  "한일남": "background:#fce7f3;color:#9d174d",
+  "한일여": "background:#d1fae5;color:#065f46"
+};
 
-function fmt(n) {
-  if (n === null || n === undefined) return '—';
-  return n.toLocaleString('ko-KR') + '원';
+// ============================================================
+// WEEKLY CPL TABLE
+// ============================================================
+function fmtCPL(v) {
+  if (v == null) return '<span class="cpl-none">—</span>';
+  const s = Math.round(v/10000*10)/10;
+  return (s % 1 === 0 ? s.toFixed(0) : s.toFixed(1)) + '만';
 }
 
-function trendIcon(trend) {
-  if (trend === 'up') return '<span class="trend-up">▲ 상승</span>';
-  if (trend === 'down') return '<span class="trend-down">▼ 하락</span>';
-  if (trend === 'good') return '<span class="trend-good">✓ 양호</span>';
-  return '<span class="trend-none">— 데이터 없음</span>';
+function cplClass(v, target) {
+  if (v == null) return 'cpl-none';
+  const avg = AVG_3M[target];
+  if (!avg) return 'cpl-cell';
+  if (v > avg * 1.2) return 'cpl-cell cpl-high';
+  if (v < avg * 0.9) return 'cpl-cell cpl-low';
+  return 'cpl-cell cpl-mid';
 }
 
-function renderReport(report) {
-  const kpi = report.kpi;
+function renderWeeklyTable() {
+  const targets = ['한한여','한한남','한일남','한일여'];
+  const emojis  = { '한한여':'🟣','한한남':'🔵','한일남':'🩷','한일여':'🟢' };
   let html = `
-    <div class="kpi-grid">
-      <div class="kpi-card off"><div class="kpi-label">🔴 OFF 소재</div><div class="kpi-value">${kpi.off}</div></div>
-      <div class="kpi-card caution"><div class="kpi-label">🟡 주의 소재</div><div class="kpi-value">${kpi.caution}</div></div>
-      <div class="kpi-card good"><div class="kpi-label">🟢 GOOD 소재</div><div class="kpi-value">${kpi.good}</div></div>
-      <div class="kpi-card spend"><div class="kpi-label">💰 7일 총 광고비</div><div class="kpi-value">${kpi.totalSpend}</div></div>
-      <div class="kpi-card leads"><div class="kpi-label">📋 7일 총 상담수</div><div class="kpi-value">${kpi.totalLeads}</div></div>
+  <div class="weekly-section">
+    <div class="sec-title">📅 주차별 평균 CPL <span style="font-size:10px;font-weight:400;color:#aaa;margin-left:4px">월~일 기준 · 3개월 누적 (4월~5월)</span></div>
+    <div class="weekly-scroll">
+    <table class="weekly-table">
+      <thead><tr>
+        <th class="week-col">주차</th>
+        ${targets.map(t => `<th>${emojis[t]} ${t}</th>`).join('')}
+      </tr></thead>
+      <tbody>`;
+
+  for (const row of WEEKLY_CPL) {
+    html += `<tr><td class="week-label">${row.week}</td>`;
+    for (const t of targets) {
+      const v = row[t];
+      html += `<td class="${cplClass(v,t)}">${fmtCPL(v)}</td>`;
+    }
+    html += `</tr>`;
+  }
+
+  // 3M avg row
+  html += `<tr class="avg-row"><td class="week-label">3M 평균</td>`;
+  for (const t of targets) {
+    const avg = AVG_3M[t];
+    html += `<td class="cpl-cell">${avg ? fmtCPL(avg) : '—'}</td>`;
+  }
+  html += `</tr></tbody></table></div></div>`;
+  return html;
+}
+
+// ============================================================
+// CAMPAIGN TABLE
+// ============================================================
+function renderCampaignTable(campaigns) {
+  if (!campaigns || !campaigns.length) return '';
+  const rows = campaigns.map(c => `
+    <tr>
+      <td class="camp-name">
+        <span class="camp-tag" style="${campTagStyle[c.target]}">${c.target}</span>${c.name}
+      </td>
+      <td>${c.adCount}개</td>
+      <td>${c.spend7d}</td>
+      <td>${c.leads7d}건</td>
+    </tr>`).join('');
+  return `
+  <div class="camp-section">
+    <div class="section-hd">
+      <span class="section-title">📋 캠페인별 현황 (7일)</span>
+    </div>
+    <table class="camp-table">
+      <thead><tr>
+        <th>캠페인</th>
+        <th style="text-align:right">소재수</th>
+        <th style="text-align:right">광고비</th>
+        <th style="text-align:right">상담</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+// ============================================================
+// TARGET CARD
+// ============================================================
+function renderTarget(t) {
+  const cplDisplay = t.day7CPL ? t.day7CPL.toLocaleString("ko-KR") + "원" : "집행 없음";
+  const cplClass = t.trend === "good" ? "green" : t.trend === "up" ? "red" : t.trend === "none" ? "muted" : "";
+  const arrow = t.trend === "good" ? " ↓" : t.trend === "up" ? " ↑" : "";
+  return `
+    <div class="ts-card">
+      <div class="ts-name">${t.emoji} ${t.id}</div>
+      <div class="ts-row"><span>3M 평균 CPL</span><span class="ts-val">${t.avg3mCPL.toLocaleString("ko-KR")}원</span></div>
+      <div class="ts-row"><span>7일 CPL</span><span class="ts-val ${cplClass}">${cplDisplay}${arrow}</span></div>
+      <div class="ts-row"><span>7일 상담</span><span class="ts-val">${t.day7Leads}건</span></div>
+      <div class="ts-row"><span>3M 평균 CTR</span><span class="ts-val">${t.avg3mCTR}</span></div>
+      <div class="ts-divider"></div>
+      <div class="ts-row"><span>운영 소재</span><span class="ts-val">${t.adCount}개</span></div>
+      <div class="ts-row"><span>7일 광고비</span><span class="ts-val">${t.spend7d}</span></div>
+    </div>`;
+}
+
+// ============================================================
+// AD CARD
+// ============================================================
+function renderCard(ad, type) {
+  const valClass = type === "good" ? "green" : type === "off" ? "red" : "amber";
+  const fillClass = type === "good" ? "fill-green" : type === "off" ? "fill-red" : "fill-amber";
+  const cpl7Fmt  = ad.cpl7.toLocaleString("ko-KR") + "원";
+  const cpl3mFmt = ad.cpl3m.toLocaleString("ko-KR") + "원";
+  const pctLabel = type === "good"
+    ? `평균 대비 ${ad.pct}% 수준${ad.trophy?" 🏆":""}`
+    : `평균 대비 +${ad.pct-100}%${ad.pct>=220?" 🚨":""}`;
+  return `
+    <div class="ad-card ${type}">
+      <div class="card-top">
+        <div class="ad-name">${ad.name}</div>
+        <span class="chip ${chipClass[ad.target]}">${ad.target}</span>
+      </div>
+      <div class="metrics">
+        <div><div class="m-label">7일 CPL</div><div class="m-val ${valClass}">${cpl7Fmt}</div></div>
+        <div><div class="m-label">3M 평균 CPL</div><div class="m-val">${cpl3mFmt}</div></div>
+        <div><div class="m-label">링크CTR</div><div class="m-val ${valClass}">${ad.ctr}</div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-bg"><div class="bar-fill ${fillClass}" style="width:${ad.barW}%"></div></div>
+        <span class="bar-label">${pctLabel}</span>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// RENDER PAGE
+// ============================================================
+function renderPage(r) {
+  return `
+<div class="page" id="page-${r.date}">
+  <div class="container">
+    <div class="page-header">
+      <h2>📊 ${r.label} 리포트</h2>
+      <span class="subtitle">최근 7일 기준 · 3개월 평균 CPL 대비 분석</span>
     </div>
 
-    <div class="section-title">타겟별 성과</div>
-    <div class="targets-grid">
-  `;
+    ${renderWeeklyTable()}
 
-  for (const t of report.targets) {
-    html += `
-      <div class="target-card">
-        <div class="target-header">
-          <span>${t.emoji}</span>
-          <span class="target-name">${t.id}</span>
-        </div>
-        <div class="target-row"><span class="label">7일 상담수</span><span class="val">${t.day7Leads}건</span></div>
-        <div class="target-row"><span class="label">7일 CPL</span><span class="val">${fmt(t.day7CPL)}</span></div>
-        <div class="target-row"><span class="label">3M 평균 CPL</span><span class="val">${fmt(t.avg3mCPL)}</span></div>
-        <div class="target-row"><span class="label">3M 평균 CTR</span><span class="val">${t.avg3mCTR}</span></div>
-        <div class="target-row"><span class="label">추세</span><span class="val">${trendIcon(t.trend)}</span></div>
+    <div class="kpi-row">
+      <div class="kpi-card c-red">
+        <div class="kpi-label">OFF 요망</div>
+        <div class="kpi-value">${r.kpi.off}개</div>
+        <div class="kpi-sub">CPL 20%↑ + CTR 저조</div>
       </div>
-    `;
-  }
+      <div class="kpi-card c-amber">
+        <div class="kpi-label">주의</div>
+        <div class="kpi-value">${r.kpi.caution}개</div>
+        <div class="kpi-sub">CPL 10~20%↑ 또는 CTR 저조</div>
+      </div>
+      <div class="kpi-card c-green">
+        <div class="kpi-label">GOOD</div>
+        <div class="kpi-value">${r.kpi.good}개</div>
+        <div class="kpi-sub">3M 평균 CPL 하회</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">총 광고비 (7일)</div>
+        <div class="kpi-value">${r.kpi.totalSpend}</div>
+        <div class="kpi-sub">총 상담 ${r.kpi.totalLeads}건</div>
+      </div>
+    </div>
 
-  html += `</div>`;
+    <div class="target-row">
+      ${r.targets.map(renderTarget).join("")}
+    </div>
 
-  function renderAdList(list, colorClass, barClass, label, labelColor) {
-    if (!list.length) return '';
-    let s = `
-      <div class="ads-section">
-        <div class="ads-section-header ${colorClass}-header">
-          <span class="ads-section-title" style="color:var(--${colorClass})">${label}</span>
-          <span class="ads-section-count">${list.length}개 소재</span>
-        </div>
-    `;
-    for (const ad of list) {
-      const pctLabel = colorClass === 'good'
-        ? `3M 평균의 ${ad.pct}% (${100 - ad.pct}% 절감)`
-        : `3M 평균 대비 ${ad.pct}%`;
-      s += `
-        <div class="ad-card">
-          <div class="ad-top">
-            <div class="ad-name">${ad.name}${ad.trophy ? '<span class="trophy">🏆</span>' : ''}</div>
-            <div class="ad-target-badge">${ad.target}</div>
-          </div>
-          <div class="ad-metrics">
-            <div class="ad-metric ${colorClass === 'good' ? 'good-val' : 'bad'}">
-              <div class="label">7일 CPL</div>
-              <div class="val">${fmt(ad.cpl7)}</div>
-            </div>
-            <div class="ad-metric avg">
-              <div class="label">3M 평균 CPL</div>
-              <div class="val">${fmt(ad.cpl3m)}</div>
-            </div>
-            <div class="ad-metric">
-              <div class="label">링크 CTR</div>
-              <div class="val">${ad.ctr}</div>
-            </div>
-          </div>
-          <div class="bar-wrapper"><div class="bar ${barClass}" style="width:${ad.barW}%"></div></div>
-          <div class="pct-label"><span>${pctLabel}</span></div>
-        </div>
-      `;
-    }
-    s += `</div>`;
-    return s;
-  }
+    ${renderCampaignTable(r.campaigns)}
 
-  html += renderAdList(report.off, 'off', 'off-bar', '🔴 OFF 요망 소재', 'off');
-  html += renderAdList(report.caution, 'caution', 'caution-bar', '🟡 주의 소재', 'caution');
-  html += renderAdList(report.good, 'good', 'good-bar', '🟢 GOOD 소재', 'good');
+    <div class="divider"></div>
 
-  if (report.unclassified && report.unclassified.length > 0) {
-    html += `<div style="margin-top:16px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--muted)">
-      ⚠️ 분류 안 된 캠페인: ${report.unclassified.join(', ')}
-    </div>`;
-  }
+    <div class="section">
+      <div class="section-hd">
+        <span class="section-title">🔴 소재 OFF 요망</span>
+        <span class="badge b-red">CPL 3M 평균 20%↑ + 링크CTR 저조</span>
+      </div>
+      <div class="cards">${r.off.map(a => renderCard(a,"off")).join("")}</div>
+    </div>
 
-  document.getElementById('mainContent').innerHTML = html;
+    <div class="section">
+      <div class="section-hd">
+        <span class="section-title">🟡 주의 소재</span>
+        <span class="badge b-amber">CPL 10~20%↑ 또는 CTR 저조</span>
+      </div>
+      <div class="cards">${r.caution.map(a => renderCard(a,"caution")).join("")}</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-hd">
+        <span class="section-title">🟢 소재 GOOD</span>
+        <span class="badge b-green">3M 평균 CPL 하회 · 유지 권장</span>
+      </div>
+      <div class="cards">${r.good.map(a => renderCard(a,"good")).join("")}</div>
+    </div>
+  </div>
+</div>`;
 }
 
-function init() {
-  const tabs = document.getElementById('dateTabs');
-  REPORTS.forEach((r, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'date-tab' + (i === 0 ? ' active' : '');
-    btn.textContent = r.label;
-    btn.onclick = () => {
-      document.querySelectorAll('.date-tab').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentIdx = i;
-      renderReport(REPORTS[i]);
-    };
-    tabs.appendChild(btn);
-  });
-  renderReport(REPORTS[0]);
+// ============================================================
+// BOOT
+// ============================================================
+const pagesEl = document.getElementById("pages");
+const tabsEl  = document.getElementById("dateTabs");
+const sorted  = [...REPORTS].sort((a,b) => b.date.localeCompare(a.date));
+
+sorted.forEach((r, i) => {
+  pagesEl.innerHTML += renderPage(r);
+  const btn = document.createElement("button");
+  btn.className = "date-tab" + (i===0?" active":"");
+  btn.textContent = r.label;
+  btn.dataset.date = r.date;
+  btn.onclick = () => switchTo(r.date);
+  tabsEl.appendChild(btn);
+});
+
+if (sorted.length > 0) {
+  document.getElementById("page-" + sorted[0].date).classList.add("active");
 }
 
-init();
+function switchTo(date) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".date-tab").forEach(t => t.classList.remove("active"));
+  document.getElementById("page-"+date).classList.add("active");
+  document.querySelector(`[data-date="${date}"]`).classList.add("active");
+  window.scrollTo({top:0, behavior:"smooth"});
+}
 </script>
 </body>
 </html>
