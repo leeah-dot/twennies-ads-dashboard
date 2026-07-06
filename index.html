@@ -2450,14 +2450,14 @@ sorted.forEach((r, i) => {
   tabsEl.appendChild(btn);
 });
 
-WEEKLY.forEach(w => {
+[...WEEKLY].reverse().forEach(w => {
   pagesEl.innerHTML += renderWeeklyPage(w);
   const btn = document.createElement("button");
   btn.className = "date-tab weekly";
   btn.textContent = w.label;
   btn.dataset.date = w.id;
   btn.onclick = () => switchTo(w.id);
-  tabsEl.appendChild(btn);
+  tabsEl.insertBefore(btn, tabsEl.firstChild);
 });
 
 if (sorted.length > 0) {
