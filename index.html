@@ -38,6 +38,8 @@
   }
   .date-tab:hover { background: #e8e8e8; color: #1a1a1a; }
   .date-tab.active { background: #1a1a1a; color: #fff; }
+  .date-tab.weekly { color: #0e7490; font-weight: 700; }
+  .date-tab.weekly.active { background: #0e7490; color: #fff; }
 
   /* Twennies Logo */
   .twennies-logo {
@@ -2279,6 +2281,158 @@ function renderPage(r) {
 </div>`;
 }
 
+
+// ============================================================
+// WEEKLY REPORT (주간 리포트)
+// ============================================================
+const WEEKLY = [
+{
+  id: "weekly-20260705",
+  label: "📅 주간 6/29~7/5",
+  title: "주간 리포트 (6/29 ~ 7/5)",
+  compareLabel: "전주(6/22~28) 대비",
+  groups: [
+    { name:"한한 여성", grade:"✅", spendPrev:"2,560,444원", spendCur:"2,876,898원", spendChg:"▲ +12.4%",
+      cplPrev:"52,250원", cplCur:"47,005원", cplChg:"개선 -10.0%", cplDir:"good", ctrChg:"▲ +0.8%p", cvrChg:"▲ +0.6%p" },
+    { name:"일본 여성", grade:"✅", spendPrev:"—", spendCur:"673,094원", spendChg:"신규",
+      cplPrev:"—", cplCur:"44,873원", cplChg:"—", cplDir:"", ctrChg:"1.6%", cvrChg:"—" },
+    { name:"남성 전체", grade:"⚠️", spendPrev:"2,997,518원", spendCur:"3,296,384원", spendChg:"▲ +10.0%",
+      cplPrev:"20,641원", cplCur:"27,332원", cplChg:"악화 +32.4%", cplDir:"bad", ctrChg:"▲ +0.3%p", cvrChg:"▼ -0.7%p" }
+  ],
+  groupNotes: [
+    "남성 광고비 = 한한 남성 메타 + 한일 남성 메타 + 한일 남성 검색 · 남성 CPL은 한일 남성 메타 기준 (비중 최대)",
+    "일본 여성 CPL = 673,094원 ÷ 15건 (일본 + 서경인 타겟 합산)"
+  ],
+  channels: [
+    { name:"한한 여성 메타",       spend:"2,820,303원", leads:"—",   cpl:"47,005원",  ctr:"1.3%",  cvr:"5.9%", note:"✅ CPL 개선" },
+    { name:"한한 여성 검색",       spend:"56,595원",    leads:"—",   cpl:"28,298원",  ctr:"4.0%",  cvr:"5.3%", note:"⚠️ CVR 하락" },
+    { name:"한한 남성 메타",       spend:"498,769원",   leads:"—",   cpl:"124,692원", ctr:"2.5%",  cvr:"1.1%", note:"🚨 CPL 급등" },
+    { name:"한일 남성 메타",       spend:"2,541,871원", leads:"—",   cpl:"27,332원",  ctr:"2.5%",  cvr:"4.0%", note:"⚠️ CPL 소폭 악화" },
+    { name:"한일 남성 검색",       spend:"255,744원",   leads:"—",   cpl:"23,249원",  ctr:"9.0%",  cvr:"5.0%", note:"✅ CPL 개선" },
+    { name:"한일 여성 (일본)",     spend:"359,493원",   leads:"14건", cpl:"25,678원",  ctr:"2.37%", cvr:"—",   note:"✅ 효율 양호" },
+    { name:"한일 여성 (서경인)",   spend:"313,601원",   leads:"1건",  cpl:"313,601원", ctr:"0.82%", cvr:"—",   note:"🚨 효율 매우 낮음" }
+  ],
+  channelTotal: "6,846,376원",
+  summary: [
+    { grade:"✅", cls:"b-green", text:"한한 여성 : 광고비 증가에도 CPL 개선세 유지 (52,250원 → 47,005원)" },
+    { grade:"✅", cls:"b-green", text:"일본 여성 : 신규 집행 — 일본 타겟 CPL 25,678원으로 효율적 / 서경인 타겟 CPL 313,601원으로 비효율 → 타겟 조정 필요" },
+    { grade:"⚠️", cls:"b-amber", text:"남성 : 광고비 10% 증가했으나 CPL 상승 — 한한 남성 메타 CVR 급락(광고비 3배 증가, CVR 1.1%)이 주요 원인" }
+  ],
+  deepTitle: "한일 여성 심층 비교 — 6/1~6/7 vs 6/29~7/5",
+  deepCols: ["6/1~6/7", "6/29~7/5", "변화"],
+  deep: [
+    { item:"총 광고비",      a:"1,287,293원", b:"673,094원",  chg:"▼ -47.7%",       dir:"" },
+    { item:"서경인 광고비",  a:"323,745원",   b:"313,601원",  chg:"▼ -3.1%",        dir:"" },
+    { item:"일본 광고비",    a:"963,548원",   b:"359,493원",  chg:"▼ -62.7%",       dir:"" },
+    { item:"총 링크 클릭",   a:"578",         b:"307",        chg:"▼ -46.9%",       dir:"" },
+    { item:"서경인 CTR",     a:"0.59%",       b:"0.82%",      chg:"▲ +0.23%p",      dir:"good" },
+    { item:"일본 CTR",       a:"1.73%",       b:"2.37%",      chg:"▲ +0.64%p",      dir:"good" },
+    { item:"서경인 리드",    a:"—",           b:"1건",        chg:"—",              dir:"" },
+    { item:"일본 리드",      a:"9건",         b:"14건",       chg:"▲ +5건",         dir:"good" },
+    { item:"총 리드",        a:"9건",         b:"15건",       chg:"▲ +6건",         dir:"good" },
+    { item:"일본 CPL",       a:"107,061원",   b:"25,678원",   chg:"개선 -76.0%",    dir:"good" },
+    { item:"전체 CPL",       a:"143,033원",   b:"44,873원",   chg:"개선 -68.6%",    dir:"good" }
+  ]
+}
+];
+
+function renderWeeklyPage(w) {
+  const dirCls = d => d === "good" ? "cpl-low" : d === "bad" ? "cpl-high" : "";
+  const groupRows = w.groups.map(g => `
+    <tr>
+      <td class="camp-name">${g.grade} ${g.name}</td>
+      <td>${g.spendPrev}</td><td>${g.spendCur}</td><td>${g.spendChg}</td>
+      <td>${g.cplPrev}</td><td style="font-weight:700">${g.cplCur}</td>
+      <td class="${dirCls(g.cplDir)}" style="font-weight:700">${g.cplChg}</td>
+      <td>${g.ctrChg}</td><td>${g.cvrChg}</td>
+    </tr>`).join("");
+  const chRows = w.channels.map(c => `
+    <tr>
+      <td class="camp-name">${c.name}</td>
+      <td>${c.spend}</td><td>${c.leads}</td><td style="font-weight:700">${c.cpl}</td>
+      <td>${c.ctr}</td><td>${c.cvr}</td>
+      <td style="text-align:left">${c.note}</td>
+    </tr>`).join("");
+  const sumRows = w.summary.map(s => `
+    <div style="display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px 16px;margin-bottom:8px">
+      <span class="badge ${s.cls}" style="flex-shrink:0;margin-top:1px">${s.grade}</span>
+      <span style="font-size:12px;line-height:1.6">${s.text}</span>
+    </div>`).join("");
+  const deepRows = w.deep.map(d => `
+    <tr>
+      <td class="camp-name">${d.item}</td>
+      <td>${d.a}</td><td>${d.b}</td>
+      <td class="${dirCls(d.dir)}" style="font-weight:700">${d.chg}</td>
+    </tr>`).join("");
+  return `
+<div class="page" id="page-${w.id}">
+  <div class="container">
+    <div class="page-header">
+      <h2>📅 ${w.title}</h2>
+      <span class="subtitle">${w.compareLabel} · 메타 + 검색 통합</span>
+    </div>
+
+    <div class="camp-section">
+      <div class="section-hd">
+        <span class="section-title">💰 광고비 대비 효율 — ${w.compareLabel}</span>
+      </div>
+      <div class="weekly-scroll">
+      <table class="camp-table" style="min-width:860px">
+        <thead><tr>
+          <th>구분</th>
+          <th style="text-align:right">광고비 전주</th><th style="text-align:right">광고비 금주</th><th style="text-align:right">변화</th>
+          <th style="text-align:right">CPL 전주</th><th style="text-align:right">CPL 금주</th><th style="text-align:right">CPL 변화</th>
+          <th style="text-align:right">CTR 변화</th><th style="text-align:right">CVR 변화</th>
+        </tr></thead>
+        <tbody>${groupRows}</tbody>
+      </table>
+      </div>
+      <div style="font-size:10px;color:#999;margin-top:6px;line-height:1.7">${w.groupNotes.map(n => "· " + n).join("<br>")}</div>
+    </div>
+
+    <div class="camp-section">
+      <div class="section-hd">
+        <span class="section-title">📋 채널별 상세 (금주)</span>
+        <span class="badge" style="background:#eef2ff;color:#3730a3">총 광고비 ${w.channelTotal}</span>
+      </div>
+      <div class="weekly-scroll">
+      <table class="camp-table" style="min-width:760px">
+        <thead><tr>
+          <th>구분</th>
+          <th style="text-align:right">광고비</th><th style="text-align:right">리드</th><th style="text-align:right">CPL</th>
+          <th style="text-align:right">CTR</th><th style="text-align:right">CVR</th>
+          <th>평가</th>
+        </tr></thead>
+        <tbody>${chRows}</tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-hd"><span class="section-title">💡 효율 요약</span></div>
+      ${sumRows}
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="camp-section">
+      <div class="section-hd">
+        <span class="section-title">🟢 ${w.deepTitle}</span>
+      </div>
+      <table class="camp-table" style="max-width:680px">
+        <thead><tr>
+          <th>항목</th>
+          <th style="text-align:right">${w.deepCols[0]}</th>
+          <th style="text-align:right">${w.deepCols[1]}</th>
+          <th style="text-align:right">${w.deepCols[2]}</th>
+        </tr></thead>
+        <tbody>${deepRows}</tbody>
+      </table>
+    </div>
+  </div>
+</div>`;
+}
+
 // ============================================================
 // BOOT
 // ============================================================
@@ -2293,6 +2447,16 @@ sorted.forEach((r, i) => {
   btn.textContent = r.label;
   btn.dataset.date = r.date;
   btn.onclick = () => switchTo(r.date);
+  tabsEl.appendChild(btn);
+});
+
+WEEKLY.forEach(w => {
+  pagesEl.innerHTML += renderWeeklyPage(w);
+  const btn = document.createElement("button");
+  btn.className = "date-tab weekly";
+  btn.textContent = w.label;
+  btn.dataset.date = w.id;
+  btn.onclick = () => switchTo(w.id);
   tabsEl.appendChild(btn);
 });
 
