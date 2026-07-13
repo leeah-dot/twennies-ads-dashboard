@@ -4904,7 +4904,17 @@ const WEEKLY = [
       "chg": "85,989원",
       "dir": "bad"
     }
-  ]
+  ],
+  "overview": {
+    "spend": "751만원",
+    "leads": 162,
+    "pass": 26,
+    "passNote": " (잠정)",
+    "cpl": "46,353원",
+    "cps": "288,817원",
+    "cpsNote": " ·잠정",
+    "ctr": "1.89%"
+  }
 },
 {
   id: "weekly-20260705",
@@ -4994,6 +5004,14 @@ function renderWeeklyPage(w) {
       <h2>📅 ${w.title}</h2>
       <span class="subtitle">${w.compareLabel} · 메타 + 검색 통합</span>
     </div>
+
+    ${w.overview ? `<div class="kpi-row" style="flex-wrap:wrap">
+      <div class="kpi-card"><div class="kpi-label">총 광고비 (7일)</div><div class="kpi-value">${w.overview.spend}</div><div class="kpi-sub">메타+검색 합계</div></div>
+      <div class="kpi-card"><div class="kpi-label">총 리드 / 통과</div><div class="kpi-value">${w.overview.leads}건</div><div class="kpi-sub">통과 ${w.overview.pass}건${w.overview.passNote||""}</div></div>
+      <div class="kpi-card"><div class="kpi-label">평균 CPL</div><div class="kpi-value">${w.overview.cpl}</div><div class="kpi-sub">리드당</div></div>
+      <div class="kpi-card"><div class="kpi-label">평균 CPS</div><div class="kpi-value">${w.overview.cps}</div><div class="kpi-sub">통과당${w.overview.cpsNote||""}</div></div>
+      <div class="kpi-card"><div class="kpi-label">평균 CTR</div><div class="kpi-value">${w.overview.ctr}</div><div class="kpi-sub">링크 클릭</div></div>
+    </div>` : ""}
 
     <div class="camp-section">
       <div class="section-hd">
