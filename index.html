@@ -10,7 +10,7 @@
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
     background: #f5f5f7; color: #1a1a1a; min-height: 100vh;
-    padding-left: 212px;
+    padding-left: 250px;
   }
 
   /* === TOP NAV === */
@@ -26,10 +26,12 @@
     display: flex; align-items: center; gap: 0; height: 56px;
   }
   .date-tabs {
-    display: flex; gap: 2px; overflow-x: auto; flex: 1;
-    scrollbar-width: none; -ms-overflow-style: none;
+    display: flex; gap: 2px; overflow-x: auto; flex: 1 1 0%; min-width: 0;
+    scrollbar-width: thin; padding-bottom: 3px;
   }
-  .date-tabs::-webkit-scrollbar { display: none; }
+  .date-tabs::-webkit-scrollbar { height: 6px; }
+  .date-tabs::-webkit-scrollbar-thumb { background: #c8c8c8; border-radius: 3px; }
+  .date-tabs::-webkit-scrollbar-track { background: transparent; }
   .date-tab {
     font-size: 12px; font-weight: 600;
     padding: 6px 14px; border-radius: 8px;
@@ -49,17 +51,20 @@
 
   /* === GLOSSARY SIDEBAR === */
   .glossary {
-    position: fixed; left: 0; top: 0; width: 212px; height: 100vh;
+    position: fixed; left: 0; top: 0; width: 250px; height: 100vh;
     background: #fff; border-right: 1px solid #e5e5e5;
-    padding: 18px 16px 40px; overflow-y: auto; z-index: 210;
+    padding: 18px 18px 40px; overflow-y: auto; z-index: 210;
   }
-  .glossary h3 { font-size: 13px; font-weight: 800; color:#1a1a1a; }
-  .glossary .gsub { font-size: 10px; color:#bbb; margin-bottom: 16px; letter-spacing:.3px; }
-  .glossary .gitem { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0; }
-  .glossary .gterm { font-size: 12px; font-weight: 800; color:#0e7490; }
-  .glossary .gdef { font-size: 11px; color:#555; line-height:1.55; margin-top:3px; }
+  .side-section { margin-bottom: 22px; }
+  .glossary h3 { font-size: 15px; font-weight: 800; color:#1a1a1a; margin-bottom: 8px; }
+  .glossary .gsub { font-size: 10px; color:#bbb; margin-bottom: 14px; letter-spacing:.4px; }
+  .glossary .gitem { margin-bottom: 13px; padding-bottom: 13px; border-bottom: 1px solid #f0f0f0; }
+  .glossary .gterm { font-size: 14px; font-weight: 800; color:#0e7490; }
+  .glossary .gdef { font-size: 12.5px; color:#555; line-height:1.6; margin-top:4px; }
   .glossary .gdef b { color:#1a1a1a; }
-  .weekly-tabs { display:flex; gap:3px; flex-shrink:0; margin-right:10px; padding-left:10px; border-left:1px solid #ddd; overflow-x:auto; }
+  /* 주간 탭 세로 리스트 */
+  .weekly-list { display:flex; flex-direction:column; gap:5px; }
+  .weekly-list .date-tab { width:100%; text-align:left; padding:9px 12px; font-size:12.5px; border-radius:8px; }
   @media (max-width: 900px) {
     body { padding-left: 0 !important; }
     .glossary { display: none; }
@@ -226,24 +231,29 @@
 
 <!-- GLOSSARY SIDEBAR -->
 <aside class="glossary">
-  <h3>📖 지표 설명</h3>
-  <div class="gsub">METRIC GLOSSARY</div>
-  <div class="gitem"><div class="gterm">리드</div><div class="gdef">신청수 (폼 제출 건)</div></div>
-  <div class="gitem"><div class="gterm">통과</div><div class="gdef">매니저 1차선별 통과</div></div>
-  <div class="gitem"><div class="gterm">CPL</div><div class="gdef">광고비 ÷ <b>신청수</b><br>리드 1건당 비용</div></div>
-  <div class="gitem"><div class="gterm">CPS</div><div class="gdef">광고비 ÷ <b>매니저1차선별</b><br>통과 1건당 비용</div></div>
-  <div class="gitem"><div class="gterm">CTR</div><div class="gdef">링크클릭 ÷ 노출<br>링크 클릭률</div></div>
-  <div class="gitem"><div class="gterm">CPM</div><div class="gdef">광고비 ÷ 노출 × 1000<br>노출 1천회당 비용</div></div>
-  <div class="gitem"><div class="gterm">통과율</div><div class="gdef">통과 ÷ 리드</div></div>
-  <div class="gitem"><div class="gterm">ROAS</div><div class="gdef">순매출 ÷ 광고비</div></div>
-  <div class="gitem"><div class="gterm">잠정</div><div class="gdef">선별 진행중이라 통과·CPS 미확정<br>(며칠 뒤 개선됨)</div></div>
+  <div class="side-section">
+    <h3>📅 주간 리포트</h3>
+    <div id="weeklyTabs" class="weekly-list"></div>
+  </div>
+  <div class="side-section">
+    <h3>📖 지표 설명</h3>
+    <div class="gsub">METRIC GLOSSARY</div>
+    <div class="gitem"><div class="gterm">리드</div><div class="gdef">신청수 (폼 제출 건)</div></div>
+    <div class="gitem"><div class="gterm">통과</div><div class="gdef">매니저 1차선별 통과</div></div>
+    <div class="gitem"><div class="gterm">CPL</div><div class="gdef">광고비 ÷ <b>신청수</b><br>리드 1건당 비용</div></div>
+    <div class="gitem"><div class="gterm">CPS</div><div class="gdef">광고비 ÷ <b>매니저1차선별</b><br>통과 1건당 비용</div></div>
+    <div class="gitem"><div class="gterm">CTR</div><div class="gdef">링크클릭 ÷ 노출<br>링크 클릭률</div></div>
+    <div class="gitem"><div class="gterm">CPM</div><div class="gdef">광고비 ÷ 노출 × 1000<br>노출 1천회당 비용</div></div>
+    <div class="gitem"><div class="gterm">통과율</div><div class="gdef">통과 ÷ 리드</div></div>
+    <div class="gitem"><div class="gterm">ROAS</div><div class="gdef">순매출 ÷ 광고비</div></div>
+    <div class="gitem"><div class="gterm">잠정</div><div class="gdef">선별 진행중이라 통과·CPS 미확정 (며칠 뒤 개선됨)</div></div>
+  </div>
 </aside>
 
 <!-- TOP NAV -->
 <nav class="topnav">
   <div class="topnav-inner">
     <div class="date-tabs" id="dateTabs"></div>
-    <div class="date-tabs weekly-tabs" id="weeklyTabs"></div>
     <div class="twennies-logo">
       <!-- Twennies Brand Logo -->
       <svg width="118" height="34" viewBox="0 0 118 34" xmlns="http://www.w3.org/2000/svg">
