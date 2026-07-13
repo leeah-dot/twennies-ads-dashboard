@@ -4742,7 +4742,11 @@ const WEEKLY = [
       "cplChg": "악화 +29%",
       "cplDir": "bad",
       "ctrChg": "▼ -0.2%p",
-      "cvrChg": "—"
+      "cvrChg": "—",
+      "cpsPrev": "90,978원",
+      "cpsCur": "188,720원",
+      "cpsChg": "잠정 +107%",
+      "cpsDir": ""
     },
     {
       "name": "한일 여성",
@@ -4755,7 +4759,11 @@ const WEEKLY = [
       "cplChg": "개선 -18%",
       "cplDir": "good",
       "ctrChg": "▲",
-      "cvrChg": "—"
+      "cvrChg": "—",
+      "cpsPrev": "—",
+      "cpsCur": "—",
+      "cpsChg": "—",
+      "cpsDir": ""
     },
     {
       "name": "남성 전체",
@@ -4768,12 +4776,17 @@ const WEEKLY = [
       "cplChg": "악화 +33%",
       "cplDir": "bad",
       "ctrChg": "▲ +0.2%p",
-      "cvrChg": "▼"
+      "cvrChg": "▼",
+      "cpsPrev": "104,857원",
+      "cpsCur": "314,965원",
+      "cpsChg": "잠정 +200%",
+      "cpsDir": ""
     }
   ],
   "groupNotes": [
     "한일남 통과 4건은 선별 미성숙(잠정) — 통과·CPS는 며칠 뒤 상향됨",
-    "남성 = 한일남(275만) + 한한남(71만) 메타 합산"
+    "남성 = 한일남(275만) + 한한남(71만) 메타 합산",
+    "CPS 변화(전주→금주)는 최근 주 선별 미성숙으로 잠정 — 통과 완료 시 대폭 하향(개선)됨. 한한남만 통과 완료돼 CPS +2%로 실질 유지"
   ],
   "channels": [
     {
@@ -4783,7 +4796,8 @@ const WEEKLY = [
       "cpl": "51,469원",
       "ctr": "1.1%",
       "cvr": "27.3%",
-      "note": "⚠️ CPL 상승"
+      "note": "⚠️ CPL 상승",
+      "cps": "188,720원"
     },
     {
       "name": "한일 남성 메타",
@@ -4792,7 +4806,8 @@ const WEEKLY = [
       "cpl": "38,211원",
       "ctr": "2.6%",
       "cvr": "5.6%*",
-      "note": "⚠️ 통과 미성숙"
+      "note": "⚠️ 통과 미성숙",
+      "cps": "687,804원*"
     },
     {
       "name": "한한 남성 메타",
@@ -4801,7 +4816,8 @@ const WEEKLY = [
       "cpl": "47,560원",
       "ctr": "2.2%",
       "cvr": "46.7%",
-      "note": "✅ 통과율 우수"
+      "note": "✅ 통과율 우수",
+      "cps": "101,914원"
     },
     {
       "name": "한일 여성 메타",
@@ -4810,7 +4826,8 @@ const WEEKLY = [
       "cpl": "60,691원",
       "ctr": "1.5%",
       "cvr": "—",
-      "note": "✅ CPL 개선"
+      "note": "✅ CPL 개선",
+      "cps": "—"
     }
   ],
   "channelTotal": "7,509,244원",
@@ -4947,12 +4964,15 @@ function renderWeeklyPage(w) {
       <td>${g.spendPrev}</td><td>${g.spendCur}</td><td>${g.spendChg}</td>
       <td>${g.cplPrev}</td><td style="font-weight:700">${g.cplCur}</td>
       <td class="${dirCls(g.cplDir)}" style="font-weight:700">${g.cplChg}</td>
+      <td>${g.cpsPrev||"—"}</td><td style="font-weight:700">${g.cpsCur||"—"}</td>
+      <td class="${dirCls(g.cpsDir)}" style="font-weight:700">${g.cpsChg||"—"}</td>
       <td>${g.ctrChg}</td><td>${g.cvrChg}</td>
     </tr>`).join("");
   const chRows = w.channels.map(c => `
     <tr>
       <td class="camp-name">${c.name}</td>
       <td>${c.spend}</td><td>${c.leads}</td><td style="font-weight:700">${c.cpl}</td>
+      <td style="font-weight:700">${c.cps||"—"}</td>
       <td>${c.ctr}</td><td>${c.cvr}</td>
       <td style="text-align:left">${c.note}</td>
     </tr>`).join("");
@@ -4980,11 +5000,12 @@ function renderWeeklyPage(w) {
         <span class="section-title">💰 광고비 대비 효율 — ${w.compareLabel}</span>
       </div>
       <div class="weekly-scroll">
-      <table class="camp-table" style="min-width:860px">
+      <table class="camp-table" style="min-width:1120px">
         <thead><tr>
           <th>구분</th>
           <th style="text-align:right">광고비 전주</th><th style="text-align:right">광고비 금주</th><th style="text-align:right">변화</th>
           <th style="text-align:right">CPL 전주</th><th style="text-align:right">CPL 금주</th><th style="text-align:right">CPL 변화</th>
+          <th style="text-align:right">CPS 전주</th><th style="text-align:right">CPS 금주</th><th style="text-align:right">CPS 변화</th>
           <th style="text-align:right">CTR 변화</th><th style="text-align:right">CVR 변화</th>
         </tr></thead>
         <tbody>${groupRows}</tbody>
@@ -5003,6 +5024,7 @@ function renderWeeklyPage(w) {
         <thead><tr>
           <th>구분</th>
           <th style="text-align:right">광고비</th><th style="text-align:right">리드</th><th style="text-align:right">CPL</th>
+          <th style="text-align:right">CPS</th>
           <th style="text-align:right">CTR</th><th style="text-align:right">CVR</th>
           <th>평가</th>
         </tr></thead>
