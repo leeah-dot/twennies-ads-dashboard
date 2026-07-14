@@ -65,6 +65,9 @@
   /* 주간 탭 세로 리스트 */
   .weekly-list { display:flex; flex-direction:column; gap:5px; }
   .weekly-list .date-tab { width:100%; text-align:left; padding:9px 12px; font-size:12.5px; border-radius:8px; }
+  .kpi-delta { font-size: 11px; margin-top: 7px; font-weight: 700; color:#999; line-height:1.4; }
+  .kpi-delta.bad { color:#e03e3e; }
+  .kpi-delta.good { color:#0a8f3c; }
   @media (max-width: 900px) {
     body { padding-left: 0 !important; }
     .glossary { display: none; }
@@ -5339,13 +5342,21 @@ const WEEKLY = [
   ],
   "overview": {
     "spend": "751만원",
+    "spendDelta": "전주 653만 · +98만 (+15%)",
     "leads": 172,
-    "pass": 59,
+    "pass": 49,
     "passNote": " (선별 완료)",
+    "leadsDelta": "전주 172건 · ±0 (0%)",
     "cpl": "43,658원",
+    "cplDelta": "전주 37,990원 · +5,668 (+15%)",
+    "cplDir": "bad",
     "cps": "153,250원",
     "cpsNote": "",
-    "ctr": "1.89%"
+    "cpsDelta": "전주 108,905원 · +44,345 (+41%)",
+    "cpsDir": "bad",
+    "ctr": "1.89%",
+    "ctrDelta": "전주 1.97% · -0.08%p",
+    "ctrDir": "bad"
   }
 },
 {
@@ -5438,11 +5449,11 @@ function renderWeeklyPage(w) {
     </div>
 
     ${w.overview ? `<div class="kpi-row" style="flex-wrap:wrap">
-      <div class="kpi-card"><div class="kpi-label">총 광고비 (7일)</div><div class="kpi-value">${w.overview.spend}</div><div class="kpi-sub">메타+검색 합계</div></div>
-      <div class="kpi-card"><div class="kpi-label">총 리드 / 통과</div><div class="kpi-value">${w.overview.leads}건</div><div class="kpi-sub">통과 ${w.overview.pass}건${w.overview.passNote||""}</div></div>
-      <div class="kpi-card"><div class="kpi-label">평균 CPL</div><div class="kpi-value">${w.overview.cpl}</div><div class="kpi-sub">리드당</div></div>
-      <div class="kpi-card"><div class="kpi-label">평균 CPS</div><div class="kpi-value">${w.overview.cps}</div><div class="kpi-sub">통과당${w.overview.cpsNote||""}</div></div>
-      <div class="kpi-card"><div class="kpi-label">평균 CTR</div><div class="kpi-value">${w.overview.ctr}</div><div class="kpi-sub">링크 클릭</div></div>
+      <div class="kpi-card"><div class="kpi-label">총 광고비 (7일)</div><div class="kpi-value">${w.overview.spend}</div><div class="kpi-sub">메타+검색 합계</div>${w.overview.spendDelta?`<div class="kpi-delta">${w.overview.spendDelta}</div>`:""}</div>
+      <div class="kpi-card"><div class="kpi-label">총 리드 / 통과</div><div class="kpi-value">${w.overview.leads}건</div><div class="kpi-sub">통과 ${w.overview.pass}건${w.overview.passNote||""}</div>${w.overview.leadsDelta?`<div class="kpi-delta">${w.overview.leadsDelta}</div>`:""}</div>
+      <div class="kpi-card"><div class="kpi-label">평균 CPL</div><div class="kpi-value">${w.overview.cpl}</div><div class="kpi-sub">리드당</div>${w.overview.cplDelta?`<div class="kpi-delta ${w.overview.cplDir||""}">${w.overview.cplDelta}</div>`:""}</div>
+      <div class="kpi-card"><div class="kpi-label">평균 CPS</div><div class="kpi-value">${w.overview.cps}</div><div class="kpi-sub">통과당${w.overview.cpsNote||""}</div>${w.overview.cpsDelta?`<div class="kpi-delta ${w.overview.cpsDir||""}">${w.overview.cpsDelta}</div>`:""}</div>
+      <div class="kpi-card"><div class="kpi-label">평균 CTR</div><div class="kpi-value">${w.overview.ctr}</div><div class="kpi-sub">링크 클릭</div>${w.overview.ctrDelta?`<div class="kpi-delta ${w.overview.ctrDir||""}">${w.overview.ctrDelta}</div>`:""}</div>
     </div>` : ""}
 
     <div class="camp-section">
