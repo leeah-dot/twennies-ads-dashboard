@@ -5746,37 +5746,610 @@ function renderPage(r) {
 // ============================================================
 const MONTHLY = [
 {
+  "id": "monthly-202607",
+  "label": "🗓️ 2026년 7월 (진행중)",
+  "title": "7월 월간 리포트 (7/1 ~ 7/14 · 진행중)",
+  "overview": {
+    "spend": "1,469만원",
+    "spendSub": "메타만 (7/1~14 · 네이버 미집계)",
+    "rev": "집계중",
+    "roas": "—",
+    "roasSub": "결제 시차로 월말 확정",
+    "leads": 357,
+    "pass": 131,
+    "passRate": "38.6%",
+    "cpl": "41,154원",
+    "cps": "126,656원",
+    "ctr": "1.92%",
+    "consult": 34,
+    "paid": 3
+  },
+  "segments": [
+    {
+      "name": "한한여",
+      "emoji": "🟣",
+      "spend": "564만원",
+      "share": "38%",
+      "leads": 113,
+      "pass": 61,
+      "passRate": "54.0%",
+      "cpl": "49,903원",
+      "cps": "92,443원",
+      "note": "통과율 6월 37%→54% 급개선 · 그대로가 절반"
+    },
+    {
+      "name": "한일남",
+      "emoji": "🩷",
+      "spend": "552만원",
+      "share": "38%",
+      "leads": 165,
+      "pass": 36,
+      "passRate": "21.8%",
+      "cpl": "33,477원",
+      "cps": "153,434원",
+      "note": "리드 최다 · 통과율 6월 15.6%→21.8% 개선"
+    },
+    {
+      "name": "한일여",
+      "emoji": "🟢",
+      "spend": "220만원",
+      "share": "15%",
+      "leads": "0 (미태깅)",
+      "pass": "—",
+      "passRate": "—",
+      "cpl": "—",
+      "cps": "—",
+      "note": "Typeform UTM 미설정 → 추적 불가(6월부터 지속)"
+    },
+    {
+      "name": "한한남",
+      "emoji": "🔵",
+      "spend": "133만원",
+      "share": "9%",
+      "leads": 33,
+      "pass": 19,
+      "passRate": "57.6%",
+      "cpl": "40,301원",
+      "cps": "69,996원",
+      "note": "통과율·CPS 최우수 유지"
+    }
+  ],
+  "creatives": [
+    {
+      "name": "[베리] 서재민_그대로",
+      "target": "한한여",
+      "spend": "3,205,377원",
+      "leads": 65,
+      "pass": 32,
+      "passRate": "49%",
+      "cpl": "49,313원",
+      "cps": "100,168원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "연봉 1억이상",
+      "target": "한한여",
+      "spend": "1,812,467원",
+      "leads": 37,
+      "pass": 21,
+      "passRate": "57%",
+      "cpl": "48,986원",
+      "cps": "86,308원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "4월2주 AI_2",
+      "target": "한일남",
+      "spend": "1,458,819원",
+      "leads": 32,
+      "pass": 12,
+      "passRate": "38%",
+      "cpl": "45,588원",
+      "cps": "121,568원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "세나 (7/14부터 UTM 정상화)",
+      "target": "한일남",
+      "spend": "974,903원",
+      "leads": 3,
+      "pass": 0,
+      "passRate": "0%",
+      "cpl": "324,968원",
+      "cps": "—",
+      "grade": "⚠️",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "4월2주 AI_1",
+      "target": "한일남",
+      "spend": "677,730원",
+      "leads": 25,
+      "pass": 8,
+      "passRate": "32%",
+      "cpl": "27,109원",
+      "cps": "84,716원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "소개팅 거절_평범",
+      "target": "한일남",
+      "spend": "664,943원",
+      "leads": 18,
+      "pass": 4,
+      "passRate": "22%",
+      "cpl": "36,941원",
+      "cps": "166,236원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "[베리]30대면 아줌마 (데보라 포함)",
+      "target": "한한남",
+      "spend": "654,137원",
+      "leads": 17,
+      "pass": 10,
+      "passRate": "59%",
+      "cpl": "38,479원",
+      "cps": "65,414원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "[베리] 결국 일본 여자를 선택",
+      "target": "한일남",
+      "spend": "596,817원",
+      "leads": 23,
+      "pass": 1,
+      "passRate": "4%",
+      "cpl": "25,949원",
+      "cps": "596,817원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "spend": "429,062원",
+      "leads": 9,
+      "pass": 2,
+      "passRate": "22%",
+      "cpl": "47,674원",
+      "cps": "214,531원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "능력남 몰리는 이유",
+      "target": "한한남",
+      "spend": "403,455원",
+      "leads": 11,
+      "pass": 7,
+      "passRate": "64%",
+      "cpl": "36,678원",
+      "cps": "57,636원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "일본 여자랑 결혼하지 마세요",
+      "target": "한일남",
+      "spend": "371,283원",
+      "leads": 14,
+      "pass": 0,
+      "passRate": "0%",
+      "cpl": "26,520원",
+      "cps": "—",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "내딸이면_데보라",
+      "target": "한한여",
+      "spend": "321,323원",
+      "leads": 6,
+      "pass": 5,
+      "passRate": "83%",
+      "cpl": "53,554원",
+      "cps": "64,265원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "내딸이면_제논",
+      "target": "한한여",
+      "spend": "299,835원",
+      "leads": 5,
+      "pass": 3,
+      "passRate": "60%",
+      "cpl": "59,967원",
+      "cps": "99,945원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "제논_내딸이면 (OFF 처리)",
+      "target": "한한남",
+      "spend": "227,587원",
+      "leads": 1,
+      "pass": 0,
+      "passRate": "0%",
+      "cpl": "227,587원",
+      "cps": "—",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "아이츠니(=세나 실체)",
+      "target": "한일남",
+      "spend": "104,803원",
+      "leads": 22,
+      "pass": 4,
+      "passRate": "18%",
+      "cpl": "4,764원",
+      "cps": "26,201원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "맨스_일본여자가좋아하는 (7/14 신규)",
+      "target": "한일남",
+      "spend": "100,436원",
+      "leads": 16,
+      "pass": 4,
+      "passRate": "25%",
+      "cpl": "6,277원",
+      "cps": "25,109원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "[베리] 고스펙 아줌마 (7/14 신규)",
+      "target": "한한남",
+      "spend": "44,749원",
+      "leads": 4,
+      "pass": 2,
+      "passRate": "50%",
+      "cpl": "11,187원",
+      "cps": "22,374원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "맨스_일본여친소개 (7/14 신규)",
+      "target": "한일남",
+      "spend": "17,872원",
+      "leads": 1,
+      "pass": 0,
+      "passRate": "0%",
+      "cpl": "17,872원",
+      "cps": "—",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "맨스_일본여자내조 (7/14 신규·표본1)",
+      "target": "한일남",
+      "spend": "6,005원",
+      "leads": 1,
+      "pass": 1,
+      "passRate": "100%",
+      "cpl": "6,005원",
+      "cps": "6,005원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "맨스_프리미엄 (7/14 신규·표본1)",
+      "target": "한일남",
+      "spend": "1,430원",
+      "leads": 1,
+      "pass": 0,
+      "passRate": "0%",
+      "cpl": "1,430원",
+      "cps": "—",
+      "grade": "⚪",
+      "cls": ""
+    }
+  ],
+  "analysis": [
+    "<b>7/1~14 리드 357건·통과 131건(38.6%)</b> — 6월(25.6%) 대비 <b>통과율 13%p 급개선</b>. 광고비 1,469만원(메타), 평균 CPL 41,154원·CPS 126,656원.",
+    "<b>7/14 [맨스] 신규 시리즈가 게임체인저.</b> '일본여자가좋아하는' CPL 6,277원·CPS 25,109원, '고스펙(한한남)' CPS 22,374원 — 기존 최고였던 아이츠니(=세나)와 동급. <b>신규 소재가 곧 최고 효율</b>임을 재확인.",
+    "<b>한한여 통과율 37%→54% 급등이 이번 달 최대 성과.</b> 연봉1억(57%)·데보라(83%)가 견인. 반면 그대로는 CPL 49,313원으로 피로 누적 → 교체 대상.",
+    "<b>여전한 낭비 3건</b>: ① 세나 97만원(7/14 UTM 정상화 전까지 미추적) ② 한일여 220만원 추적불가(Typeform) ③ 결국·결혼하지 97만원 통과율 0~4%. <b>합계 약 414만원(28%)</b>.",
+    "<b>To-Be</b>: [맨스] 시리즈 증액 · 그대로/결국/결혼하지 교체 · 한일여 Typeform UTM 연동(220만원 측정 복구) · 세나 태깅 정상화 검증."
+  ]
+},
+{
   "id": "monthly-202606",
   "label": "🗓️ 2026년 6월",
   "title": "6월 월간 리포트 (6/1 ~ 6/30)",
   "overview": {
-    "spend":"2,396만원","spendSub":"메타 2,206만 + 네이버 190만(7.9%)",
-    "rev":"2,534만원","roas":"105.8%","roasSub":"손익분기 근접",
-    "leads":820,"pass":192,"passRate":"25.6%",
-    "cpl":"29,220원","cps":"124,795원","ctr":"1.88%",
-    "consult":119,"paid":7
+    "spend": "2,396만원",
+    "spendSub": "메타 2,206만 + 네이버 190만(7.9%)",
+    "rev": "2,534만원",
+    "roas": "105.8%",
+    "roasSub": "손익분기 근접",
+    "leads": 820,
+    "pass": 192,
+    "passRate": "25.6%",
+    "cpl": "29,220원",
+    "cps": "124,795원",
+    "ctr": "1.88%",
+    "consult": 119,
+    "paid": 7
   },
   "segments": [
-    {"name":"한일남","emoji":"🩷","spend":"1,007만원","share":"46%","leads":409,"pass":64,"passRate":"15.6%","cpl":"24,627원","cps":"157,384원","note":"리드 최다(50%)·CPL 최저 / 통과율 최악"},
-    {"name":"한한여","emoji":"🟣","spend":"904만원","share":"41%","leads":214,"pass":80,"passRate":"37.4%","cpl":"42,260원","cps":"113,046원","note":"통과 최다 · 그대로 소재가 절반"},
-    {"name":"한일여","emoji":"🟢","spend":"154만원","share":"7%","leads":"0 (미태깅)","pass":"—","passRate":"—","cpl":"—","cps":"—","note":"Typeform UTM 미설정 → 추적 불가"},
-    {"name":"한한남","emoji":"🔵","spend":"140만원","share":"6%","leads":29,"pass":18,"passRate":"62.1%","cpl":"48,174원","cps":"77,614원","note":"통과율·CPS 최우수 / 볼륨 최소"}
+    {
+      "name": "한일남",
+      "emoji": "🩷",
+      "spend": "1,007만원",
+      "share": "46%",
+      "leads": 409,
+      "pass": 64,
+      "passRate": "15.6%",
+      "cpl": "24,627원",
+      "cps": "157,384원",
+      "note": "리드 최다(50%)·CPL 최저 / 통과율 최악"
+    },
+    {
+      "name": "한한여",
+      "emoji": "🟣",
+      "spend": "904만원",
+      "share": "41%",
+      "leads": 214,
+      "pass": 80,
+      "passRate": "37.4%",
+      "cpl": "42,260원",
+      "cps": "113,046원",
+      "note": "통과 최다 · 그대로 소재가 절반"
+    },
+    {
+      "name": "한일여",
+      "emoji": "🟢",
+      "spend": "154만원",
+      "share": "7%",
+      "leads": "0 (미태깅)",
+      "pass": "—",
+      "passRate": "—",
+      "cpl": "—",
+      "cps": "—",
+      "note": "Typeform UTM 미설정 → 추적 불가"
+    },
+    {
+      "name": "한한남",
+      "emoji": "🔵",
+      "spend": "140만원",
+      "share": "6%",
+      "leads": 29,
+      "pass": 18,
+      "passRate": "62.1%",
+      "cpl": "48,174원",
+      "cps": "77,614원",
+      "note": "통과율·CPS 최우수 / 볼륨 최소"
+    }
   ],
   "creatives": [
-    {"name":"아이츠니(=세나 실체)","target":"한일남","spend":"584천원","leads":90,"pass":12,"cpl":"6,487원","cps":"48,655원","grade":"🏆","cls":"cpl-low"},
-    {"name":"소개팅 거절_평범","target":"한일남","spend":"1,627천원","leads":84,"pass":13,"cpl":"19,370원","cps":"125,161원","grade":"🟢","cls":"cpl-low"},
-    {"name":"4월2주 AI_1","target":"한일남","spend":"674천원","leads":34,"pass":4,"cpl":"19,818원","cps":"168,450원","grade":"🟢","cls":"cpl-low"},
-    {"name":"POV: 일본 여자친구","target":"한일남","spend":"400천원","leads":17,"pass":4,"cpl":"23,527원","cps":"99,992원","grade":"🟢","cls":"cpl-low"},
-    {"name":"4월2주 AI_2","target":"한일남","spend":"1,920천원","leads":75,"pass":15,"cpl":"25,606원","cps":"128,028원","grade":"⚪","cls":""},
-    {"name":"연봉 1억이상","target":"한한여","spend":"1,649천원","leads":55,"pass":18,"cpl":"29,977원","cps":"91,596원","grade":"🟢","cls":"cpl-low"},
-    {"name":"[베리] 서재민_그대로","target":"한한여","spend":"4,857천원","leads":102,"pass":40,"cpl":"47,622원","cps":"121,435원","grade":"⚪","cls":""},
-    {"name":"[베리]30대면 아줌마","target":"한한남","spend":"1,151천원","leads":22,"pass":14,"cpl":"52,312원","cps":"82,205원","grade":"🟢","cls":"cpl-low"},
-    {"name":"능력남 몰리는 이유","target":"한한남","spend":"246천원","leads":7,"pass":4,"cpl":"35,169원","cps":"61,546원","grade":"🏆","cls":"cpl-low"},
-    {"name":"일본 여자에 환상 가지지 마세요","target":"한일남","spend":"1,216천원","leads":36,"pass":4,"cpl":"33,787원","cps":"304,083원","grade":"🔴","cls":"cpl-high"},
-    {"name":"내딸이면_제논","target":"한한여","spend":"1,252천원","leads":17,"pass":6,"cpl":"73,636원","cps":"208,635원","grade":"🔴","cls":"cpl-high"},
-    {"name":"일본 여자랑 결혼하지 마세요","target":"한일남","spend":"387천원","leads":10,"pass":1,"cpl":"38,668원","cps":"386,681원","grade":"🔴","cls":"cpl-high"},
-    {"name":"세나 (태깅오류·실적은 아이츠니로 집계)","target":"한일남","spend":"1,540천원","leads":0,"pass":0,"cpl":"리드0","cps":"—","grade":"⚠️","cls":"cpl-high"},
-    {"name":"박돈경_말고","target":"한한여","spend":"175천원","leads":1,"pass":1,"cpl":"174,816원","cps":"174,816원","grade":"🔴","cls":"cpl-high"}
+    {
+      "name": "[베리] 서재민_그대로",
+      "target": "한한여",
+      "spend": "4,857,412원",
+      "leads": 102,
+      "pass": 40,
+      "passRate": "39%",
+      "cpl": "47,622원",
+      "cps": "121,435원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "4월2주 AI_2",
+      "target": "한일남",
+      "spend": "1,920,425원",
+      "leads": 75,
+      "pass": 15,
+      "passRate": "20%",
+      "cpl": "25,606원",
+      "cps": "128,028원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "[베리] 결국 일본 여자를 선택",
+      "target": "한일남",
+      "spend": "1,724,306원",
+      "leads": 63,
+      "pass": 11,
+      "passRate": "17%",
+      "cpl": "27,370원",
+      "cps": "156,755원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "연봉 1억이상",
+      "target": "한한여",
+      "spend": "1,648,729원",
+      "leads": 55,
+      "pass": 18,
+      "passRate": "33%",
+      "cpl": "29,977원",
+      "cps": "91,596원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "소개팅 거절_평범",
+      "target": "한일남",
+      "spend": "1,627,096원",
+      "leads": 84,
+      "pass": 13,
+      "passRate": "15%",
+      "cpl": "19,370원",
+      "cps": "125,161원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "세나 (태깅오류·실적은 아이츠니로 집계)",
+      "target": "한일남",
+      "spend": "1,540,127원",
+      "leads": 0,
+      "pass": 0,
+      "passRate": "—",
+      "cpl": "리드0",
+      "cps": "—",
+      "grade": "⚠️",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "내딸이면_제논",
+      "target": "한한여",
+      "spend": "1,251,811원",
+      "leads": 17,
+      "pass": 6,
+      "passRate": "35%",
+      "cpl": "73,636원",
+      "cps": "208,635원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "spend": "1,216,332원",
+      "leads": 36,
+      "pass": 4,
+      "passRate": "11%",
+      "cpl": "33,787원",
+      "cps": "304,083원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "[베리]30대면 아줌마",
+      "target": "한한남",
+      "spend": "1,150,867원",
+      "leads": 22,
+      "pass": 14,
+      "passRate": "64%",
+      "cpl": "52,312원",
+      "cps": "82,205원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "[베리] 서재민_성공적인 결혼",
+      "target": "한한여",
+      "spend": "803,127원",
+      "leads": 21,
+      "pass": 8,
+      "passRate": "38%",
+      "cpl": "38,244원",
+      "cps": "100,391원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "4월2주 AI_1",
+      "target": "한일남",
+      "spend": "673,800원",
+      "leads": 34,
+      "pass": 4,
+      "passRate": "12%",
+      "cpl": "19,818원",
+      "cps": "168,450원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "아이츠니(=세나 실체)",
+      "target": "한일남",
+      "spend": "583,863원",
+      "leads": 90,
+      "pass": 12,
+      "passRate": "13%",
+      "cpl": "6,487원",
+      "cps": "48,655원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "POV: 일본 여자친구",
+      "target": "한일남",
+      "spend": "399,966원",
+      "leads": 17,
+      "pass": 4,
+      "passRate": "24%",
+      "cpl": "23,527원",
+      "cps": "99,992원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "일본 여자랑 결혼하지 마세요",
+      "target": "한일남",
+      "spend": "386,681원",
+      "leads": 10,
+      "pass": 1,
+      "passRate": "10%",
+      "cpl": "38,668원",
+      "cps": "386,681원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "능력남 몰리는 이유",
+      "target": "한한남",
+      "spend": "246,185원",
+      "leads": 7,
+      "pass": 4,
+      "passRate": "57%",
+      "cpl": "35,169원",
+      "cps": "61,546원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "내딸이면_데보라",
+      "target": "한한여",
+      "spend": "231,323원",
+      "leads": 4,
+      "pass": 3,
+      "passRate": "75%",
+      "cpl": "57,831원",
+      "cps": "77,108원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "박돈경_말고",
+      "target": "한한여",
+      "spend": "174,816원",
+      "leads": 1,
+      "pass": 1,
+      "passRate": "100%",
+      "cpl": "174,816원",
+      "cps": "174,816원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "[베리] 서재민_육각형",
+      "target": "한한여",
+      "spend": "76,476원",
+      "leads": 3,
+      "pass": 1,
+      "passRate": "33%",
+      "cpl": "25,492원",
+      "cps": "76,476원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    }
   ],
   "analysis": [
     "<b>6월 ROAS 105.8% — 손익분기 근접.</b> 광고비 2,396만원으로 매출 2,534만원. 4·5월(305%·273%) 대비 급락했으나, 결혼정보 특성상 6월 리드의 결제가 7~8월에 잡히므로 <b>실제 6월 ROAS는 상향될 것</b>(D-10 기준 137%).",
@@ -5803,6 +6376,7 @@ function renderMonthlyPage(m) {
     <tr>
       <td class="camp-name">${c.grade} <span class="camp-tag" style="${campTagStyle[c.target]}">${c.target}</span>${c.name}</td>
       <td>${c.spend}</td><td>${c.leads}건</td><td>${c.pass}건</td>
+      <td style="font-weight:700">${c.passRate||"—"}</td>
       <td class="${c.cls}" style="font-weight:700">${c.cpl}</td>
       <td class="${c.cls}" style="font-weight:700">${c.cps}</td>
     </tr>`).join("");
@@ -5852,7 +6426,7 @@ function renderMonthlyPage(m) {
       <table class="camp-table" style="min-width:760px">
         <thead><tr>
           <th>소재</th><th style="text-align:right">광고비</th><th style="text-align:right">리드</th>
-          <th style="text-align:right">통과</th><th style="text-align:right">CPL</th><th style="text-align:right">CPS</th>
+          <th style="text-align:right">통과</th><th style="text-align:right">통과율</th><th style="text-align:right">CPL</th><th style="text-align:right">CPS</th>
         </tr></thead>
         <tbody>${crRows}</tbody>
       </table>
