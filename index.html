@@ -235,6 +235,10 @@
 <!-- GLOSSARY SIDEBAR -->
 <aside class="glossary">
   <div class="side-section">
+    <h3>🗓️ 월별 리포트</h3>
+    <div id="monthlyTabs" class="weekly-list"></div>
+  </div>
+  <div class="side-section">
     <h3>📅 주간 리포트</h3>
     <div id="weeklyTabs" class="weekly-list"></div>
   </div>
@@ -5740,6 +5744,124 @@ function renderPage(r) {
 // ============================================================
 // WEEKLY REPORT (주간 리포트)
 // ============================================================
+const MONTHLY = [
+{
+  "id": "monthly-202606",
+  "label": "🗓️ 2026년 6월",
+  "title": "6월 월간 리포트 (6/1 ~ 6/30)",
+  "overview": {
+    "spend":"2,396만원","spendSub":"메타 2,206만 + 네이버 190만(7.9%)",
+    "rev":"2,534만원","roas":"105.8%","roasSub":"손익분기 근접",
+    "leads":820,"pass":192,"passRate":"25.6%",
+    "cpl":"29,220원","cps":"124,795원","ctr":"1.88%",
+    "consult":119,"paid":7
+  },
+  "segments": [
+    {"name":"한일남","emoji":"🩷","spend":"1,007만원","share":"46%","leads":409,"pass":64,"passRate":"15.6%","cpl":"24,627원","cps":"157,384원","note":"리드 최다(50%)·CPL 최저 / 통과율 최악"},
+    {"name":"한한여","emoji":"🟣","spend":"904만원","share":"41%","leads":214,"pass":80,"passRate":"37.4%","cpl":"42,260원","cps":"113,046원","note":"통과 최다 · 그대로 소재가 절반"},
+    {"name":"한일여","emoji":"🟢","spend":"154만원","share":"7%","leads":"0 (미태깅)","pass":"—","passRate":"—","cpl":"—","cps":"—","note":"Typeform UTM 미설정 → 추적 불가"},
+    {"name":"한한남","emoji":"🔵","spend":"140만원","share":"6%","leads":29,"pass":18,"passRate":"62.1%","cpl":"48,174원","cps":"77,614원","note":"통과율·CPS 최우수 / 볼륨 최소"}
+  ],
+  "creatives": [
+    {"name":"아이츠니(=세나 실체)","target":"한일남","spend":"584천원","leads":90,"pass":12,"cpl":"6,487원","cps":"48,655원","grade":"🏆","cls":"cpl-low"},
+    {"name":"소개팅 거절_평범","target":"한일남","spend":"1,627천원","leads":84,"pass":13,"cpl":"19,370원","cps":"125,161원","grade":"🟢","cls":"cpl-low"},
+    {"name":"4월2주 AI_1","target":"한일남","spend":"674천원","leads":34,"pass":4,"cpl":"19,818원","cps":"168,450원","grade":"🟢","cls":"cpl-low"},
+    {"name":"POV: 일본 여자친구","target":"한일남","spend":"400천원","leads":17,"pass":4,"cpl":"23,527원","cps":"99,992원","grade":"🟢","cls":"cpl-low"},
+    {"name":"4월2주 AI_2","target":"한일남","spend":"1,920천원","leads":75,"pass":15,"cpl":"25,606원","cps":"128,028원","grade":"⚪","cls":""},
+    {"name":"연봉 1억이상","target":"한한여","spend":"1,649천원","leads":55,"pass":18,"cpl":"29,977원","cps":"91,596원","grade":"🟢","cls":"cpl-low"},
+    {"name":"[베리] 서재민_그대로","target":"한한여","spend":"4,857천원","leads":102,"pass":40,"cpl":"47,622원","cps":"121,435원","grade":"⚪","cls":""},
+    {"name":"[베리]30대면 아줌마","target":"한한남","spend":"1,151천원","leads":22,"pass":14,"cpl":"52,312원","cps":"82,205원","grade":"🟢","cls":"cpl-low"},
+    {"name":"능력남 몰리는 이유","target":"한한남","spend":"246천원","leads":7,"pass":4,"cpl":"35,169원","cps":"61,546원","grade":"🏆","cls":"cpl-low"},
+    {"name":"일본 여자에 환상 가지지 마세요","target":"한일남","spend":"1,216천원","leads":36,"pass":4,"cpl":"33,787원","cps":"304,083원","grade":"🔴","cls":"cpl-high"},
+    {"name":"내딸이면_제논","target":"한한여","spend":"1,252천원","leads":17,"pass":6,"cpl":"73,636원","cps":"208,635원","grade":"🔴","cls":"cpl-high"},
+    {"name":"일본 여자랑 결혼하지 마세요","target":"한일남","spend":"387천원","leads":10,"pass":1,"cpl":"38,668원","cps":"386,681원","grade":"🔴","cls":"cpl-high"},
+    {"name":"세나 (태깅오류·실적은 아이츠니로 집계)","target":"한일남","spend":"1,540천원","leads":0,"pass":0,"cpl":"리드0","cps":"—","grade":"⚠️","cls":"cpl-high"},
+    {"name":"박돈경_말고","target":"한한여","spend":"175천원","leads":1,"pass":1,"cpl":"174,816원","cps":"174,816원","grade":"🔴","cls":"cpl-high"}
+  ],
+  "analysis": [
+    "<b>6월 ROAS 105.8% — 손익분기 근접.</b> 광고비 2,396만원으로 매출 2,534만원. 4·5월(305%·273%) 대비 급락했으나, 결혼정보 특성상 6월 리드의 결제가 7~8월에 잡히므로 <b>실제 6월 ROAS는 상향될 것</b>(D-10 기준 137%).",
+    "<b>구조적 문제: 리드는 한일남이, 통과는 한한여가 만든다.</b> 한일남이 리드의 50%(409건)를 CPL 24,627원으로 싸게 가져오지만 <b>통과율 15.6%로 최악</b>. 반면 한한여는 통과율 37.4%로 통과의 42%를 담당. → 리드 수 기준 예산 배분이 매출과 어긋남.",
+    "<b>최고 효율은 한한남 (통과율 62.1%·CPS 77,614원)</b> — 전 타겟 중 압도적이나 광고비는 6%(140만원)뿐. <b>증액 1순위</b>였으나 볼륨을 못 키움.",
+    "<b>최대 낭비 3건</b>: ① 세나 154만원 리드0(태깅오류로 아이츠니에 집계) ② 한일여 154만원 추적불가(Typeform UTM 미설정) ③ 환상·결혼하지 160만원 통과율 10~11%. <b>합계 약 470만원(20%)이 측정 불가/저품질</b>.",
+    "<b>숨은 에이스: 아이츠니(=세나 실체) CPL 6,487원·CPS 48,655원</b>으로 6월 최고 효율인데 광고비는 58만원(2.6%)뿐. <b>7월 [맨스] 시리즈가 이 자리를 대체 중</b> → 소재 교체가 정답임을 6월 데이터도 뒷받침."
+  ]
+}
+];
+
+function renderMonthlyPage(m) {
+  const o = m.overview;
+  const segRows = m.segments.map(s => `
+    <tr>
+      <td class="camp-name">${s.emoji} ${s.name}</td>
+      <td>${s.spend}</td><td>${s.share}</td>
+      <td>${s.leads}건</td><td>${s.pass}${typeof s.pass === "number" ? "건" : ""}</td>
+      <td style="font-weight:700">${s.passRate}</td>
+      <td style="font-weight:700">${s.cpl}</td><td style="font-weight:700">${s.cps}</td>
+      <td style="text-align:left;font-size:11px">${s.note}</td>
+    </tr>`).join("");
+  const crRows = m.creatives.map(c => `
+    <tr>
+      <td class="camp-name">${c.grade} <span class="camp-tag" style="${campTagStyle[c.target]}">${c.target}</span>${c.name}</td>
+      <td>${c.spend}</td><td>${c.leads}건</td><td>${c.pass}건</td>
+      <td class="${c.cls}" style="font-weight:700">${c.cpl}</td>
+      <td class="${c.cls}" style="font-weight:700">${c.cps}</td>
+    </tr>`).join("");
+  return `
+<div class="page" id="page-${m.id}">
+  <div class="container">
+    <div class="page-header">
+      <h2>🗓️ ${m.title}</h2>
+      <span class="subtitle">메타 + 네이버 통합 · 리드/통과 = 어드민 API</span>
+    </div>
+
+    <div class="kpi-row" style="flex-wrap:wrap">
+      <div class="kpi-card"><div class="kpi-label">총 광고비</div><div class="kpi-value">${o.spend}</div><div class="kpi-sub">${o.spendSub}</div></div>
+      <div class="kpi-card"><div class="kpi-label">매출 / ROAS</div><div class="kpi-value">${o.roas}</div><div class="kpi-sub">매출 ${o.rev} · ${o.roasSub}</div></div>
+      <div class="kpi-card"><div class="kpi-label">리드 / 통과</div><div class="kpi-value">${o.leads}건</div><div class="kpi-sub">통과 ${o.pass}건 (${o.passRate})</div></div>
+      <div class="kpi-card"><div class="kpi-label">평균 CPL</div><div class="kpi-value">${o.cpl}</div><div class="kpi-sub">리드당</div></div>
+      <div class="kpi-card"><div class="kpi-label">평균 CPS</div><div class="kpi-value">${o.cps}</div><div class="kpi-sub">통과당</div></div>
+      <div class="kpi-card"><div class="kpi-label">평균 CTR</div><div class="kpi-value">${o.ctr}</div><div class="kpi-sub">1차상담 ${o.consult}건 · 결제 ${o.paid}건</div></div>
+    </div>
+
+    <div class="camp-section">
+      <div class="section-hd"><span class="section-title">🧭 6월 총평 (CEO 보고용)</span><span class="badge" style="background:#f0fdf4;color:#166534">핵심 5줄</span></div>
+      <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:16px 18px">
+        <ol style="margin:0;padding-left:18px;font-size:13px;line-height:1.95;color:#1a1a1a">
+          ${m.analysis.map(t => `<li style="margin-bottom:8px">${t}</li>`).join("")}
+        </ol>
+      </div>
+    </div>
+
+    <div class="camp-section">
+      <div class="section-hd"><span class="section-title">🎯 타겟별 성과</span></div>
+      <div class="weekly-scroll">
+      <table class="camp-table" style="min-width:900px">
+        <thead><tr>
+          <th>타겟</th><th style="text-align:right">광고비</th><th style="text-align:right">비중</th>
+          <th style="text-align:right">리드</th><th style="text-align:right">통과</th><th style="text-align:right">통과율</th>
+          <th style="text-align:right">CPL</th><th style="text-align:right">CPS</th><th>비고</th>
+        </tr></thead>
+        <tbody>${segRows}</tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="camp-section">
+      <div class="section-hd"><span class="section-title">🔍 소재별 성과 (광고비순)</span><span class="badge" style="background:#eef2ff;color:#3730a3">🏆최고 · 🟢양호 · ⚪보통 · 🔴부진</span></div>
+      <div class="weekly-scroll">
+      <table class="camp-table" style="min-width:760px">
+        <thead><tr>
+          <th>소재</th><th style="text-align:right">광고비</th><th style="text-align:right">리드</th>
+          <th style="text-align:right">통과</th><th style="text-align:right">CPL</th><th style="text-align:right">CPS</th>
+        </tr></thead>
+        <tbody>${crRows}</tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
 const WEEKLY = [
 {
   "id": "weekly-20260712",
@@ -6117,6 +6239,7 @@ function renderWeeklyPage(w) {
 const pagesEl = document.getElementById("pages");
 const tabsEl  = document.getElementById("dateTabs");
 const weeklyEl = document.getElementById("weeklyTabs");
+const monthlyEl = document.getElementById("monthlyTabs");
 const sorted  = [...REPORTS].sort((a,b) => b.date.localeCompare(a.date));
 
 sorted.forEach((r, i) => {
@@ -6127,6 +6250,16 @@ sorted.forEach((r, i) => {
   btn.dataset.date = r.date;
   btn.onclick = () => switchTo(r.date);
   tabsEl.appendChild(btn);
+});
+
+[...MONTHLY].forEach(mo => {
+  pagesEl.innerHTML += renderMonthlyPage(mo);
+  const mb = document.createElement("button");
+  mb.className = "date-tab weekly";
+  mb.textContent = mo.label;
+  mb.dataset.date = mo.id;
+  mb.onclick = () => switchTo(mo.id);
+  monthlyEl.appendChild(mb);
 });
 
 [...WEEKLY].reverse().forEach(w => {
