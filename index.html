@@ -300,11 +300,514 @@ const WEEKLY_CPL = [
 
 // 3M avg CPL per target (baseline for color coding)
 const AVG_3M = { "한한여":44642, "한한남":87728, "한일남":56702, "한일여":103782 };
+// 주차별 평균 CPS (선별 완료된 주만)
+const WEEKLY_CPS = [
+  { week:"6/29~7/5",  "한한여":90978,  "한한남":99754, "한일남":105920, "한일여":null },
+  { week:"7/6~7/12",  "한한여":101100, "한한남":64855, "한일남":275122, "한일여":null }
+];
 
 // ============================================================
 // REPORT DATA
 // ============================================================
 const REPORTS = [
+{
+  "date": "2026-07-14",
+  "label": "7월 14일",
+  "apiSource": true,
+  "notes": [
+    "7/14 [맨스] 신규 7개 소재 라이브 — 상단 '신규 세팅 광고' 섹션 참고",
+    "주차 지표(광고비·캠페인별)는 월~일 기준 = 이번 주 7/13~7/19 진행중(2일차)",
+    "세나=옛 아이츠니(46190) 태깅오류 · 능력남=데보라 포함 분류누락 (둘 다 리드0 아님)"
+  ],
+  "daily": {
+    "label": "7월 14일",
+    "targets": [
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "37만원",
+        "impressions": 9179,
+        "clicks": 90,
+        "leads": 2,
+        "cpl": 184123,
+        "ctr": "0.98%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "12만원",
+        "impressions": 3033,
+        "clicks": 59,
+        "leads": 1,
+        "cpl": 118080,
+        "ctr": "1.95%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "44만원",
+        "impressions": 14625,
+        "clicks": 398,
+        "leads": 6,
+        "cpl": 72884,
+        "ctr": "2.72%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "15만원",
+        "impressions": 4333,
+        "clicks": 78,
+        "leads": 3,
+        "cpl": 49653,
+        "ctr": "1.80%"
+      }
+    ]
+  },
+  "dailyTrend": [
+    {
+      "d": "7/1",
+      "results": 18,
+      "cplTotal": 46937,
+      "cplAd": 52804
+    },
+    {
+      "d": "7/2",
+      "results": 36,
+      "cplTotal": 27124,
+      "cplAd": 31499
+    },
+    {
+      "d": "7/3",
+      "results": 15,
+      "cplTotal": 69996,
+      "cplAd": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 24,
+      "cplTotal": 42102,
+      "cplAd": 42102
+    },
+    {
+      "d": "7/5",
+      "results": 42,
+      "cplTotal": 27442,
+      "cplAd": 29553
+    },
+    {
+      "d": "7/6",
+      "results": 28,
+      "cplTotal": 38072,
+      "cplAd": 48455
+    },
+    {
+      "d": "7/7",
+      "results": 23,
+      "cplTotal": 49579,
+      "cplAd": 57016
+    },
+    {
+      "d": "7/8",
+      "results": 26,
+      "cplTotal": 41956,
+      "cplAd": 54543
+    },
+    {
+      "d": "7/9",
+      "results": 22,
+      "cplTotal": 46965,
+      "cplAd": 49202
+    },
+    {
+      "d": "7/10",
+      "results": 21,
+      "cplTotal": 48449,
+      "cplAd": 50872
+    },
+    {
+      "d": "7/11",
+      "results": 20,
+      "cplTotal": 47877,
+      "cplAd": 56326
+    },
+    {
+      "d": "7/12",
+      "results": 28,
+      "cplTotal": 42995,
+      "cplAd": 54721
+    },
+    {
+      "d": "7/13",
+      "results": 14,
+      "cplTotal": 76801,
+      "cplAd": 97746
+    },
+    {
+      "d": "7/14",
+      "results": 40,
+      "cplTotal": 26815,
+      "cplAd": 29794
+    }
+  ],
+  "ceo": [
+    "<b>7/14 리드 40건 — 전일(14건) 대비 3배 급증.</b> [맨스] 신규 7개 소재 투입 효과로 총 CPL 26,815원(최근 2주 최저) 기록.",
+    "<b>신규 [맨스] 시리즈 초기 반응 매우 긍정적</b> — 합계 17.6만원·리드 5건·CPL 35,256원, CTR 3.0~4.3%로 기존 평균(1.9%)를 크게 상회.",
+    "<b>최고 성과: [맨스] 일본 여자가 좋아하는 한국 남자</b> (10만원·리드 3·CPL 33,479원·CTR 3.38%) → 확대 1순위 후보.",
+    "<b>지난주(7/6~12) 선별 확정 결과는 경고 신호</b> — 광고비 +15% 늘렸는데 리드 제자리(172→172)·통과 60→49 감소, CPS +41% 악화(과속 증액 부작용).",
+    "<b>처방: 증액보다 '소재 교체'가 답.</b> [맨스] 시리즈로 CTR·CPL 회복 중이니 신규 소재 중심으로 예산 재배분 + 세나 UTM 태깅 수정 병행."
+  ],
+  "newAdsNote": "7/14 신규 7개 · 7/10 신규 4개",
+  "newAds": [
+    {
+      "name": "[맨스] 일본 여자가 좋아하는 한국 남자",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "100,436원",
+      "ctr": "3.38%",
+      "leads": 3,
+      "cpl": "33,479원",
+      "cplCls": "cpl-low"
+    },
+    {
+      "name": "[베리] 고스펙 아줌마 필요없고",
+      "target": "한한남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "44,749원",
+      "ctr": "1.78%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[맨스] 일본 여친 소개받는 현실 루트 정리",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "17,856원",
+      "ctr": "3.03%",
+      "leads": 1,
+      "cpl": "17,856원",
+      "cplCls": "cpl-low"
+    },
+    {
+      "name": "[맨스] 일본여자내조",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "6,005원",
+      "ctr": "4.30%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[맨스] 한남일녀 조합",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "4,834원",
+      "ctr": "1.32%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[맨스] 프리미엄한일결정사",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "1,430원",
+      "ctr": "2.94%",
+      "leads": 1,
+      "cpl": "1,430원 (표본1)",
+      "cplCls": "cpl-low"
+    },
+    {
+      "name": "[맨스] 대표도 회원등록",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "970원",
+      "ctr": "0.00%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[베리] 30대면아줌마_데보라",
+      "target": "한한남",
+      "launched": "7/10",
+      "isToday": false,
+      "spend": "233,103원",
+      "ctr": "1.70%",
+      "leads": 3,
+      "cpl": "77,701원"
+    },
+    {
+      "name": "아이츠니_한국에서일본여자 (진짜 아이츠니·46213)",
+      "target": "한일남",
+      "launched": "7/10",
+      "isToday": false,
+      "spend": "113,732원",
+      "ctr": "2.01%",
+      "leads": 2,
+      "cpl": "56,866원",
+      "cplCls": "cpl-high"
+    },
+    {
+      "name": "[베리] 30대면아줌마_데보라_동안",
+      "target": "한한남",
+      "launched": "7/10",
+      "isToday": false,
+      "spend": "14,399원",
+      "ctr": "1.60%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[베리] 30대면아줌마_데보라_인트로변경",
+      "target": "한한남",
+      "launched": "7/10",
+      "isToday": false,
+      "spend": "8,011원",
+      "ctr": "1.20%",
+      "leads": 0,
+      "cpl": "—"
+    }
+  ],
+  "kpi": {
+    "off": 1,
+    "caution": 6,
+    "good": 3,
+    "weekSpend": "215만원",
+    "weekNote": "7/13~7/19 진행중(2일) · 리드 47건 · 통과 8(미선별 27)",
+    "totalSpend": "215만원",
+    "totalLeads": 47,
+    "totalPass": 8
+  },
+  "targets": [
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 42326,
+      "day7CPL": 51469,
+      "day7Leads": 55,
+      "day7Pass": 28,
+      "day7CPS": 101100,
+      "avg3mCPS": 106697,
+      "passRate": "50.9%",
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "283만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 43231,
+      "day7CPL": 47560,
+      "day7Leads": 15,
+      "day7Pass": 11,
+      "day7CPS": 64855,
+      "avg3mCPS": 113066,
+      "passRate": "73.3%",
+      "avg3mCTR": "2.70%",
+      "trend": "up",
+      "adCount": 3,
+      "spend7d": "71만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 25618,
+      "day7CPL": 38211,
+      "day7Leads": 72,
+      "day7Pass": 10,
+      "day7CPS": 275122,
+      "avg3mCPS": 147338,
+      "passRate": "13.9%",
+      "avg3mCTR": "2.44%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "275만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": 103289,
+      "day7CPL": 40461,
+      "day7Leads": 30,
+      "day7Pass": null,
+      "day7CPS": null,
+      "avg3mCPS": null,
+      "passRate": "—",
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 9,
+      "spend7d": "121만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한일 남성 (구+신)",
+      "target": "한일남",
+      "adCount": 18,
+      "spend7d": "86만원",
+      "leads7d": 32
+    },
+    {
+      "name": "한한 여성 2131_260406",
+      "target": "한한여",
+      "adCount": 4,
+      "spend7d": "76만원",
+      "leads7d": 8
+    },
+    {
+      "name": "한일 여성 2130_250528",
+      "target": "한일여",
+      "adCount": 7,
+      "spend7d": "31만원",
+      "leads7d": 0
+    },
+    {
+      "name": "한한 남성 2640_260625",
+      "target": "한한남",
+      "adCount": 5,
+      "spend7d": "22만원",
+      "leads7d": 7
+    }
+  ],
+  "off": [
+    {
+      "name": "아이츠니_한국에서일본여자 (진짜 아이츠니·46213 신규·리드 2)",
+      "target": "한일남",
+      "cpl7": 102062,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 49190,
+      "pass7": 0,
+      "ctr": "2.01%",
+      "pct": 398,
+      "barW": 100
+    }
+  ],
+  "caution": [
+    {
+      "name": "세나_한국남자들은 왜 (구 아이츠니46190 태깅·리드 13)",
+      "target": "한일남",
+      "cpl7": 36538,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 147338,
+      "pass7": 0,
+      "ctr": "2.92%",
+      "pct": 143,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_2(1차) (3M比 224%)",
+      "target": "한일남",
+      "cpl7": 41660,
+      "cpl3m": 18576,
+      "cps7": null,
+      "cps3m": 94913,
+      "pass7": 1,
+      "ctr": "2.91%",
+      "pct": 224,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 54570,
+      "cpl3m": 28801,
+      "cps7": 436556,
+      "cps3m": 74059,
+      "pass7": 1,
+      "ctr": "1.47%",
+      "pct": 189,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 54940,
+      "cpl3m": 27756,
+      "cps7": 164820,
+      "cps3m": 104855,
+      "pass7": 2,
+      "ctr": "1.63%",
+      "pct": 198,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 45874,
+      "cpl3m": 34791,
+      "cps7": 206433,
+      "cps3m": 170087,
+      "pass7": 2,
+      "ctr": "2.25%",
+      "pct": 132,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범 (통과 0)",
+      "target": "한일남",
+      "cpl7": 52188,
+      "cpl3m": 21028,
+      "cps7": null,
+      "cps3m": 134580,
+      "pass7": 0,
+      "ctr": "1.90%",
+      "pct": 248,
+      "barW": 100
+    }
+  ],
+  "good": [
+    {
+      "name": "한국남친이 좋은 3가지 이유 (메타 리드)",
+      "target": "한일여",
+      "cpl7": 35328,
+      "cpl3m": 103289,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.23%",
+      "pct": 34,
+      "barW": 34,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 27312,
+      "cpl3m": 33351,
+      "cps7": 163873,
+      "cps3m": 181049,
+      "pass7": 1,
+      "ctr": "2.57%",
+      "pct": 82,
+      "barW": 82,
+      "trophy": true
+    },
+    {
+      "name": "[베리] 서재민_그대로 (최다 리드)",
+      "target": "한한여",
+      "cpl7": 47148,
+      "cpl3m": 45174,
+      "cps7": 167160,
+      "cps3m": 113742,
+      "pass7": 11,
+      "ctr": "0.98%",
+      "pct": 104,
+      "barW": 100
+    }
+  ],
+  "unclassified": [
+    "주차 지표는 월~일(7/13~) 기준 · 타겟카드는 직전 완결주(7/6~7/12) 확정값"
+  ]
+},
 {
   "date": "2026-07-13",
   "label": "7월 13일",
@@ -5031,38 +5534,114 @@ function renderDaily(r) {
 function renderTrend(r) {
   if (!r.dailyTrend || !r.dailyTrend.length) return '';
   const days = r.dailyTrend;
-  const W = 1120, H = 250, padL = 20, padR = 20, padT = 40, padB = 34;
+  const W = 1120, H = 270, padL = 20, padR = 20, padT = 44, padB = 34;
   const cw = (W - padL - padR) / days.length;
   const maxRes = Math.max(...days.map(d => d.results), 1);
-  const cpls = days.filter(d => d.cpl != null).map(d => d.cpl);
-  const maxCpl = Math.max(...cpls, 1);
-  let bars = '', labels = '', cplLabels = '';
-  const pts = [];
+  const allCpl = days.flatMap(d => [d.cplTotal, d.cplAd].filter(v => v != null));
+  const maxCpl = Math.max(...allCpl, 1);
+  let bars = '', labels = '';
+  const ptsT = [], ptsA = [];
   days.forEach((d, i) => {
     const x = padL + cw * i + cw * 0.5;
     const bh = (H - padT - padB) * d.results / maxRes;
     const bw = Math.min(cw * 0.5, 34);
-    bars += `<rect x="${x - bw/2}" y="${H - padB - bh}" width="${bw}" height="${Math.max(bh,1)}" rx="3" fill="#6EC8D8" opacity="0.8"/>`;
+    bars += `<rect x="${x - bw/2}" y="${H - padB - bh}" width="${bw}" height="${Math.max(bh,1)}" rx="3" fill="#6EC8D8" opacity="0.75"/>`;
     bars += `<text x="${x}" y="${H - padB - bh - 5}" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1a1a">${d.results}</text>`;
     labels += `<text x="${x}" y="${H - padB + 15}" text-anchor="middle" font-size="9" fill="#999">${d.d}</text>`;
-    if (d.cpl != null) pts.push([x, padT + (H - padT - padB) * (1 - d.cpl / maxCpl), d.cpl]);
+    if (d.cplTotal != null) ptsT.push([x, padT + (H - padT - padB) * (1 - d.cplTotal / maxCpl), d.cplTotal]);
+    if (d.cplAd != null)    ptsA.push([x, padT + (H - padT - padB) * (1 - d.cplAd / maxCpl), d.cplAd]);
   });
-  const line = `<polyline points="${pts.map(p => p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="#e03e3e" stroke-width="2" opacity="0.7"/>`;
-  const dots = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.5" fill="#e03e3e"><title>CPL ${p[2].toLocaleString("ko-KR")}원</title></circle>`).join('');
-  cplLabels = pts.map(p => `<text x="${p[0].toFixed(1)}" y="${(p[1]-7).toFixed(1)}" text-anchor="middle" font-size="8" fill="#e03e3e">${(p[2]/10000).toFixed(1)}만</text>`).join('');
+  const line = (pts, color) => `<polyline points="${pts.map(p => p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${color}" stroke-width="2" opacity="0.8"/>`;
+  const dots = (pts, color) => pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.5" fill="${color}"><title>${p[2].toLocaleString("ko-KR")}원</title></circle>`).join('');
   return `
   <div class="camp-section">
     <div class="section-hd">
-      <span class="section-title">📈 일별 결과 추이 (최근 14일)</span>
-      <span class="badge" style="background:#e0f2f7;color:#0e7490">막대: 일 결과 수 · 빨간 선: 일 CPL</span>
+      <span class="section-title">📈 일별 결과 추이 (최근 ${days.length}일)</span>
+      <span class="badge" style="background:#e0f2f7;color:#0e7490">막대: 일 리드수 · <b style="color:#e03e3e">빨강=총 CPL</b> · <b style="color:#2563eb">파랑=광고 CPL</b></span>
     </div>
     <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:14px 10px;overflow-x:auto">
       <svg viewBox="0 0 ${W} ${H}" style="min-width:680px;width:100%;display:block" xmlns="http://www.w3.org/2000/svg">
-        ${bars}${line}${dots}${cplLabels}${labels}
+        ${bars}
+        ${line(ptsT,"#e03e3e")}${dots(ptsT,"#e03e3e")}
+        ${line(ptsA,"#2563eb")}${dots(ptsA,"#2563eb")}
+        ${labels}
         <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#e5e5e5"/>
       </svg>
     </div>
+    <div style="font-size:10px;color:#999;margin-top:6px">· 총 CPL = 광고비 ÷ 전체 리드(모든 유입) · 광고 CPL = 광고비 ÷ 광고 태깅 리드</div>
   </div>`;
+}
+
+// ============================================================
+// CEO 코멘트 / 신규광고 / 주차별 CPS
+// ============================================================
+function renderCeo(r) {
+  if (!r.ceo || !r.ceo.length) return '';
+  return `
+  <div class="camp-section">
+    <div class="section-hd">
+      <span class="section-title">🧭 성과 분석 (CEO 보고용)</span>
+      <span class="badge" style="background:#f0fdf4;color:#166534">핵심 5줄</span>
+    </div>
+    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:16px 18px">
+      <ol style="margin:0;padding-left:18px;font-size:13px;line-height:1.9;color:#1a1a1a">
+        ${r.ceo.map(t => `<li>${t}</li>`).join('')}
+      </ol>
+    </div>
+  </div>`;
+}
+
+function renderNewAds(r) {
+  if (!r.newAds || !r.newAds.length) return '';
+  const rows = r.newAds.map(a => `
+    <tr>
+      <td class="camp-name"><span class="camp-tag" style="${campTagStyle[a.target]}">${a.target}</span>${a.name}</td>
+      <td><span class="badge" style="background:${a.isToday?'#fee2e2':'#eef2ff'};color:${a.isToday?'#991b1b':'#3730a3'}">${a.launched}</span></td>
+      <td>${a.spend}</td><td>${a.ctr}</td>
+      <td style="font-weight:700">${a.leads}건</td>
+      <td style="font-weight:700" class="${a.cplCls||''}">${a.cpl}</td>
+    </tr>`).join('');
+  return `
+  <div class="camp-section">
+    <div class="section-hd">
+      <span class="section-title">🆕 7일 내 신규 세팅 광고 성과</span>
+      <span class="badge b-red">${r.newAdsNote || ''}</span>
+    </div>
+    <table class="camp-table">
+      <thead><tr>
+        <th>소재</th><th>최초 라이브</th>
+        <th style="text-align:right">광고비</th><th style="text-align:right">링크CTR</th>
+        <th style="text-align:right">리드</th><th style="text-align:right">CPL</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+function renderWeeklyCps() {
+  if (typeof WEEKLY_CPS === 'undefined' || !WEEKLY_CPS.length) return '';
+  const targets = ['한한여','한한남','한일남','한일여'];
+  const emojis = { '한한여':'🟣','한한남':'🔵','한일남':'🩷','한일여':'🟢' };
+  let html = `
+  <div class="camp-section">
+    <div class="section-hd">
+      <span class="section-title">📊 주차별 평균 CPS (통과당 비용)</span>
+      <span class="badge" style="background:#eef2ff;color:#3730a3">월~일 기준 · 선별 완료분만</span>
+    </div>
+    <div class="weekly-scroll">
+    <table class="weekly-table">
+      <thead><tr><th class="week-col">주차</th>${targets.map(t=>`<th>${emojis[t]} ${t}</th>`).join('')}</tr></thead>
+      <tbody>`;
+  for (const row of WEEKLY_CPS) {
+    html += `<tr><td class="week-label">${row.week}</td>`;
+    for (const t of targets) {
+      const v = row[t];
+      html += `<td class="cpl-cell">${v ? (Math.round(v/1000)/10) + '만' : '—'}</td>`;
+    }
+    html += `</tr>`;
+  }
+  html += `</tbody></table></div></div>`;
+  return html;
 }
 
 // ============================================================
@@ -5074,10 +5653,20 @@ function renderPage(r) {
   <div class="container">
     <div class="page-header">
       <h2>📊 ${r.label} 리포트</h2>
-      <span class="subtitle">최근 7일 기준 · 3개월 평균 대비 분석${r.apiSource ? " · 리드·통과 = 어드민 API 기준" : ""}</span>
+      <span class="subtitle">하루 성과 중심 · 주차 지표는 월~일 기준${r.apiSource ? " · 리드·통과 = 어드민 API" : ""}</span>
     </div>
 
-    ${renderWeeklyTable()}
+    ${r.notes && r.notes.length ? `<div style="background:#fff8e6;border:1px solid #f5d97e;border-radius:10px;padding:10px 14px;margin:12px 0;font-size:12px;line-height:1.7;color:#7a5b00">${r.notes.map(n => "⚠️ " + n).join("<br>")}</div>` : ""}
+
+    ${renderDaily(r)}
+
+    ${renderTrend(r)}
+
+    ${renderCeo(r)}
+
+    ${renderNewAds(r)}
+
+    <div class="divider"></div>
 
     <div class="kpi-row">
       <div class="kpi-card c-red">
@@ -5096,24 +5685,28 @@ function renderPage(r) {
         <div class="kpi-sub">3M 평균 CPL 하회</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">총 광고비 (7일)</div>
-        <div class="kpi-value">${r.kpi.totalSpend}</div>
-        <div class="kpi-sub">총 결과 ${r.kpi.totalLeads}건${r.kpi.totalPass != null ? " · 통과 " + r.kpi.totalPass + "건" : ""}</div>
+        <div class="kpi-label">주차 광고비 (월~일)</div>
+        <div class="kpi-value">${r.kpi.weekSpend || r.kpi.totalSpend}</div>
+        <div class="kpi-sub">${r.kpi.weekNote || ""}</div>
       </div>
     </div>
 
-    ${r.notes && r.notes.length ? `<div style="background:#fff8e6;border:1px solid #f5d97e;border-radius:10px;padding:10px 14px;margin:12px 0;font-size:12px;line-height:1.7;color:#7a5b00">${r.notes.map(n => "⚠️ " + n).join("<br>")}</div>` : ""}
+    ${renderCampaignTable(r.campaigns)}
+
+    ${renderWeeklyTable()}
+
+    ${renderWeeklyCps()}
+
+    <div class="divider"></div>
+
+    <div class="section-hd" style="margin-bottom:10px">
+      <span class="section-title">🔍 소재 분석</span>
+      <span class="badge" style="background:#eef2ff;color:#3730a3">타겟별 요약 + 소재 등급</span>
+    </div>
+
     <div class="target-row">
       ${r.targets.map(renderTarget).join("")}
     </div>
-
-    ${renderDaily(r)}
-
-    ${renderTrend(r)}
-
-    ${renderCampaignTable(r.campaigns)}
-
-    <div class="divider"></div>
 
     <div class="section">
       <div class="section-hd">
@@ -5130,8 +5723,6 @@ function renderPage(r) {
       </div>
       <div class="cards">${r.caution.map(a => renderCard(a,"caution")).join("")}</div>
     </div>
-
-    <div class="divider"></div>
 
     <div class="section">
       <div class="section-hd">
