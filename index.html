@@ -116,9 +116,11 @@
   .weekly-table tr:last-child td { border-bottom: none; }
   .weekly-table tr:hover td { background: #fafafa; }
   .cpl-cell { font-weight: 700; font-size: 11px; }
-  .cpl-high { color: #e03e3e; }
-  .cpl-mid { color: #d97706; }
-  .cpl-low { color: #1a9e5f; }
+  .cpl-vhigh { color: #c81e1e; font-weight: 800; }  /* 🔴 매우 나쁨 +20%↑ */
+  .cpl-high { color: #e8850c; }                      /* 🟠 나쁨 +10~20% */
+  .cpl-mid { color: #6b7280; }                       /* ⚪ 보통 ±10% */
+  .cpl-low { color: #2563eb; }                       /* 🔵 좋음 -10~-20% */
+  .cpl-vlow { color: #0a8f3c; font-weight: 800; }    /* 🟢 매우 좋음 -20%↓ */
   .cpl-none { color: #ccc; }
   .avg-row td { background: #f8f8f8; font-size: 10px; color: #888; font-style: italic; }
   .avg-row td.week-label { font-weight: 700; color: #555; font-style: normal; }
@@ -303,7 +305,9 @@ const WEEKLY_CPL = [
 ];
 
 // 3M avg CPL per target (baseline for color coding)
-const AVG_3M = { "한한여":44642, "한한남":87728, "한일남":56702, "한일여":103782 };
+// 등급 기준선 (2026-07-15 확정) — 평균 대비 ±10%/±20%로 5단계 판정
+const AVG_3M     = { "한한여":44669, "한한남":48148, "한일남":26809, "한일여":null };
+const AVG_3M_CPS = { "한한여":111769, "한한남":132772, "한일남":151777, "한일여":null };
 // 주차별 평균 CPS (선별 완료된 주만)
 const WEEKLY_CPS = [
   { week:"6/29~7/5",  "한한여":90978,  "한한남":99754, "한일남":105920, "한일여":null },
@@ -561,12 +565,12 @@ const REPORTS = [
     {
       "id": "한한여",
       "emoji": "🟣",
-      "avg3mCPL": 42326,
+      "avg3mCPL": 44669,
       "day7CPL": 51469,
       "day7Leads": 55,
       "day7Pass": 28,
       "day7CPS": 101100,
-      "avg3mCPS": 106697,
+      "avg3mCPS": 111769,
       "passRate": "50.9%",
       "avg3mCTR": "1.21%",
       "trend": "up",
@@ -576,12 +580,12 @@ const REPORTS = [
     {
       "id": "한한남",
       "emoji": "🔵",
-      "avg3mCPL": 43231,
+      "avg3mCPL": 48148,
       "day7CPL": 47560,
       "day7Leads": 15,
       "day7Pass": 11,
       "day7CPS": 64855,
-      "avg3mCPS": 113066,
+      "avg3mCPS": 132772,
       "passRate": "73.3%",
       "avg3mCTR": "2.70%",
       "trend": "up",
@@ -591,12 +595,12 @@ const REPORTS = [
     {
       "id": "한일남",
       "emoji": "🩷",
-      "avg3mCPL": 25618,
+      "avg3mCPL": 26809,
       "day7CPL": 38211,
       "day7Leads": 72,
       "day7Pass": 10,
       "day7CPS": 275122,
-      "avg3mCPS": 147338,
+      "avg3mCPS": 151777,
       "passRate": "13.9%",
       "avg3mCTR": "2.44%",
       "trend": "up",
@@ -606,7 +610,7 @@ const REPORTS = [
     {
       "id": "한일여",
       "emoji": "🟢",
-      "avg3mCPL": 103289,
+      "avg3mCPL": null,
       "day7CPL": 40461,
       "day7Leads": 30,
       "day7Pass": null,
@@ -1060,12 +1064,12 @@ const REPORTS = [
     {
       "id": "한한여",
       "emoji": "🟣",
-      "avg3mCPL": 42326,
+      "avg3mCPL": 44669,
       "day7CPL": 51469,
       "day7Leads": 55,
       "day7Pass": 28,
       "day7CPS": 101100,
-      "avg3mCPS": 106697,
+      "avg3mCPS": 111769,
       "passRate": "50.9%",
       "avg3mCTR": "1.21%",
       "trend": "up",
@@ -1075,12 +1079,12 @@ const REPORTS = [
     {
       "id": "한한남",
       "emoji": "🔵",
-      "avg3mCPL": 43231,
+      "avg3mCPL": 48148,
       "day7CPL": 47560,
       "day7Leads": 15,
       "day7Pass": 11,
       "day7CPS": 64855,
-      "avg3mCPS": 113066,
+      "avg3mCPS": 132772,
       "passRate": "73.3%",
       "avg3mCTR": "2.70%",
       "trend": "up",
@@ -1090,12 +1094,12 @@ const REPORTS = [
     {
       "id": "한일남",
       "emoji": "🩷",
-      "avg3mCPL": 25618,
+      "avg3mCPL": 26809,
       "day7CPL": 38211,
       "day7Leads": 72,
       "day7Pass": 10,
       "day7CPS": 275122,
-      "avg3mCPS": 147338,
+      "avg3mCPS": 151777,
       "passRate": "13.9%",
       "avg3mCTR": "2.44%",
       "trend": "up",
@@ -1105,7 +1109,7 @@ const REPORTS = [
     {
       "id": "한일여",
       "emoji": "🟢",
-      "avg3mCPL": 103289,
+      "avg3mCPL": null,
       "day7CPL": 40461,
       "day7Leads": 30,
       "day7Pass": null,
@@ -1433,12 +1437,12 @@ const REPORTS = [
     {
       "id": "한한여",
       "emoji": "🟣",
-      "avg3mCPL": 42326,
+      "avg3mCPL": 44669,
       "day7CPL": 51469,
       "day7Leads": 55,
       "day7Pass": 28,
       "day7CPS": 101100,
-      "avg3mCPS": 106697,
+      "avg3mCPS": 111769,
       "passRate": "50.9%",
       "avg3mCTR": "1.21%",
       "trend": "up",
@@ -1448,12 +1452,12 @@ const REPORTS = [
     {
       "id": "한한남",
       "emoji": "🔵",
-      "avg3mCPL": 43231,
+      "avg3mCPL": 48148,
       "day7CPL": 47560,
       "day7Leads": 15,
       "day7Pass": 11,
       "day7CPS": 64855,
-      "avg3mCPS": 113066,
+      "avg3mCPS": 132772,
       "passRate": "73.3%",
       "avg3mCTR": "2.70%",
       "trend": "up",
@@ -1463,12 +1467,12 @@ const REPORTS = [
     {
       "id": "한일남",
       "emoji": "🩷",
-      "avg3mCPL": 25618,
+      "avg3mCPL": 26809,
       "day7CPL": 38211,
       "day7Leads": 72,
       "day7Pass": 10,
       "day7CPS": 275122,
-      "avg3mCPS": 147338,
+      "avg3mCPS": 151777,
       "passRate": "13.9%",
       "avg3mCTR": "2.44%",
       "trend": "up",
@@ -1478,7 +1482,7 @@ const REPORTS = [
     {
       "id": "한일여",
       "emoji": "🟢",
-      "avg3mCPL": 103289,
+      "avg3mCPL": null,
       "day7CPL": 40461,
       "day7Leads": 30,
       "day7Pass": null,
@@ -1806,12 +1810,12 @@ const REPORTS = [
     {
       "id": "한한여",
       "emoji": "🟣",
-      "avg3mCPL": 42326,
+      "avg3mCPL": 44669,
       "day7CPL": 51469,
       "day7Leads": 55,
       "day7Pass": 15,
       "day7CPS": 188720,
-      "avg3mCPS": 106697,
+      "avg3mCPS": 111769,
       "passRate": "27.3%",
       "avg3mCTR": "1.21%",
       "trend": "up",
@@ -1821,12 +1825,12 @@ const REPORTS = [
     {
       "id": "한한남",
       "emoji": "🔵",
-      "avg3mCPL": 43231,
+      "avg3mCPL": 48148,
       "day7CPL": 47560,
       "day7Leads": 15,
       "day7Pass": 7,
       "day7CPS": 101914,
-      "avg3mCPS": 113066,
+      "avg3mCPS": 132772,
       "passRate": "46.7%",
       "avg3mCTR": "2.70%",
       "trend": "up",
@@ -1836,12 +1840,12 @@ const REPORTS = [
     {
       "id": "한일남",
       "emoji": "🩷",
-      "avg3mCPL": 25618,
+      "avg3mCPL": 26809,
       "day7CPL": 38211,
       "day7Leads": 72,
       "day7Pass": 4,
       "day7CPS": null,
-      "avg3mCPS": 147338,
+      "avg3mCPS": 151777,
       "passRate": "5.6%*",
       "avg3mCTR": "2.44%",
       "trend": "up",
@@ -1851,7 +1855,7 @@ const REPORTS = [
     {
       "id": "한일여",
       "emoji": "🟢",
-      "avg3mCPL": 103289,
+      "avg3mCPL": null,
       "day7CPL": 40461,
       "day7Leads": 30,
       "day7Pass": null,
@@ -2191,12 +2195,12 @@ const REPORTS = [
     {
       "id": "한한여",
       "emoji": "🟣",
-      "avg3mCPL": 42326,
+      "avg3mCPL": 44669,
       "day7CPL": 51469,
       "day7Leads": 55,
       "day7Pass": 15,
       "day7CPS": 188720,
-      "avg3mCPS": 106697,
+      "avg3mCPS": 111769,
       "passRate": "27.3%",
       "avg3mCTR": "1.21%",
       "trend": "up",
@@ -2206,12 +2210,12 @@ const REPORTS = [
     {
       "id": "한한남",
       "emoji": "🔵",
-      "avg3mCPL": 43231,
+      "avg3mCPL": 48148,
       "day7CPL": 47560,
       "day7Leads": 15,
       "day7Pass": 7,
       "day7CPS": 101914,
-      "avg3mCPS": 113066,
+      "avg3mCPS": 132772,
       "passRate": "46.7%",
       "avg3mCTR": "2.70%",
       "trend": "up",
@@ -2221,12 +2225,12 @@ const REPORTS = [
     {
       "id": "한일남",
       "emoji": "🩷",
-      "avg3mCPL": 25618,
+      "avg3mCPL": 26809,
       "day7CPL": 38211,
       "day7Leads": 72,
       "day7Pass": 4,
       "day7CPS": null,
-      "avg3mCPS": 147338,
+      "avg3mCPS": 151777,
       "passRate": "5.6%*",
       "avg3mCTR": "2.44%",
       "trend": "up",
@@ -2236,7 +2240,7 @@ const REPORTS = [
     {
       "id": "한일여",
       "emoji": "🟢",
-      "avg3mCPL": 103289,
+      "avg3mCPL": null,
       "day7CPL": 40461,
       "day7Leads": 30,
       "day7Pass": null,
@@ -2576,12 +2580,12 @@ const REPORTS = [
     {
       "id": "한한여",
       "emoji": "🟣",
-      "avg3mCPL": 42326,
+      "avg3mCPL": 44669,
       "day7CPL": 51469,
       "day7Leads": 55,
       "day7Pass": 15,
       "day7CPS": 188720,
-      "avg3mCPS": 106697,
+      "avg3mCPS": 111769,
       "passRate": "27.3%",
       "avg3mCTR": "1.21%",
       "trend": "up",
@@ -2591,12 +2595,12 @@ const REPORTS = [
     {
       "id": "한한남",
       "emoji": "🔵",
-      "avg3mCPL": 43231,
+      "avg3mCPL": 48148,
       "day7CPL": 47560,
       "day7Leads": 15,
       "day7Pass": 7,
       "day7CPS": 101914,
-      "avg3mCPS": 113066,
+      "avg3mCPS": 132772,
       "passRate": "46.7%",
       "avg3mCTR": "2.70%",
       "trend": "up",
@@ -2606,12 +2610,12 @@ const REPORTS = [
     {
       "id": "한일남",
       "emoji": "🩷",
-      "avg3mCPL": 25618,
+      "avg3mCPL": 26809,
       "day7CPL": 38211,
       "day7Leads": 72,
       "day7Pass": 4,
       "day7CPS": null,
-      "avg3mCPS": 147338,
+      "avg3mCPS": 151777,
       "passRate": "5.6%*",
       "avg3mCTR": "2.44%",
       "trend": "up",
@@ -2621,7 +2625,7 @@ const REPORTS = [
     {
       "id": "한일여",
       "emoji": "🟢",
-      "avg3mCPL": 103289,
+      "avg3mCPL": null,
       "day7CPL": 40461,
       "day7Leads": 30,
       "day7Pass": null,
@@ -5827,13 +5831,34 @@ function fmtCPL(v) {
   return (s % 1 === 0 ? s.toFixed(0) : s.toFixed(1)) + '만';
 }
 
+// 평균 대비 5단계 판정: ≤-20% 매우좋음 / -20~-10% 좋음 / ±10% 보통 / +10~20% 나쁨 / ≥+20% 매우나쁨
+function gradeClass(v, avg) {
+  if (v == null || !avg) return 'cpl-none';
+  const r = v / avg;
+  if (r <= 0.8) return 'cpl-vlow';
+  if (r <= 0.9) return 'cpl-low';
+  if (r < 1.1)  return 'cpl-mid';
+  if (r < 1.2)  return 'cpl-high';
+  return 'cpl-vhigh';
+}
+function gradeLabel(v, avg) {
+  if (v == null || !avg) return '—';
+  const r = v / avg;
+  if (r <= 0.8) return '🟢 매우 좋음';
+  if (r <= 0.9) return '🔵 좋음';
+  if (r < 1.1)  return '⚪ 보통';
+  if (r < 1.2)  return '🟠 나쁨';
+  return '🔴 매우 나쁨';
+}
 function cplClass(v, target) {
   if (v == null) return 'cpl-none';
   const avg = AVG_3M[target];
   if (!avg) return 'cpl-cell';
-  if (v > avg * 1.2) return 'cpl-cell cpl-high';
-  if (v < avg * 0.9) return 'cpl-cell cpl-low';
-  return 'cpl-cell cpl-mid';
+  return 'cpl-cell ' + gradeClass(v, avg);
+}
+function cpsClass(v, target) {
+  if (v == null) return 'cpl-none';
+  return 'cpl-cell ' + gradeClass(v, AVG_3M_CPS[target]);
 }
 
 function renderWeeklyTable() {
@@ -5910,7 +5935,9 @@ function renderTarget(t) {
   return `
     <div class="ts-card">
       <div class="ts-name">${t.emoji} ${t.id}</div>
-      <div class="ts-row"><span>3M 평균 CPL</span><span class="ts-val">${t.avg3mCPL.toLocaleString("ko-KR")}원</span></div>
+      <div class="ts-row"><span>기준 평균 CPL</span><span class="ts-val">${t.avg3mCPL ? t.avg3mCPL.toLocaleString("ko-KR")+"원" : "—"}</span></div>
+      <div class="ts-row"><span>CPL 등급</span><span class="ts-val ${gradeClass(t.day7CPL, AVG_3M[t.id])}">${gradeLabel(t.day7CPL, AVG_3M[t.id])}</span></div>
+      <div class="ts-row"><span>CPS 등급</span><span class="ts-val ${gradeClass(t.day7CPS, AVG_3M_CPS[t.id])}">${gradeLabel(t.day7CPS, AVG_3M_CPS[t.id])}</span></div>
       <div class="ts-row"><span>7일 CPL</span><span class="ts-val ${cplClass}">${cplDisplay}${arrow}</span></div>
       <div class="ts-row"><span>7일 결과</span><span class="ts-val">${t.day7Leads}건${t.day7Pass != null ? " · 통과 " + t.day7Pass + "건" : ""}</span></div>
       ${t.day7CPS !== undefined ? `<div class="ts-row"><span>7일 통과 CPS</span><span class="ts-val">${t.day7CPS ? t.day7CPS.toLocaleString("ko-KR") + "원" : "—"}</span></div><div class="ts-row"><span>3M 평균 CPS</span><span class="ts-val">${t.avg3mCPS ? t.avg3mCPS.toLocaleString("ko-KR") + "원" : "—"}</span></div>` : ""}
