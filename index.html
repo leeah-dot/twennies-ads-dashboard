@@ -10,6 +10,7 @@
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
     background: #f5f5f7; color: #1a1a1a; min-height: 100vh;
+    padding-left: 250px;
   }
 
   /* === TOP NAV === */
@@ -25,10 +26,12 @@
     display: flex; align-items: center; gap: 0; height: 56px;
   }
   .date-tabs {
-    display: flex; gap: 2px; overflow-x: auto; flex: 1;
-    scrollbar-width: none; -ms-overflow-style: none;
+    display: flex; gap: 2px; overflow-x: auto; flex: 1 1 0%; min-width: 0;
+    scrollbar-width: thin; padding-bottom: 3px;
   }
-  .date-tabs::-webkit-scrollbar { display: none; }
+  .date-tabs::-webkit-scrollbar { height: 6px; }
+  .date-tabs::-webkit-scrollbar-thumb { background: #c8c8c8; border-radius: 3px; }
+  .date-tabs::-webkit-scrollbar-track { background: transparent; }
   .date-tab {
     font-size: 12px; font-weight: 600;
     padding: 6px 14px; border-radius: 8px;
@@ -38,10 +41,36 @@
   }
   .date-tab:hover { background: #e8e8e8; color: #1a1a1a; }
   .date-tab.active { background: #1a1a1a; color: #fff; }
+  .date-tab.weekly { color: #0e7490; font-weight: 700; }
+  .date-tab.weekly.active { background: #0e7490; color: #fff; }
 
   /* Twennies Logo */
   .twennies-logo {
     display: flex; align-items: center; margin-left: 16px; flex-shrink: 0;
+  }
+
+  /* === GLOSSARY SIDEBAR === */
+  .glossary {
+    position: fixed; left: 0; top: 0; width: 250px; height: 100vh;
+    background: #fff; border-right: 1px solid #e5e5e5;
+    padding: 18px 18px 40px; overflow-y: auto; z-index: 210;
+  }
+  .side-section { margin-bottom: 22px; }
+  .glossary h3 { font-size: 15px; font-weight: 800; color:#1a1a1a; margin-bottom: 8px; }
+  .glossary .gsub { font-size: 10px; color:#bbb; margin-bottom: 14px; letter-spacing:.4px; }
+  .glossary .gitem { margin-bottom: 13px; padding-bottom: 13px; border-bottom: 1px solid #f0f0f0; }
+  .glossary .gterm { font-size: 14px; font-weight: 800; color:#0e7490; }
+  .glossary .gdef { font-size: 12.5px; color:#555; line-height:1.6; margin-top:4px; }
+  .glossary .gdef b { color:#1a1a1a; }
+  /* 주간 탭 세로 리스트 */
+  .weekly-list { display:flex; flex-direction:column; gap:5px; }
+  .weekly-list .date-tab { width:100%; text-align:left; padding:9px 12px; font-size:12.5px; border-radius:8px; }
+  .kpi-delta { font-size: 11px; margin-top: 7px; font-weight: 700; color:#999; line-height:1.4; }
+  .kpi-delta.bad { color:#e03e3e; }
+  .kpi-delta.good { color:#0a8f3c; }
+  @media (max-width: 900px) {
+    body { padding-left: 0 !important; }
+    .glossary { display: none; }
   }
 
   /* === MAIN === */
@@ -87,9 +116,11 @@
   .weekly-table tr:last-child td { border-bottom: none; }
   .weekly-table tr:hover td { background: #fafafa; }
   .cpl-cell { font-weight: 700; font-size: 11px; }
-  .cpl-high { color: #e03e3e; }
-  .cpl-mid { color: #d97706; }
-  .cpl-low { color: #1a9e5f; }
+  .cpl-vhigh { color: #c81e1e; font-weight: 800; }  /* 🔴 매우 나쁨 +20%↑ */
+  .cpl-high { color: #e8850c; }                      /* 🟠 나쁨 +10~20% */
+  .cpl-mid { color: #6b7280; }                       /* ⚪ 보통 ±10% */
+  .cpl-low { color: #2563eb; }                       /* 🔵 좋음 -10~-20% */
+  .cpl-vlow { color: #0a8f3c; font-weight: 800; }    /* 🟢 매우 좋음 -20%↓ */
   .cpl-none { color: #ccc; }
   .avg-row td { background: #f8f8f8; font-size: 10px; color: #888; font-style: italic; }
   .avg-row td.week-label { font-weight: 700; color: #555; font-style: normal; }
@@ -203,6 +234,31 @@
 </head>
 <body>
 
+<!-- GLOSSARY SIDEBAR -->
+<aside class="glossary">
+  <div class="side-section">
+    <h3>🗓️ 월별 리포트</h3>
+    <div id="monthlyTabs" class="weekly-list"></div>
+  </div>
+  <div class="side-section">
+    <h3>📅 주간 리포트</h3>
+    <div id="weeklyTabs" class="weekly-list"></div>
+  </div>
+  <div class="side-section">
+    <h3>📖 지표 설명</h3>
+    <div class="gsub">METRIC GLOSSARY</div>
+    <div class="gitem"><div class="gterm">리드</div><div class="gdef">신청수 (폼 제출 건)</div></div>
+    <div class="gitem"><div class="gterm">통과</div><div class="gdef">매니저 1차선별 통과</div></div>
+    <div class="gitem"><div class="gterm">CPL</div><div class="gdef">광고비 ÷ <b>신청수</b><br>리드 1건당 비용</div></div>
+    <div class="gitem"><div class="gterm">CPS</div><div class="gdef">광고비 ÷ <b>매니저1차선별</b><br>통과 1건당 비용</div></div>
+    <div class="gitem"><div class="gterm">CTR</div><div class="gdef">링크클릭 ÷ 노출<br>링크 클릭률</div></div>
+    <div class="gitem"><div class="gterm">CPM</div><div class="gdef">광고비 ÷ 노출 × 1000<br>노출 1천회당 비용</div></div>
+    <div class="gitem"><div class="gterm">통과율</div><div class="gdef">통과 ÷ 리드</div></div>
+    <div class="gitem"><div class="gterm">ROAS</div><div class="gdef">순매출 ÷ 광고비</div></div>
+    <div class="gitem"><div class="gterm">잠정</div><div class="gdef">선별 진행중이라 통과·CPS 미확정 (며칠 뒤 개선됨)</div></div>
+  </div>
+</aside>
+
 <!-- TOP NAV -->
 <nav class="topnav">
   <div class="topnav-inner">
@@ -233,86 +289,3807 @@
 // WEEKLY CPL DATA (월~일 기준, 3개월 집계)
 // ============================================================
 const WEEKLY_CPL = [
-  { week:"4/6~4/12",  "한한여":25944,  "한한남":76683,  "한일남":32490,  "한일여":null   },
-  { week:"4/13~4/19", "한한여":24037,  "한한남":102908, "한일남":45453,  "한일여":null   },
-  { week:"4/20~4/26", "한한여":29106,  "한한남":null,   "한일남":38377,  "한일여":null   },
-  { week:"4/27~5/3",  "한한여":43379,  "한한남":335915, "한일남":49775,  "한일여":null   },
-  { week:"5/4~5/10",  "한한여":42127,  "한한남":81520,  "한일남":54782,  "한일여":null   },
-  { week:"5/11~5/17", "한한여":124210, "한한남":null,   "한일남":68853,  "한일여":null   },
-  { week:"5/18~5/24", "한한여":85149,  "한한남":null,   "한일남":48301,  "한일여":null   },
-  { week:"5/25~5/31", "한한여":52088,  "한한남":59782,  "한일남":27812,  "한일여":128005 }
+  { week:"4/6~4/12",  "한한여":25944,  "한한남":118510,  "한일남":46754,  "한일여":null },
+  { week:"4/13~4/19",  "한한여":24037,  "한한남":102908,  "한일남":45453,  "한일여":null },
+  { week:"4/20~4/26",  "한한여":29106,  "한한남":null,  "한일남":50757,  "한일여":null },
+  { week:"4/27~5/3",  "한한여":43379,  "한한남":47988,  "한일남":49775,  "한일여":null },
+  { week:"5/4~5/10",  "한한여":42127,  "한한남":null,  "한일남":62999,  "한일여":null },
+  { week:"5/11~5/17",  "한한여":124210,  "한한남":null,  "한일남":88274,  "한일여":null },
+  { week:"5/18~5/24",  "한한여":85149,  "한한남":null,  "한일남":61305,  "한일여":null },
+  { week:"5/25~5/31",  "한한여":52088,  "한한남":59782,  "한일남":24722,  "한일여":128005 },
+  { week:"6/1~6/7",  "한한여":26707,  "한한남":69985,  "한일남":55662,  "한일여":143033 },
+  { week:"6/8~6/14",  "한한여":38035,  "한한남":87210,  "한일남":64617,  "한일여":64257 },
+  { week:"6/15~6/21",  "한한여":45016,  "한한남":88102,  "한일남":54302,  "한일여":null },
+  { week:"6/22~6/28",  "한한여":57002,  "한한남":49145,  "한일남":50073,  "한일여":null },
+  { week:"6/29~7/5",  "한한여":56406,  "한한남":83128,  "한일남":74767,  "한일여":67309 }
 ];
 
 // 3M avg CPL per target (baseline for color coding)
-const AVG_3M = { "한한여":44439, "한한남":89455, "한일남":47122, "한일여":128005 };
+// 등급 기준선 (2026-07-15 확정) — 평균 대비 ±10%/±20%로 5단계 판정
+const AVG_3M     = { "한한여":44669, "한한남":48148, "한일남":26809, "한일여":null };
+const AVG_3M_CPS = { "한한여":111769, "한한남":132772, "한일남":151777, "한일여":null };
+// 주차별 평균 CPS (선별 완료된 주만)
+const WEEKLY_CPS = [
+  { week:"6/29~7/5",  "한한여":90978,  "한한남":99754, "한일남":105920, "한일여":null },
+  { week:"7/6~7/12",  "한한여":101100, "한한남":64855, "한일남":275122, "한일여":null }
+];
 
 // ============================================================
 // REPORT DATA
 // ============================================================
 const REPORTS = [
 {
-  "date": "2026-07-18",
-  "label": "7월 18일",
+  "date": "2026-07-15",
+  "label": "7월 15일",
+  "apiSource": true,
+  "notes": [
+    "하루 성과 '결과' = 실제 신청수 기준 (한일여 4건은 Typeform 미태깅 → 실측 반영)",
+    "7/15 소재 교체 반영: 서재민_그대로·일본여자랑결혼하지마세요 OFF → 신규 '서재민_그대로_제논' 투입",
+    "7/15 리드 49건 중 36건 선별 대기(미선별) → 통과·CPS는 며칠 뒤 확정"
+  ],
   "daily": {
-    "label": "7월 17일",
+    "label": "7월 15일",
     "targets": [
-      { "id": "한한여", "emoji": "🟣", "spend": "38만원", "impressions": 12018, "clicks": 114, "leads": 8,  "cpl": 47573, "ctr": "0.95%" },
-      { "id": "한한남", "emoji": "🔵", "spend": "9만원",  "impressions": 2817,  "clicks": 64,  "leads": 1,  "cpl": 87796, "ctr": "2.27%" },
-      { "id": "한일남", "emoji": "🩷", "spend": "37만원", "impressions": 16098, "clicks": 427, "leads": 18, "cpl": 20433, "ctr": "2.65%" },
-      { "id": "한일여", "emoji": "🟢", "spend": "16만원", "impressions": 5689,  "clicks": 85,  "leads": 3,  "cpl": 53425, "ctr": "1.49%" }
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "11만원",
+        "impressions": 2892,
+        "clicks": 71,
+        "leads": 7,
+        "cpl": 16402,
+        "ctr": "2.45%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "42만원",
+        "impressions": 13933,
+        "clicks": 456,
+        "leads": 21,
+        "cpl": 20084,
+        "ctr": "3.27%"
+      },
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "46만원",
+        "impressions": 13517,
+        "clicks": 127,
+        "leads": 14,
+        "cpl": 33092,
+        "ctr": "0.94%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "14만원",
+        "impressions": 3969,
+        "clicks": 61,
+        "leads": 4,
+        "cpl": 34623,
+        "ctr": "1.54%"
+      }
     ]
   },
+  "dailyTrend": [
+    {
+      "d": "7/2",
+      "results": 36,
+      "cplTotal": 27124,
+      "cplAd": 31499
+    },
+    {
+      "d": "7/3",
+      "results": 15,
+      "cplTotal": 69996,
+      "cplAd": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 24,
+      "cplTotal": 42102,
+      "cplAd": 42102
+    },
+    {
+      "d": "7/5",
+      "results": 42,
+      "cplTotal": 27442,
+      "cplAd": 29553
+    },
+    {
+      "d": "7/6",
+      "results": 28,
+      "cplTotal": 38072,
+      "cplAd": 48455
+    },
+    {
+      "d": "7/7",
+      "results": 23,
+      "cplTotal": 49579,
+      "cplAd": 57016
+    },
+    {
+      "d": "7/8",
+      "results": 26,
+      "cplTotal": 41956,
+      "cplAd": 54543
+    },
+    {
+      "d": "7/9",
+      "results": 22,
+      "cplTotal": 46965,
+      "cplAd": 49202
+    },
+    {
+      "d": "7/10",
+      "results": 21,
+      "cplTotal": 48449,
+      "cplAd": 50872
+    },
+    {
+      "d": "7/11",
+      "results": 20,
+      "cplTotal": 47877,
+      "cplAd": 56326
+    },
+    {
+      "d": "7/12",
+      "results": 28,
+      "cplTotal": 42995,
+      "cplAd": 54721
+    },
+    {
+      "d": "7/13",
+      "results": 14,
+      "cplTotal": 76801,
+      "cplAd": 97746
+    },
+    {
+      "d": "7/14",
+      "results": 40,
+      "cplTotal": 26815,
+      "cplAd": 29794
+    },
+    {
+      "d": "7/15",
+      "results": 46,
+      "cplTotal": 24747,
+      "cplAd": 27104
+    }
+  ],
+  "ceo": [
+    "<b>7/15 리드 46건 · 총 CPL 24,747원 — 최근 2주 최저.</b> 소재 교체(서재민_그대로 OFF → 그대로_제논, 결혼하지마세요 OFF)가 하루 만에 효과.",
+    "<b>[베리] 고스펙 아줌마(한한남)가 압도적 1위</b> — 9.3만원·11리드·<b>CPL 8,414원</b>. 전일 대비 증액(4.5만→9.3만)했는데 CPL이 더 좋아짐 → 추가 증액 여지 큼.",
+    "<b>[맨스] 일본여자가좋아하는 증액 성공</b> — 10만→29만원 3배 증액했는데 12리드·CPL 24,277원 유지. 스케일 견딤.",
+    "<b>신규 '서재민_그대로_제논' 즉시 성과</b> — 19.4만원·9리드·CPL 21,537원. 기존 그대로(CPL 49,313원) 대비 <b>56% 개선</b> → 소재 교체 판단이 정확했음.",
+    "<b>한한남 CPL 16,402원·한일남 20,084원으로 남성 전 라인 우수.</b> 반면 한한여는 46만원 쓰고 14건(CPL 33,092원), 한일여는 4건(CPL 34,623원). 남성 쪽 증액 여지가 큼."
+  ],
+  "newAdsNote": "7/15 신규 1개 · 7/14 신규 7개",
+  "newAds": [
+    {
+      "name": "[베리] 서재민_그대로_제논 (그대로 대체)",
+      "target": "한한여",
+      "launched": "7/15",
+      "isToday": true,
+      "spend": "193,834원",
+      "ctr": "0.93%",
+      "leads": 9,
+      "cpl": "21,537원",
+      "cplCls": "cpl-low"
+    },
+    {
+      "name": "[맨스] 일본 여자가 좋아하는 한국 남자",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": false,
+      "spend": "291,326원",
+      "ctr": "3.32%",
+      "leads": 12,
+      "cpl": "24,277원",
+      "cplCls": "cpl-low"
+    },
+    {
+      "name": "[베리] 고스펙 아줌마 필요없고",
+      "target": "한한남",
+      "launched": "7/14",
+      "isToday": false,
+      "spend": "92,558원",
+      "ctr": "2.12%",
+      "leads": 11,
+      "cpl": "8,414원",
+      "cplCls": "cpl-low"
+    },
+    {
+      "name": "[맨스] 일본여자내조",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": false,
+      "spend": "10,150원",
+      "ctr": "2.03%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[맨스] 일본 여친 소개받는 현실 루트",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": false,
+      "spend": "2,111원",
+      "ctr": "1.16%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[맨스] 대표도 회원등록",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": false,
+      "spend": "1,596원",
+      "ctr": "2.94%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[맨스] 프리미엄한일결정사",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": false,
+      "spend": "1,215원",
+      "ctr": "2.78%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[맨스] 한남일녀 조합",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": false,
+      "spend": "1,055원",
+      "ctr": "5.26%",
+      "leads": 0,
+      "cpl": "—"
+    }
+  ],
   "kpi": {
-    "off": 7,
-    "caution": 5,
-    "good": 12,
-    "totalSpend": "749만원",
-    "totalLeads": 146
+    "off": 1,
+    "caution": 6,
+    "good": 3,
+    "weekSpend": "329만원",
+    "weekNote": "7/13~7/19 진행중(3일) · 리드 99건 · 통과 14(미선별 63)",
+    "totalSpend": "329만원",
+    "totalLeads": 99,
+    "totalPass": 14
   },
   "targets": [
-    { "id": "한한여", "emoji": "🟣", "avg3mCPL": 48769,  "day7CPL": 55201, "day7Leads": 52, "avg3mCTR": "1.16%", "trend": "up",   "adCount": 8,  "spend7d": "287만원" },
-    { "id": "한한남", "emoji": "🔵", "avg3mCPL": 109775, "day7CPL": 89955, "day7Leads": 8,  "avg3mCTR": "2.73%", "trend": "good", "adCount": 6,  "spend7d": "72만원"  },
-    { "id": "한일남", "emoji": "🩷", "avg3mCPL": 49328,  "day7CPL": 46002, "day7Leads": 61, "avg3mCTR": "2.65%", "trend": "down", "adCount": 14, "spend7d": "281만원" },
-    { "id": "한일여", "emoji": "🟢", "avg3mCPL": 75739,  "day7CPL": 43596, "day7Leads": 25, "avg3mCTR": "1.51%", "trend": "good", "adCount": 8,  "spend7d": "109만원" }
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 44669,
+      "day7CPL": 51469,
+      "day7Leads": 55,
+      "day7Pass": 28,
+      "day7CPS": 101100,
+      "avg3mCPS": 111769,
+      "passRate": "50.9%",
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "283만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 48148,
+      "day7CPL": 47560,
+      "day7Leads": 15,
+      "day7Pass": 11,
+      "day7CPS": 64855,
+      "avg3mCPS": 132772,
+      "passRate": "73.3%",
+      "avg3mCTR": "2.70%",
+      "trend": "up",
+      "adCount": 3,
+      "spend7d": "71만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 26809,
+      "day7CPL": 38211,
+      "day7Leads": 72,
+      "day7Pass": 10,
+      "day7CPS": 275122,
+      "avg3mCPS": 151777,
+      "passRate": "13.9%",
+      "avg3mCTR": "2.44%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "275만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": null,
+      "day7CPL": 40461,
+      "day7Leads": 30,
+      "day7Pass": null,
+      "day7CPS": null,
+      "avg3mCPS": null,
+      "passRate": "—",
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 9,
+      "spend7d": "121만원"
+    }
   ],
   "campaigns": [
-    { "name": "한한여_잠재",     "target": "한한여", "adCount": 8,  "spend7d": "287만원", "leads7d": 52 },
-    { "name": "한한남_등록",     "target": "한한남", "adCount": 6,  "spend7d": "72만원",  "leads7d": 8  },
-    { "name": "한일남_등록(구)", "target": "한일남", "adCount": 11, "spend7d": "217만원", "leads7d": 50 },
-    { "name": "한일남_등록(신)", "target": "한일남", "adCount": 4,  "spend7d": "63만원",  "leads7d": 11 },
-    { "name": "한일여_잠재",     "target": "한일여", "adCount": 8,  "spend7d": "109만원", "leads7d": 25 }
+    {
+      "name": "한일 남성 (구+신)",
+      "target": "한일남",
+      "adCount": 17,
+      "spend7d": "128만원",
+      "leads7d": 49
+    },
+    {
+      "name": "한한 여성 2131_260406",
+      "target": "한한여",
+      "adCount": 5,
+      "spend7d": "122만원",
+      "leads7d": 22
+    },
+    {
+      "name": "한일 여성 2130_250528",
+      "target": "한일여",
+      "adCount": 8,
+      "spend7d": "45만원",
+      "leads7d": 0
+    },
+    {
+      "name": "한한 남성 2640_260625",
+      "target": "한한남",
+      "adCount": 5,
+      "spend7d": "33만원",
+      "leads7d": 19
+    }
   ],
   "off": [
-    { "name": "4월 2주차_한일 남성 타겟_AI_2(1차)", "target": "한일남", "cpl7": 264933, "cpl3m": 49328, "ctr": "2.80%", "pct": 537, "barW": 100 },
-    { "name": "4월 2주차_한일 남성 타겟_AI_1(1차)", "target": "한일남", "cpl7": 100887, "cpl3m": 49328, "ctr": "2.30%", "pct": 205, "barW": 100 },
-    { "name": "[베리] 결국 일본 여자를 선택하는 이유", "target": "한일남", "cpl7": 91778, "cpl3m": 49328, "ctr": "2.90%", "pct": 186, "barW": 100 },
-    { "name": "세나_한국남자들은 왜",               "target": "한일남", "cpl7": 74746,  "cpl3m": 49328,  "ctr": "2.67%", "pct": 152, "barW": 100 },
-    { "name": "능력남 몰리는 이유",                 "target": "한한남", "cpl7": null,   "cpl3m": 109775, "ctr": "2.25%", "pct": null, "barW": 100, "pctLabel": "10만원 지출 · 결과 0건" },
-    { "name": "아이츠니_한국에서일본여자",           "target": "한일남", "cpl7": null,   "cpl3m": 49328,  "ctr": "2.19%", "pct": null, "barW": 100, "pctLabel": "9만원 지출 · 결과 0건" },
-    { "name": "[베리]30대면 아줌마 아니에요",        "target": "한한남", "cpl7": null,   "cpl3m": 109775, "ctr": "3.20%", "pct": null, "barW": 100, "pctLabel": "9만원 지출 · 결과 0건" }
+    {
+      "name": "아이츠니_한국에서일본여자 (진짜 아이츠니·46213 신규·리드 2)",
+      "target": "한일남",
+      "cpl7": 102062,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 49190,
+      "pass7": 0,
+      "ctr": "2.01%",
+      "pct": 398,
+      "barW": 100
+    }
   ],
   "caution": [
-    { "name": "연봉 1억이상_담벼락",          "target": "한한여", "cpl7": 69483, "cpl3m": 48769, "ctr": "1.31%", "pct": 142, "barW": 100 },
-    { "name": "일본 여자에 환상 가지지 마세요", "target": "한일남", "cpl7": 65380, "cpl3m": 49328, "ctr": "2.43%", "pct": 133, "barW": 100 },
-    { "name": "연봉 1억이상_고기",            "target": "한한여", "cpl7": 56961, "cpl3m": 48769, "ctr": "1.05%", "pct": 117, "barW": 100 },
-    { "name": "[베리] 서재민_그대로",         "target": "한한여", "cpl7": 56474, "cpl3m": 48769, "ctr": "0.89%", "pct": 116, "barW": 100 },
-    { "name": "[베리] 어리고예쁘면_제논_말투", "target": "한한여", "cpl7": 52889, "cpl3m": 48769, "ctr": "0.96%", "pct": 108, "barW": 100 }
+    {
+      "name": "세나_한국남자들은 왜 (구 아이츠니46190 태깅·리드 13)",
+      "target": "한일남",
+      "cpl7": 36538,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 147338,
+      "pass7": 0,
+      "ctr": "2.92%",
+      "pct": 143,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_2(1차) (3M比 224%)",
+      "target": "한일남",
+      "cpl7": 41660,
+      "cpl3m": 18576,
+      "cps7": null,
+      "cps3m": 94913,
+      "pass7": 1,
+      "ctr": "2.91%",
+      "pct": 224,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 54570,
+      "cpl3m": 28801,
+      "cps7": 436556,
+      "cps3m": 74059,
+      "pass7": 1,
+      "ctr": "1.47%",
+      "pct": 189,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 54940,
+      "cpl3m": 27756,
+      "cps7": 164820,
+      "cps3m": 104855,
+      "pass7": 2,
+      "ctr": "1.63%",
+      "pct": 198,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 45874,
+      "cpl3m": 34791,
+      "cps7": 206433,
+      "cps3m": 170087,
+      "pass7": 2,
+      "ctr": "2.25%",
+      "pct": 132,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범 (통과 0)",
+      "target": "한일남",
+      "cpl7": 52188,
+      "cpl3m": 21028,
+      "cps7": null,
+      "cps3m": 134580,
+      "pass7": 0,
+      "ctr": "1.90%",
+      "pct": 248,
+      "barW": 100
+    }
   ],
   "good": [
-    { "name": "[맨스]일본여자내조",                 "target": "한일남", "cpl7": 22330, "cpl3m": 49328,  "ctr": "2.56%", "pct": 45, "barW": 45, "trophy": true },
-    { "name": "[맨스] 일본 여자가 좋아하는 한국 남자", "target": "한일남", "cpl7": 24742, "cpl3m": 49328,  "ctr": "3.08%", "pct": 50, "barW": 50, "trophy": true },
-    { "name": "한국남친이 좋은 3가지 이유",           "target": "한일여", "cpl7": 40729, "cpl3m": 75739,  "ctr": "1.91%", "pct": 54, "barW": 54 },
-    { "name": "고굽남",                             "target": "한일여", "cpl7": 42002, "cpl3m": 75739,  "ctr": "2.06%", "pct": 55, "barW": 55 },
-    { "name": "가코이 한국 남편",                    "target": "한일여", "cpl7": 43498, "cpl3m": 75739,  "ctr": "2.29%", "pct": 57, "barW": 57 },
-    { "name": "다정한_고기",                        "target": "한일여", "cpl7": 44215, "cpl3m": 75739,  "ctr": "1.37%", "pct": 58, "barW": 58 },
-    { "name": "[베리] 고스펙 아줌마 필요없고",        "target": "한한남", "cpl7": 64055, "cpl3m": 109775, "ctr": "2.06%", "pct": 58, "barW": 58 },
-    { "name": "[베리]30대면아줌마_데보라",           "target": "한한남", "cpl7": 65700, "cpl3m": 109775, "ctr": "1.77%", "pct": 60, "barW": 60 },
-    { "name": "소개팅 거절_평범",                    "target": "한일남", "cpl7": 33521, "cpl3m": 49328,  "ctr": "2.21%", "pct": 68, "barW": 68 },
-    { "name": "[베리] 서재민_그대로_제논",           "target": "한한여", "cpl7": 45577, "cpl3m": 48769,  "ctr": "0.85%", "pct": 93, "barW": 93 },
-    { "name": "일본 여자랑 결혼하지 마세요",          "target": "한일남", "cpl7": 45730, "cpl3m": 49328,  "ctr": "3.75%", "pct": 93, "barW": 93 },
-    { "name": "내딸이면_데보라_2",                   "target": "한한여", "cpl7": 48141, "cpl3m": 48769,  "ctr": "1.42%", "pct": 99, "barW": 99 }
+    {
+      "name": "한국남친이 좋은 3가지 이유 (메타 리드)",
+      "target": "한일여",
+      "cpl7": 35328,
+      "cpl3m": 103289,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.23%",
+      "pct": 34,
+      "barW": 34,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 27312,
+      "cpl3m": 33351,
+      "cps7": 163873,
+      "cps3m": 181049,
+      "pass7": 1,
+      "ctr": "2.57%",
+      "pct": 82,
+      "barW": 82,
+      "trophy": true
+    },
+    {
+      "name": "[베리] 서재민_그대로 (최다 리드)",
+      "target": "한한여",
+      "cpl7": 47148,
+      "cpl3m": 45174,
+      "cps7": 167160,
+      "cps3m": 113742,
+      "pass7": 11,
+      "ctr": "0.98%",
+      "pct": 104,
+      "barW": 100
+    }
   ],
-  "unclassified": []
+  "unclassified": [
+    "주차 지표는 월~일(7/13~) 기준 · 타겟카드는 직전 완결주(7/6~7/12) 확정값"
+  ]
+},
+{
+  "date": "2026-07-14",
+  "label": "7월 14일",
+  "apiSource": true,
+  "notes": [
+    "하루 성과 '결과' = 실제 리드 기준 (메타 픽셀은 크게 과소집계)",
+    "7/14 [맨스] 신규 7개 소재 라이브 — 상단 '신규 세팅 광고' 섹션 참고",
+    "주차 지표(광고비·캠페인별)는 월~일 기준 = 이번 주 7/13~7/19 진행중(2일차)",
+    "세나=옛 아이츠니(46190) 태깅오류 · 능력남=데보라 포함 분류누락 (둘 다 리드0 아님)"
+  ],
+  "daily": {
+    "label": "7월 14일",
+    "targets": [
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "44만원",
+        "impressions": 14625,
+        "clicks": 398,
+        "leads": 26,
+        "cpl": 16819,
+        "ctr": "2.72%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "15만원",
+        "impressions": 4333,
+        "clicks": 78,
+        "leads": 4,
+        "cpl": 37240,
+        "ctr": "1.80%"
+      },
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "37만원",
+        "impressions": 9179,
+        "clicks": 90,
+        "leads": 2,
+        "cpl": 184123,
+        "ctr": "0.98%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "12만원",
+        "impressions": 3033,
+        "clicks": 59,
+        "leads": 2,
+        "cpl": 59040,
+        "ctr": "1.95%"
+      }
+    ]
+  },
+  "dailyTrend": [
+    {
+      "d": "7/1",
+      "results": 18,
+      "cplTotal": 46937,
+      "cplAd": 52804
+    },
+    {
+      "d": "7/2",
+      "results": 36,
+      "cplTotal": 27124,
+      "cplAd": 31499
+    },
+    {
+      "d": "7/3",
+      "results": 15,
+      "cplTotal": 69996,
+      "cplAd": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 24,
+      "cplTotal": 42102,
+      "cplAd": 42102
+    },
+    {
+      "d": "7/5",
+      "results": 42,
+      "cplTotal": 27442,
+      "cplAd": 29553
+    },
+    {
+      "d": "7/6",
+      "results": 28,
+      "cplTotal": 38072,
+      "cplAd": 48455
+    },
+    {
+      "d": "7/7",
+      "results": 23,
+      "cplTotal": 49579,
+      "cplAd": 57016
+    },
+    {
+      "d": "7/8",
+      "results": 26,
+      "cplTotal": 41956,
+      "cplAd": 54543
+    },
+    {
+      "d": "7/9",
+      "results": 22,
+      "cplTotal": 46965,
+      "cplAd": 49202
+    },
+    {
+      "d": "7/10",
+      "results": 21,
+      "cplTotal": 48449,
+      "cplAd": 50872
+    },
+    {
+      "d": "7/11",
+      "results": 20,
+      "cplTotal": 47877,
+      "cplAd": 56326
+    },
+    {
+      "d": "7/12",
+      "results": 28,
+      "cplTotal": 42995,
+      "cplAd": 54721
+    },
+    {
+      "d": "7/13",
+      "results": 14,
+      "cplTotal": 76801,
+      "cplAd": 97746
+    },
+    {
+      "d": "7/14",
+      "results": 40,
+      "cplTotal": 26815,
+      "cplAd": 29794
+    }
+  ],
+  "ceo": [
+    "<b>7/14 리드 34건 — 전일 대비 급증.</b> [맨스] 신규 7개 소재 투입 효과. 특히 <b>한일남 26리드·CPL 16,819원</b>으로 3M 평균(25,618원) 대비 34% 개선.",
+    "<b>신규 [맨스] 시리즈 초기 반응 매우 긍정적</b> — 합계 17.6만원·리드 5건·CPL 35,256원, CTR 3.0~4.3%로 기존 평균(1.9%)를 크게 상회.",
+    "<b>최고 성과: [맨스] 일본 여자가 좋아하는 한국 남자</b> (10만원·리드 3·CPL 33,479원·CTR 3.38%) → 확대 1순위 후보.",
+    "<b>한한여는 부진 — 2리드·CPL 184,123원.</b> 서재민 그대로 소재 피로가 그대로 드러남 → 여성 타겟 신규 소재가 시급.",
+    "<b>처방: 증액보다 '소재 교체'가 답.</b> [맨스] 시리즈로 CTR·CPL 회복 중이니 신규 소재 중심으로 예산 재배분 + 세나 UTM 태깅 수정 병행."
+  ],
+  "newAdsNote": "7/14 신규 7개 · 7/10 신규 4개",
+  "newAds": [
+    {
+      "name": "[맨스] 일본 여자가 좋아하는 한국 남자",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "100,436원",
+      "ctr": "3.38%",
+      "leads": 3,
+      "cpl": "33,479원",
+      "cplCls": "cpl-low"
+    },
+    {
+      "name": "[베리] 고스펙 아줌마 필요없고",
+      "target": "한한남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "44,749원",
+      "ctr": "1.78%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[맨스] 일본 여친 소개받는 현실 루트 정리",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "17,856원",
+      "ctr": "3.03%",
+      "leads": 1,
+      "cpl": "17,856원",
+      "cplCls": "cpl-low"
+    },
+    {
+      "name": "[맨스] 일본여자내조",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "6,005원",
+      "ctr": "4.30%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[맨스] 한남일녀 조합",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "4,834원",
+      "ctr": "1.32%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[맨스] 프리미엄한일결정사",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "1,430원",
+      "ctr": "2.94%",
+      "leads": 1,
+      "cpl": "1,430원 (표본1)",
+      "cplCls": "cpl-low"
+    },
+    {
+      "name": "[맨스] 대표도 회원등록",
+      "target": "한일남",
+      "launched": "7/14",
+      "isToday": true,
+      "spend": "970원",
+      "ctr": "0.00%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[베리] 30대면아줌마_데보라",
+      "target": "한한남",
+      "launched": "7/10",
+      "isToday": false,
+      "spend": "233,103원",
+      "ctr": "1.70%",
+      "leads": 3,
+      "cpl": "77,701원"
+    },
+    {
+      "name": "아이츠니_한국에서일본여자 (진짜 아이츠니·46213)",
+      "target": "한일남",
+      "launched": "7/10",
+      "isToday": false,
+      "spend": "113,732원",
+      "ctr": "2.01%",
+      "leads": 2,
+      "cpl": "56,866원",
+      "cplCls": "cpl-high"
+    },
+    {
+      "name": "[베리] 30대면아줌마_데보라_동안",
+      "target": "한한남",
+      "launched": "7/10",
+      "isToday": false,
+      "spend": "14,399원",
+      "ctr": "1.60%",
+      "leads": 0,
+      "cpl": "—"
+    },
+    {
+      "name": "[베리] 30대면아줌마_데보라_인트로변경",
+      "target": "한한남",
+      "launched": "7/10",
+      "isToday": false,
+      "spend": "8,011원",
+      "ctr": "1.20%",
+      "leads": 0,
+      "cpl": "—"
+    }
+  ],
+  "kpi": {
+    "off": 1,
+    "caution": 6,
+    "good": 3,
+    "weekSpend": "215만원",
+    "weekNote": "7/13~7/19 진행중(2일) · 리드 47건 · 통과 8(미선별 27)",
+    "totalSpend": "215만원",
+    "totalLeads": 47,
+    "totalPass": 8
+  },
+  "targets": [
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 44669,
+      "day7CPL": 51469,
+      "day7Leads": 55,
+      "day7Pass": 28,
+      "day7CPS": 101100,
+      "avg3mCPS": 111769,
+      "passRate": "50.9%",
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "283만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 48148,
+      "day7CPL": 47560,
+      "day7Leads": 15,
+      "day7Pass": 11,
+      "day7CPS": 64855,
+      "avg3mCPS": 132772,
+      "passRate": "73.3%",
+      "avg3mCTR": "2.70%",
+      "trend": "up",
+      "adCount": 3,
+      "spend7d": "71만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 26809,
+      "day7CPL": 38211,
+      "day7Leads": 72,
+      "day7Pass": 10,
+      "day7CPS": 275122,
+      "avg3mCPS": 151777,
+      "passRate": "13.9%",
+      "avg3mCTR": "2.44%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "275만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": null,
+      "day7CPL": 40461,
+      "day7Leads": 30,
+      "day7Pass": null,
+      "day7CPS": null,
+      "avg3mCPS": null,
+      "passRate": "—",
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 9,
+      "spend7d": "121만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한일 남성 (구+신)",
+      "target": "한일남",
+      "adCount": 18,
+      "spend7d": "86만원",
+      "leads7d": 32
+    },
+    {
+      "name": "한한 여성 2131_260406",
+      "target": "한한여",
+      "adCount": 4,
+      "spend7d": "76만원",
+      "leads7d": 8
+    },
+    {
+      "name": "한일 여성 2130_250528",
+      "target": "한일여",
+      "adCount": 7,
+      "spend7d": "31만원",
+      "leads7d": 0
+    },
+    {
+      "name": "한한 남성 2640_260625",
+      "target": "한한남",
+      "adCount": 5,
+      "spend7d": "22만원",
+      "leads7d": 7
+    }
+  ],
+  "off": [
+    {
+      "name": "아이츠니_한국에서일본여자 (진짜 아이츠니·46213 신규·리드 2)",
+      "target": "한일남",
+      "cpl7": 102062,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 49190,
+      "pass7": 0,
+      "ctr": "2.01%",
+      "pct": 398,
+      "barW": 100
+    }
+  ],
+  "caution": [
+    {
+      "name": "세나_한국남자들은 왜 (구 아이츠니46190 태깅·리드 13)",
+      "target": "한일남",
+      "cpl7": 36538,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 147338,
+      "pass7": 0,
+      "ctr": "2.92%",
+      "pct": 143,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_2(1차) (3M比 224%)",
+      "target": "한일남",
+      "cpl7": 41660,
+      "cpl3m": 18576,
+      "cps7": null,
+      "cps3m": 94913,
+      "pass7": 1,
+      "ctr": "2.91%",
+      "pct": 224,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 54570,
+      "cpl3m": 28801,
+      "cps7": 436556,
+      "cps3m": 74059,
+      "pass7": 1,
+      "ctr": "1.47%",
+      "pct": 189,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 54940,
+      "cpl3m": 27756,
+      "cps7": 164820,
+      "cps3m": 104855,
+      "pass7": 2,
+      "ctr": "1.63%",
+      "pct": 198,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 45874,
+      "cpl3m": 34791,
+      "cps7": 206433,
+      "cps3m": 170087,
+      "pass7": 2,
+      "ctr": "2.25%",
+      "pct": 132,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범 (통과 0)",
+      "target": "한일남",
+      "cpl7": 52188,
+      "cpl3m": 21028,
+      "cps7": null,
+      "cps3m": 134580,
+      "pass7": 0,
+      "ctr": "1.90%",
+      "pct": 248,
+      "barW": 100
+    }
+  ],
+  "good": [
+    {
+      "name": "한국남친이 좋은 3가지 이유 (메타 리드)",
+      "target": "한일여",
+      "cpl7": 35328,
+      "cpl3m": 103289,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.23%",
+      "pct": 34,
+      "barW": 34,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 27312,
+      "cpl3m": 33351,
+      "cps7": 163873,
+      "cps3m": 181049,
+      "pass7": 1,
+      "ctr": "2.57%",
+      "pct": 82,
+      "barW": 82,
+      "trophy": true
+    },
+    {
+      "name": "[베리] 서재민_그대로 (최다 리드)",
+      "target": "한한여",
+      "cpl7": 47148,
+      "cpl3m": 45174,
+      "cps7": 167160,
+      "cps3m": 113742,
+      "pass7": 11,
+      "ctr": "0.98%",
+      "pct": 104,
+      "barW": 100
+    }
+  ],
+  "unclassified": [
+    "주차 지표는 월~일(7/13~) 기준 · 타겟카드는 직전 완결주(7/6~7/12) 확정값"
+  ]
+},
+{
+  "date": "2026-07-13",
+  "label": "7월 13일",
+  "apiSource": true,
+  "notes": [
+    "리드·통과 = 어드민 API 기준 · 한일여만 메타 픽셀",
+    "선별 완료(미선별 0) — 주간 통과 59건 확정. CPS는 이제 확정값(잠정 아님)",
+    "세나=옛 아이츠니(46190) 태깅오류 · 능력남=데보라 포함 분류누락 (둘 다 리드0 아님)",
+    "내딸이면_제논(한한여) OFF 처리 완료"
+  ],
+  "daily": {
+    "label": "7월 13일",
+    "targets": [
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "39만원",
+        "impressions": 10440,
+        "clicks": 99,
+        "leads": 6,
+        "cpl": 65613,
+        "ctr": "0.95%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "10만원",
+        "impressions": 2239,
+        "clicks": 52,
+        "leads": 1,
+        "cpl": 99593,
+        "ctr": "2.32%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "42만원",
+        "impressions": 13300,
+        "clicks": 327,
+        "leads": 5,
+        "cpl": 83698,
+        "ctr": "2.46%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "16만원",
+        "impressions": 4185,
+        "clicks": 82,
+        "leads": 5,
+        "cpl": 32689,
+        "ctr": "1.96%"
+      }
+    ]
+  },
+  "dailyTrend": [
+    {
+      "d": "6/30",
+      "results": 17,
+      "spend": 771501,
+      "cpl": 45382
+    },
+    {
+      "d": "7/1",
+      "results": 14,
+      "spend": 844864,
+      "cpl": 60347
+    },
+    {
+      "d": "7/2",
+      "results": 18,
+      "spend": 976473,
+      "cpl": 54248
+    },
+    {
+      "d": "7/3",
+      "results": 12,
+      "spend": 1049942,
+      "cpl": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 18,
+      "spend": 1010436,
+      "cpl": 56135
+    },
+    {
+      "d": "7/5",
+      "results": 20,
+      "spend": 1152581,
+      "cpl": 57629
+    },
+    {
+      "d": "7/6",
+      "results": 19,
+      "spend": 1066013,
+      "cpl": 56106
+    },
+    {
+      "d": "7/7",
+      "results": 17,
+      "spend": 1140311,
+      "cpl": 67077
+    },
+    {
+      "d": "7/8",
+      "results": 16,
+      "spend": 1090865,
+      "cpl": 68179
+    },
+    {
+      "d": "7/9",
+      "results": 13,
+      "spend": 1033236,
+      "cpl": 79480
+    },
+    {
+      "d": "7/10",
+      "results": 21,
+      "spend": 1017430,
+      "cpl": 48449
+    },
+    {
+      "d": "7/11",
+      "results": 19,
+      "spend": 957542,
+      "cpl": 50397
+    },
+    {
+      "d": "7/12",
+      "results": 14,
+      "spend": 1203847,
+      "cpl": 85989
+    },
+    {
+      "d": "7/13",
+      "results": 17,
+      "spend": 1075209,
+      "cpl": 63248
+    }
+  ],
+  "kpi": {
+    "off": 1,
+    "caution": 6,
+    "good": 3,
+    "totalSpend": "751만원",
+    "totalLeads": 172,
+    "totalPass": 59
+  },
+  "targets": [
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 44669,
+      "day7CPL": 51469,
+      "day7Leads": 55,
+      "day7Pass": 28,
+      "day7CPS": 101100,
+      "avg3mCPS": 111769,
+      "passRate": "50.9%",
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "283만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 48148,
+      "day7CPL": 47560,
+      "day7Leads": 15,
+      "day7Pass": 11,
+      "day7CPS": 64855,
+      "avg3mCPS": 132772,
+      "passRate": "73.3%",
+      "avg3mCTR": "2.70%",
+      "trend": "up",
+      "adCount": 3,
+      "spend7d": "71만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 26809,
+      "day7CPL": 38211,
+      "day7Leads": 72,
+      "day7Pass": 10,
+      "day7CPS": 275122,
+      "avg3mCPS": 151777,
+      "passRate": "13.9%",
+      "avg3mCTR": "2.44%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "275만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": null,
+      "day7CPL": 40461,
+      "day7Leads": 30,
+      "day7Pass": null,
+      "day7CPS": null,
+      "avg3mCPS": null,
+      "passRate": "—",
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 9,
+      "spend7d": "121만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한일 남성 (구+신 통합운영)",
+      "target": "한일남",
+      "adCount": 8,
+      "spend7d": "275만원",
+      "leads7d": 72
+    },
+    {
+      "name": "한한 여성 2131_260406",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "283만원",
+      "leads7d": 55
+    },
+    {
+      "name": "한한 남성 2640_260625",
+      "target": "한한남",
+      "adCount": 3,
+      "spend7d": "71만원",
+      "leads7d": 15
+    },
+    {
+      "name": "한일 여성 2130_250528",
+      "target": "한일여",
+      "adCount": 9,
+      "spend7d": "121만원",
+      "leads7d": 20
+    }
+  ],
+  "off": [
+    {
+      "name": "아이츠니_한국에서일본여자 (진짜 아이츠니·46213 신규·리드 2)",
+      "target": "한일남",
+      "cpl7": 102062,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 49190,
+      "pass7": 0,
+      "ctr": "2.01%",
+      "pct": 398,
+      "barW": 100
+    }
+  ],
+  "caution": [
+    {
+      "name": "세나_한국남자들은 왜 (구 아이츠니46190 태깅·리드 13)",
+      "target": "한일남",
+      "cpl7": 36538,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 147338,
+      "pass7": 0,
+      "ctr": "2.92%",
+      "pct": 143,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_2(1차) (3M比 224%)",
+      "target": "한일남",
+      "cpl7": 41660,
+      "cpl3m": 18576,
+      "cps7": null,
+      "cps3m": 94913,
+      "pass7": 1,
+      "ctr": "2.91%",
+      "pct": 224,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 54570,
+      "cpl3m": 28801,
+      "cps7": 436556,
+      "cps3m": 74059,
+      "pass7": 1,
+      "ctr": "1.47%",
+      "pct": 189,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 54940,
+      "cpl3m": 27756,
+      "cps7": 164820,
+      "cps3m": 104855,
+      "pass7": 2,
+      "ctr": "1.63%",
+      "pct": 198,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 45874,
+      "cpl3m": 34791,
+      "cps7": 206433,
+      "cps3m": 170087,
+      "pass7": 2,
+      "ctr": "2.25%",
+      "pct": 132,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범 (통과 0)",
+      "target": "한일남",
+      "cpl7": 52188,
+      "cpl3m": 21028,
+      "cps7": null,
+      "cps3m": 134580,
+      "pass7": 0,
+      "ctr": "1.90%",
+      "pct": 248,
+      "barW": 100
+    }
+  ],
+  "good": [
+    {
+      "name": "한국남친이 좋은 3가지 이유 (메타 리드)",
+      "target": "한일여",
+      "cpl7": 35328,
+      "cpl3m": 103289,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.23%",
+      "pct": 34,
+      "barW": 34,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 27312,
+      "cpl3m": 33351,
+      "cps7": 163873,
+      "cps3m": 181049,
+      "pass7": 1,
+      "ctr": "2.57%",
+      "pct": 82,
+      "barW": 82,
+      "trophy": true
+    },
+    {
+      "name": "[베리] 서재민_그대로 (최다 리드)",
+      "target": "한한여",
+      "cpl7": 47148,
+      "cpl3m": 45174,
+      "cps7": 167160,
+      "cps3m": 113742,
+      "pass7": 11,
+      "ctr": "0.98%",
+      "pct": 104,
+      "barW": 100
+    }
+  ],
+  "unclassified": [
+    "7일(7/6~7/12) 맥락 공유 · 상단 카드는 주간 기준(통과 성숙 반영)"
+  ]
+},
+{
+  "date": "2026-07-12",
+  "label": "7월 12일",
+  "apiSource": true,
+  "notes": [
+    "리드·통과 = 어드민 API 기준 · 한일여만 메타 픽셀",
+    "⚠️ 최근 주는 선별 진행 중이라 통과·CPS는 잠정(특히 한일남 통과 4건은 미성숙) — 며칠 뒤 상향됨",
+    "능력남 몰리는 이유는 소재명 '데보라' 포함으로 자동분류서 누락 — 실제 리드 정상(OFF 아님)",
+    "세나 광고는 옛 아이츠니(46190) utm_content 복제 → 세나 리드가 '46190아이츠니'로 기록(리드0 아님). 세나 URL utm_content 수정 필요"
+  ],
+  "daily": {
+    "label": "7월 12일",
+    "targets": [
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "47만원",
+        "impressions": 12709,
+        "clicks": 134,
+        "leads": 7,
+        "cpl": 66583,
+        "ctr": "1.05%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "11만원",
+        "impressions": 2858,
+        "clicks": 58,
+        "leads": 0,
+        "cpl": null,
+        "ctr": "2.03%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "43만원",
+        "impressions": 14270,
+        "clicks": 397,
+        "leads": 4,
+        "cpl": 107016,
+        "ctr": "2.78%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "20만원",
+        "impressions": 5663,
+        "clicks": 111,
+        "leads": 3,
+        "cpl": 67168,
+        "ctr": "1.96%"
+      }
+    ]
+  },
+  "dailyTrend": [
+    {
+      "d": "6/29",
+      "results": 10,
+      "spend": 728478,
+      "cpl": 72848
+    },
+    {
+      "d": "6/30",
+      "results": 17,
+      "spend": 771501,
+      "cpl": 45382
+    },
+    {
+      "d": "7/1",
+      "results": 14,
+      "spend": 844864,
+      "cpl": 60347
+    },
+    {
+      "d": "7/2",
+      "results": 18,
+      "spend": 976473,
+      "cpl": 54248
+    },
+    {
+      "d": "7/3",
+      "results": 12,
+      "spend": 1049942,
+      "cpl": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 18,
+      "spend": 1010436,
+      "cpl": 56135
+    },
+    {
+      "d": "7/5",
+      "results": 20,
+      "spend": 1152581,
+      "cpl": 57629
+    },
+    {
+      "d": "7/6",
+      "results": 19,
+      "spend": 1066013,
+      "cpl": 56106
+    },
+    {
+      "d": "7/7",
+      "results": 17,
+      "spend": 1140311,
+      "cpl": 67077
+    },
+    {
+      "d": "7/8",
+      "results": 16,
+      "spend": 1090865,
+      "cpl": 68179
+    },
+    {
+      "d": "7/9",
+      "results": 13,
+      "spend": 1033236,
+      "cpl": 79480
+    },
+    {
+      "d": "7/10",
+      "results": 21,
+      "spend": 1017430,
+      "cpl": 48449
+    },
+    {
+      "d": "7/11",
+      "results": 19,
+      "spend": 957542,
+      "cpl": 50397
+    },
+    {
+      "d": "7/12",
+      "results": 14,
+      "spend": 1203847,
+      "cpl": 85989
+    }
+  ],
+  "kpi": {
+    "off": 2,
+    "caution": 6,
+    "good": 3,
+    "totalSpend": "751만원",
+    "totalLeads": 162,
+    "totalPass": 26
+  },
+  "targets": [
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 44669,
+      "day7CPL": 51469,
+      "day7Leads": 55,
+      "day7Pass": 15,
+      "day7CPS": 188720,
+      "avg3mCPS": 111769,
+      "passRate": "27.3%",
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "283만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 48148,
+      "day7CPL": 47560,
+      "day7Leads": 15,
+      "day7Pass": 7,
+      "day7CPS": 101914,
+      "avg3mCPS": 132772,
+      "passRate": "46.7%",
+      "avg3mCTR": "2.70%",
+      "trend": "up",
+      "adCount": 3,
+      "spend7d": "71만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 26809,
+      "day7CPL": 38211,
+      "day7Leads": 72,
+      "day7Pass": 4,
+      "day7CPS": null,
+      "avg3mCPS": 151777,
+      "passRate": "5.6%*",
+      "avg3mCTR": "2.44%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "275만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": null,
+      "day7CPL": 40461,
+      "day7Leads": 30,
+      "day7Pass": null,
+      "day7CPS": null,
+      "avg3mCPS": null,
+      "passRate": "—",
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 9,
+      "spend7d": "121만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한일 남성 (구+신 통합운영)",
+      "target": "한일남",
+      "adCount": 8,
+      "spend7d": "275만원",
+      "leads7d": 72
+    },
+    {
+      "name": "한한 여성 2131_260406",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "283만원",
+      "leads7d": 55
+    },
+    {
+      "name": "한한 남성 2640_260625",
+      "target": "한한남",
+      "adCount": 3,
+      "spend7d": "71만원",
+      "leads7d": 15
+    },
+    {
+      "name": "한일 여성 2130_250528",
+      "target": "한일여",
+      "adCount": 9,
+      "spend7d": "121만원",
+      "leads7d": 20
+    }
+  ],
+  "off": [
+    {
+      "name": "아이츠니_한국에서일본여자 (진짜 아이츠니·46213 신규·리드 2)",
+      "target": "한일남",
+      "cpl7": 102062,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 49190,
+      "pass7": 0,
+      "ctr": "2.01%",
+      "pct": 398,
+      "barW": 100
+    },
+    {
+      "name": "내딸이면_제논 (한한여 · 리드 0)",
+      "target": "한한여",
+      "cpl7": 101594,
+      "cpl3m": 42326,
+      "cps7": null,
+      "cps3m": 164780,
+      "pass7": 0,
+      "ctr": "0.88%",
+      "pct": 240,
+      "barW": 100
+    }
+  ],
+  "caution": [
+    {
+      "name": "세나_한국남자들은 왜 (구 아이츠니46190 태깅·리드 13)",
+      "target": "한일남",
+      "cpl7": 36538,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 147338,
+      "pass7": 0,
+      "ctr": "2.92%",
+      "pct": 143,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_2(1차) (3M比 224%)",
+      "target": "한일남",
+      "cpl7": 41660,
+      "cpl3m": 18576,
+      "cps7": null,
+      "cps3m": 94913,
+      "pass7": 1,
+      "ctr": "2.91%",
+      "pct": 224,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 54570,
+      "cpl3m": 28801,
+      "cps7": 436556,
+      "cps3m": 74059,
+      "pass7": 1,
+      "ctr": "1.47%",
+      "pct": 189,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 54940,
+      "cpl3m": 27756,
+      "cps7": 164820,
+      "cps3m": 104855,
+      "pass7": 2,
+      "ctr": "1.63%",
+      "pct": 198,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 45874,
+      "cpl3m": 34791,
+      "cps7": 206433,
+      "cps3m": 170087,
+      "pass7": 2,
+      "ctr": "2.25%",
+      "pct": 132,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범 (통과 0)",
+      "target": "한일남",
+      "cpl7": 52188,
+      "cpl3m": 21028,
+      "cps7": null,
+      "cps3m": 134580,
+      "pass7": 0,
+      "ctr": "1.90%",
+      "pct": 248,
+      "barW": 100
+    }
+  ],
+  "good": [
+    {
+      "name": "한국남친이 좋은 3가지 이유 (메타 리드)",
+      "target": "한일여",
+      "cpl7": 35328,
+      "cpl3m": 103289,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.23%",
+      "pct": 34,
+      "barW": 34,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 27312,
+      "cpl3m": 33351,
+      "cps7": 163873,
+      "cps3m": 181049,
+      "pass7": 1,
+      "ctr": "2.57%",
+      "pct": 82,
+      "barW": 82,
+      "trophy": true
+    },
+    {
+      "name": "[베리] 서재민_그대로 (최다 리드)",
+      "target": "한한여",
+      "cpl7": 47148,
+      "cpl3m": 45174,
+      "cps7": 167160,
+      "cps3m": 113742,
+      "pass7": 11,
+      "ctr": "0.98%",
+      "pct": 104,
+      "barW": 100
+    }
+  ],
+  "unclassified": [
+    "7일(7/6~7/12) 맥락 공유 · 상단 카드는 주간 기준"
+  ]
+},
+{
+  "date": "2026-07-11",
+  "label": "7월 11일",
+  "apiSource": true,
+  "notes": [
+    "리드·통과 = 어드민 API 기준 · 한일여만 메타 픽셀",
+    "⚠️ 최근 주는 선별 진행 중이라 통과·CPS는 잠정(특히 한일남 통과 4건은 미성숙) — 며칠 뒤 상향됨",
+    "능력남 몰리는 이유는 소재명 '데보라' 포함으로 자동분류서 누락 — 실제 리드 정상(OFF 아님)",
+    "세나 광고는 옛 아이츠니(46190) utm_content 복제 → 세나 리드가 '46190아이츠니'로 기록(리드0 아님). 세나 URL utm_content 수정 필요"
+  ],
+  "daily": {
+    "label": "7월 11일",
+    "targets": [
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "37만원",
+        "impressions": 10069,
+        "clicks": 104,
+        "leads": 10,
+        "cpl": 37461,
+        "ctr": "1.03%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "9만원",
+        "impressions": 2133,
+        "clicks": 39,
+        "leads": 1,
+        "cpl": 88183,
+        "ctr": "1.83%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "35만원",
+        "impressions": 11230,
+        "clicks": 319,
+        "leads": 3,
+        "cpl": 117853,
+        "ctr": "2.84%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "14만원",
+        "impressions": 4071,
+        "clicks": 63,
+        "leads": 5,
+        "cpl": 28238,
+        "ctr": "1.55%"
+      }
+    ]
+  },
+  "dailyTrend": [
+    {
+      "d": "6/29",
+      "results": 10,
+      "spend": 728478,
+      "cpl": 72848
+    },
+    {
+      "d": "6/30",
+      "results": 17,
+      "spend": 771501,
+      "cpl": 45382
+    },
+    {
+      "d": "7/1",
+      "results": 14,
+      "spend": 844864,
+      "cpl": 60347
+    },
+    {
+      "d": "7/2",
+      "results": 18,
+      "spend": 976473,
+      "cpl": 54248
+    },
+    {
+      "d": "7/3",
+      "results": 12,
+      "spend": 1049942,
+      "cpl": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 18,
+      "spend": 1010436,
+      "cpl": 56135
+    },
+    {
+      "d": "7/5",
+      "results": 20,
+      "spend": 1152581,
+      "cpl": 57629
+    },
+    {
+      "d": "7/6",
+      "results": 19,
+      "spend": 1066013,
+      "cpl": 56106
+    },
+    {
+      "d": "7/7",
+      "results": 17,
+      "spend": 1140311,
+      "cpl": 67077
+    },
+    {
+      "d": "7/8",
+      "results": 16,
+      "spend": 1090865,
+      "cpl": 68179
+    },
+    {
+      "d": "7/9",
+      "results": 13,
+      "spend": 1033236,
+      "cpl": 79480
+    },
+    {
+      "d": "7/10",
+      "results": 21,
+      "spend": 1017430,
+      "cpl": 48449
+    },
+    {
+      "d": "7/11",
+      "results": 19,
+      "spend": 957542,
+      "cpl": 50397
+    },
+    {
+      "d": "7/12",
+      "results": 14,
+      "spend": 1203847,
+      "cpl": 85989
+    }
+  ],
+  "kpi": {
+    "off": 2,
+    "caution": 6,
+    "good": 3,
+    "totalSpend": "751만원",
+    "totalLeads": 162,
+    "totalPass": 26
+  },
+  "targets": [
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 44669,
+      "day7CPL": 51469,
+      "day7Leads": 55,
+      "day7Pass": 15,
+      "day7CPS": 188720,
+      "avg3mCPS": 111769,
+      "passRate": "27.3%",
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "283만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 48148,
+      "day7CPL": 47560,
+      "day7Leads": 15,
+      "day7Pass": 7,
+      "day7CPS": 101914,
+      "avg3mCPS": 132772,
+      "passRate": "46.7%",
+      "avg3mCTR": "2.70%",
+      "trend": "up",
+      "adCount": 3,
+      "spend7d": "71만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 26809,
+      "day7CPL": 38211,
+      "day7Leads": 72,
+      "day7Pass": 4,
+      "day7CPS": null,
+      "avg3mCPS": 151777,
+      "passRate": "5.6%*",
+      "avg3mCTR": "2.44%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "275만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": null,
+      "day7CPL": 40461,
+      "day7Leads": 30,
+      "day7Pass": null,
+      "day7CPS": null,
+      "avg3mCPS": null,
+      "passRate": "—",
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 9,
+      "spend7d": "121만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한일 남성 (구+신 통합운영)",
+      "target": "한일남",
+      "adCount": 8,
+      "spend7d": "275만원",
+      "leads7d": 72
+    },
+    {
+      "name": "한한 여성 2131_260406",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "283만원",
+      "leads7d": 55
+    },
+    {
+      "name": "한한 남성 2640_260625",
+      "target": "한한남",
+      "adCount": 3,
+      "spend7d": "71만원",
+      "leads7d": 15
+    },
+    {
+      "name": "한일 여성 2130_250528",
+      "target": "한일여",
+      "adCount": 9,
+      "spend7d": "121만원",
+      "leads7d": 20
+    }
+  ],
+  "off": [
+    {
+      "name": "아이츠니_한국에서일본여자 (진짜 아이츠니·46213 신규·리드 2)",
+      "target": "한일남",
+      "cpl7": 102062,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 49190,
+      "pass7": 0,
+      "ctr": "2.01%",
+      "pct": 398,
+      "barW": 100
+    },
+    {
+      "name": "내딸이면_제논 (한한여 · 리드 0)",
+      "target": "한한여",
+      "cpl7": 101594,
+      "cpl3m": 42326,
+      "cps7": null,
+      "cps3m": 164780,
+      "pass7": 0,
+      "ctr": "0.88%",
+      "pct": 240,
+      "barW": 100
+    }
+  ],
+  "caution": [
+    {
+      "name": "세나_한국남자들은 왜 (구 아이츠니46190 태깅·리드 13)",
+      "target": "한일남",
+      "cpl7": 36538,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 147338,
+      "pass7": 0,
+      "ctr": "2.92%",
+      "pct": 143,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_2(1차) (3M比 224%)",
+      "target": "한일남",
+      "cpl7": 41660,
+      "cpl3m": 18576,
+      "cps7": null,
+      "cps3m": 94913,
+      "pass7": 1,
+      "ctr": "2.91%",
+      "pct": 224,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 54570,
+      "cpl3m": 28801,
+      "cps7": 436556,
+      "cps3m": 74059,
+      "pass7": 1,
+      "ctr": "1.47%",
+      "pct": 189,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 54940,
+      "cpl3m": 27756,
+      "cps7": 164820,
+      "cps3m": 104855,
+      "pass7": 2,
+      "ctr": "1.63%",
+      "pct": 198,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 45874,
+      "cpl3m": 34791,
+      "cps7": 206433,
+      "cps3m": 170087,
+      "pass7": 2,
+      "ctr": "2.25%",
+      "pct": 132,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범 (통과 0)",
+      "target": "한일남",
+      "cpl7": 52188,
+      "cpl3m": 21028,
+      "cps7": null,
+      "cps3m": 134580,
+      "pass7": 0,
+      "ctr": "1.90%",
+      "pct": 248,
+      "barW": 100
+    }
+  ],
+  "good": [
+    {
+      "name": "한국남친이 좋은 3가지 이유 (메타 리드)",
+      "target": "한일여",
+      "cpl7": 35328,
+      "cpl3m": 103289,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.23%",
+      "pct": 34,
+      "barW": 34,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 27312,
+      "cpl3m": 33351,
+      "cps7": 163873,
+      "cps3m": 181049,
+      "pass7": 1,
+      "ctr": "2.57%",
+      "pct": 82,
+      "barW": 82,
+      "trophy": true
+    },
+    {
+      "name": "[베리] 서재민_그대로 (최다 리드)",
+      "target": "한한여",
+      "cpl7": 47148,
+      "cpl3m": 45174,
+      "cps7": 167160,
+      "cps3m": 113742,
+      "pass7": 11,
+      "ctr": "0.98%",
+      "pct": 104,
+      "barW": 100
+    }
+  ],
+  "unclassified": [
+    "7일(7/6~7/12) 맥락 공유 · 상단 카드는 주간 기준"
+  ]
+},
+{
+  "date": "2026-07-10",
+  "label": "7월 10일",
+  "apiSource": true,
+  "notes": [
+    "리드·통과 = 어드민 API 기준 · 한일여만 메타 픽셀",
+    "⚠️ 최근 주는 선별 진행 중이라 통과·CPS는 잠정(특히 한일남 통과 4건은 미성숙) — 며칠 뒤 상향됨",
+    "능력남 몰리는 이유는 소재명 '데보라' 포함으로 자동분류서 누락 — 실제 리드 정상(OFF 아님)",
+    "세나 광고는 옛 아이츠니(46190) utm_content 복제 → 세나 리드가 '46190아이츠니'로 기록(리드0 아님). 세나 URL utm_content 수정 필요"
+  ],
+  "daily": {
+    "label": "7월 10일",
+    "targets": [
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "39만원",
+        "impressions": 10375,
+        "clicks": 103,
+        "leads": 11,
+        "cpl": 35016,
+        "ctr": "0.99%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "11만원",
+        "impressions": 2852,
+        "clicks": 67,
+        "leads": 0,
+        "cpl": null,
+        "ctr": "2.35%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "39만원",
+        "impressions": 12483,
+        "clicks": 342,
+        "leads": 7,
+        "cpl": 55860,
+        "ctr": "2.74%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "13만원",
+        "impressions": 3423,
+        "clicks": 50,
+        "leads": 3,
+        "cpl": 44761,
+        "ctr": "1.46%"
+      }
+    ]
+  },
+  "dailyTrend": [
+    {
+      "d": "6/29",
+      "results": 10,
+      "spend": 728478,
+      "cpl": 72848
+    },
+    {
+      "d": "6/30",
+      "results": 17,
+      "spend": 771501,
+      "cpl": 45382
+    },
+    {
+      "d": "7/1",
+      "results": 14,
+      "spend": 844864,
+      "cpl": 60347
+    },
+    {
+      "d": "7/2",
+      "results": 18,
+      "spend": 976473,
+      "cpl": 54248
+    },
+    {
+      "d": "7/3",
+      "results": 12,
+      "spend": 1049942,
+      "cpl": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 18,
+      "spend": 1010436,
+      "cpl": 56135
+    },
+    {
+      "d": "7/5",
+      "results": 20,
+      "spend": 1152581,
+      "cpl": 57629
+    },
+    {
+      "d": "7/6",
+      "results": 19,
+      "spend": 1066013,
+      "cpl": 56106
+    },
+    {
+      "d": "7/7",
+      "results": 17,
+      "spend": 1140311,
+      "cpl": 67077
+    },
+    {
+      "d": "7/8",
+      "results": 16,
+      "spend": 1090865,
+      "cpl": 68179
+    },
+    {
+      "d": "7/9",
+      "results": 13,
+      "spend": 1033236,
+      "cpl": 79480
+    },
+    {
+      "d": "7/10",
+      "results": 21,
+      "spend": 1017430,
+      "cpl": 48449
+    },
+    {
+      "d": "7/11",
+      "results": 19,
+      "spend": 957542,
+      "cpl": 50397
+    },
+    {
+      "d": "7/12",
+      "results": 14,
+      "spend": 1203847,
+      "cpl": 85989
+    }
+  ],
+  "kpi": {
+    "off": 2,
+    "caution": 6,
+    "good": 3,
+    "totalSpend": "751만원",
+    "totalLeads": 162,
+    "totalPass": 26
+  },
+  "targets": [
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 44669,
+      "day7CPL": 51469,
+      "day7Leads": 55,
+      "day7Pass": 15,
+      "day7CPS": 188720,
+      "avg3mCPS": 111769,
+      "passRate": "27.3%",
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "283만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 48148,
+      "day7CPL": 47560,
+      "day7Leads": 15,
+      "day7Pass": 7,
+      "day7CPS": 101914,
+      "avg3mCPS": 132772,
+      "passRate": "46.7%",
+      "avg3mCTR": "2.70%",
+      "trend": "up",
+      "adCount": 3,
+      "spend7d": "71만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 26809,
+      "day7CPL": 38211,
+      "day7Leads": 72,
+      "day7Pass": 4,
+      "day7CPS": null,
+      "avg3mCPS": 151777,
+      "passRate": "5.6%*",
+      "avg3mCTR": "2.44%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "275만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": null,
+      "day7CPL": 40461,
+      "day7Leads": 30,
+      "day7Pass": null,
+      "day7CPS": null,
+      "avg3mCPS": null,
+      "passRate": "—",
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 9,
+      "spend7d": "121만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한일 남성 (구+신 통합운영)",
+      "target": "한일남",
+      "adCount": 8,
+      "spend7d": "275만원",
+      "leads7d": 72
+    },
+    {
+      "name": "한한 여성 2131_260406",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "283만원",
+      "leads7d": 55
+    },
+    {
+      "name": "한한 남성 2640_260625",
+      "target": "한한남",
+      "adCount": 3,
+      "spend7d": "71만원",
+      "leads7d": 15
+    },
+    {
+      "name": "한일 여성 2130_250528",
+      "target": "한일여",
+      "adCount": 9,
+      "spend7d": "121만원",
+      "leads7d": 20
+    }
+  ],
+  "off": [
+    {
+      "name": "아이츠니_한국에서일본여자 (진짜 아이츠니·46213 신규·리드 2)",
+      "target": "한일남",
+      "cpl7": 102062,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 49190,
+      "pass7": 0,
+      "ctr": "2.01%",
+      "pct": 398,
+      "barW": 100
+    },
+    {
+      "name": "내딸이면_제논 (한한여 · 리드 0)",
+      "target": "한한여",
+      "cpl7": 101594,
+      "cpl3m": 42326,
+      "cps7": null,
+      "cps3m": 164780,
+      "pass7": 0,
+      "ctr": "0.88%",
+      "pct": 240,
+      "barW": 100
+    }
+  ],
+  "caution": [
+    {
+      "name": "세나_한국남자들은 왜 (구 아이츠니46190 태깅·리드 13)",
+      "target": "한일남",
+      "cpl7": 36538,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": 147338,
+      "pass7": 0,
+      "ctr": "2.92%",
+      "pct": 143,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_2(1차) (3M比 224%)",
+      "target": "한일남",
+      "cpl7": 41660,
+      "cpl3m": 18576,
+      "cps7": null,
+      "cps3m": 94913,
+      "pass7": 1,
+      "ctr": "2.91%",
+      "pct": 224,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 54570,
+      "cpl3m": 28801,
+      "cps7": 436556,
+      "cps3m": 74059,
+      "pass7": 1,
+      "ctr": "1.47%",
+      "pct": 189,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 54940,
+      "cpl3m": 27756,
+      "cps7": 164820,
+      "cps3m": 104855,
+      "pass7": 2,
+      "ctr": "1.63%",
+      "pct": 198,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 45874,
+      "cpl3m": 34791,
+      "cps7": 206433,
+      "cps3m": 170087,
+      "pass7": 2,
+      "ctr": "2.25%",
+      "pct": 132,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범 (통과 0)",
+      "target": "한일남",
+      "cpl7": 52188,
+      "cpl3m": 21028,
+      "cps7": null,
+      "cps3m": 134580,
+      "pass7": 0,
+      "ctr": "1.90%",
+      "pct": 248,
+      "barW": 100
+    }
+  ],
+  "good": [
+    {
+      "name": "한국남친이 좋은 3가지 이유 (메타 리드)",
+      "target": "한일여",
+      "cpl7": 35328,
+      "cpl3m": 103289,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.23%",
+      "pct": 34,
+      "barW": 34,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 27312,
+      "cpl3m": 33351,
+      "cps7": 163873,
+      "cps3m": 181049,
+      "pass7": 1,
+      "ctr": "2.57%",
+      "pct": 82,
+      "barW": 82,
+      "trophy": true
+    },
+    {
+      "name": "[베리] 서재민_그대로 (최다 리드)",
+      "target": "한한여",
+      "cpl7": 47148,
+      "cpl3m": 45174,
+      "cps7": 167160,
+      "cps3m": 113742,
+      "pass7": 11,
+      "ctr": "0.98%",
+      "pct": 104,
+      "barW": 100
+    }
+  ],
+  "unclassified": [
+    "7일(7/6~7/12) 맥락 공유 · 상단 카드는 주간 기준"
+  ]
+},
+{
+  "date": "2026-07-09",
+  "label": "7월 9일",
+  "apiSource": true,
+  "notes": [
+    "리드·통과 = 어드민 API 기준 · 한일여만 메타 픽셀(7/8 실제4·7/9 실제3 수기보정)",
+    "한일남 '세나' UTM 미설정 — 7일 47만원 지출에 추적 리드 0 (랜딩 전환 점검 필요)",
+    "7/9는 선별 진행 중(미선별 12/22)이라 하루 통과율은 잠정",
+    "능력남 몰리는 이유: 소재명에 모델명 '데보라' 포함으로 분류 오류였음 → 실제 리드 정상 유입(정정 반영)"
+  ],
+  "daily": {
+    "label": "7월 9일",
+    "targets": [
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "38만원",
+        "impressions": 9194,
+        "clicks": 110,
+        "leads": 5,
+        "cpl": 76933,
+        "ctr": "1.20%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "11만원",
+        "impressions": 2267,
+        "clicks": 51,
+        "leads": 0,
+        "cpl": null,
+        "ctr": "2.25%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "39만원",
+        "impressions": 12264,
+        "clicks": 322,
+        "leads": 5,
+        "cpl": 78246,
+        "ctr": "2.63%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "14만원",
+        "impressions": 3680,
+        "clicks": 66,
+        "leads": 3,
+        "cpl": 48259,
+        "ctr": "1.79%"
+      }
+    ]
+  },
+  "dailyTrend": [
+    {
+      "d": "6/26",
+      "results": 20,
+      "spend": 835500,
+      "cpl": 41775
+    },
+    {
+      "d": "6/27",
+      "results": 16,
+      "spend": 728820,
+      "cpl": 45551
+    },
+    {
+      "d": "6/28",
+      "results": 18,
+      "spend": 844701,
+      "cpl": 46928
+    },
+    {
+      "d": "6/29",
+      "results": 10,
+      "spend": 728478,
+      "cpl": 72848
+    },
+    {
+      "d": "6/30",
+      "results": 17,
+      "spend": 771501,
+      "cpl": 45382
+    },
+    {
+      "d": "7/1",
+      "results": 14,
+      "spend": 844864,
+      "cpl": 60347
+    },
+    {
+      "d": "7/2",
+      "results": 18,
+      "spend": 976473,
+      "cpl": 54248
+    },
+    {
+      "d": "7/3",
+      "results": 12,
+      "spend": 1049942,
+      "cpl": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 18,
+      "spend": 1010436,
+      "cpl": 56135
+    },
+    {
+      "d": "7/5",
+      "results": 20,
+      "spend": 1152581,
+      "cpl": 57629
+    },
+    {
+      "d": "7/6",
+      "results": 19,
+      "spend": 1066013,
+      "cpl": 56106
+    },
+    {
+      "d": "7/7",
+      "results": 17,
+      "spend": 1140311,
+      "cpl": 67077
+    },
+    {
+      "d": "7/8",
+      "results": 16,
+      "spend": 1090849,
+      "cpl": 68178
+    },
+    {
+      "d": "7/9",
+      "results": 13,
+      "spend": 1032973,
+      "cpl": 79459
+    }
+  ],
+  "kpi": {
+    "off": 2,
+    "caution": 6,
+    "good": 6,
+    "totalSpend": "733만원",
+    "totalLeads": 176,
+    "totalPass": 52
+  },
+  "targets": [
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 42326,
+      "day7CPL": 51384,
+      "day7Leads": 55,
+      "day7Pass": 27,
+      "day7CPS": 104670,
+      "avg3mCPS": 106697,
+      "passRate": "49.1%",
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "283만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 43231,
+      "day7CPL": 44929,
+      "day7Leads": 11,
+      "day7Pass": 6,
+      "day7CPS": 82369,
+      "avg3mCPS": 113066,
+      "passRate": "54.5%",
+      "avg3mCTR": "2.70%",
+      "trend": "up",
+      "adCount": 2,
+      "spend7d": "49만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 25618,
+      "day7CPL": 29668,
+      "day7Leads": 92,
+      "day7Pass": 19,
+      "day7CPS": 143657,
+      "avg3mCPS": 147338,
+      "passRate": "20.7%",
+      "avg3mCTR": "2.44%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "273만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": 103289,
+      "day7CPL": 70894,
+      "day7Leads": 18,
+      "day7Pass": null,
+      "day7CPS": null,
+      "avg3mCPS": null,
+      "passRate": "—",
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 9,
+      "spend7d": "128만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한일 남성 2640_260406 (구)",
+      "target": "한일남",
+      "adCount": 5,
+      "spend7d": "157만원",
+      "leads7d": 42
+    },
+    {
+      "name": "한일 남성 2640_260611 (신)",
+      "target": "한일남",
+      "adCount": 4,
+      "spend7d": "121만원",
+      "leads7d": 50
+    },
+    {
+      "name": "한한 여성 2131_260406",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "283만원",
+      "leads7d": 55
+    },
+    {
+      "name": "한한 남성 2640_260625",
+      "target": "한한남",
+      "adCount": 2,
+      "spend7d": "49만원",
+      "leads7d": 11
+    },
+    {
+      "name": "한일 여성 2130_250528",
+      "target": "한일여",
+      "adCount": 9,
+      "spend7d": "128만원",
+      "leads7d": 18
+    }
+  ],
+  "off": [
+    {
+      "name": "세나_한국남자들은 왜 (리드 0 · UTM 미설정)",
+      "target": "한일남",
+      "cpl7": 474914,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.87%",
+      "pct": 900,
+      "barW": 100
+    },
+    {
+      "name": "세나 (한일여 세트 · 리드 0)",
+      "target": "한일여",
+      "cpl7": 176407,
+      "cpl3m": 103289,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "1.11%",
+      "pct": 400,
+      "barW": 100
+    }
+  ],
+  "caution": [
+    {
+      "name": "능력남 몰리는 이유 (분류 버그 정정)",
+      "target": "한한남",
+      "cpl7": 50504,
+      "cpl3m": 33367,
+      "cps7": 84173,
+      "cps3m": 61966,
+      "pass7": 3,
+      "ctr": "1.67%",
+      "pct": 151,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상 (고기+담벼락)",
+      "target": "한한여",
+      "cpl7": 55336,
+      "cpl3m": 28801,
+      "cps7": 129116,
+      "cps3m": 74059,
+      "pass7": 6,
+      "ctr": "1.65%",
+      "pct": 192,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범 (통과CPS 악화)",
+      "target": "한일남",
+      "cpl7": 35130,
+      "cpl3m": 21028,
+      "cps7": 152231,
+      "cps3m": 134580,
+      "pass7": 3,
+      "ctr": "1.86%",
+      "pct": 167,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_2(1차)",
+      "target": "한일남",
+      "cpl7": 24145,
+      "cpl3m": 18576,
+      "cps7": 68985,
+      "cps3m": 94913,
+      "pass7": 7,
+      "ctr": "2.77%",
+      "pct": 130,
+      "barW": 100
+    },
+    {
+      "name": "[베리] 결국 (통과 0)",
+      "target": "한일남",
+      "cpl7": 24494,
+      "cpl3m": 26662,
+      "cps7": null,
+      "cps3m": 169571,
+      "pass7": 0,
+      "ctr": "2.23%",
+      "pct": 92,
+      "barW": 92
+    },
+    {
+      "name": "일본 여자랑 결혼하지 마세요 (통과 0)",
+      "target": "한일남",
+      "cpl7": 26950,
+      "cpl3m": 26036,
+      "cps7": null,
+      "cps3m": 291608,
+      "pass7": 0,
+      "ctr": "2.58%",
+      "pct": 104,
+      "barW": 100
+    }
+  ],
+  "good": [
+    {
+      "name": "아이츠니_한남일녀 잘맞는이유",
+      "target": "한일남",
+      "cpl7": 4624,
+      "cpl3m": 6752,
+      "cps7": 55487,
+      "cps3m": 49190,
+      "pass7": 1,
+      "ctr": "2.38%",
+      "pct": 68,
+      "barW": 68,
+      "trophy": true
+    },
+    {
+      "name": "한국남친이 좋은 3가지 이유 (메타 리드)",
+      "target": "한일여",
+      "cpl7": 34012,
+      "cpl3m": 103289,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.54%",
+      "pct": 33,
+      "barW": 33,
+      "trophy": true
+    },
+    {
+      "name": "4월 2주차 AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 28119,
+      "cpl3m": 34791,
+      "cps7": 79670,
+      "cps3m": 170087,
+      "pass7": 6,
+      "ctr": "2.19%",
+      "pct": 81,
+      "barW": 81,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 27766,
+      "cpl3m": 33351,
+      "cps7": 83297,
+      "cps3m": 181049,
+      "pass7": 2,
+      "ctr": "2.19%",
+      "pct": 83,
+      "barW": 83
+    },
+    {
+      "name": "[베리]30대면 아줌마 아니에요",
+      "target": "한한남",
+      "cpl7": 40283,
+      "cpl3m": 42720,
+      "cps7": 80565,
+      "cps3m": 72625,
+      "pass7": 3,
+      "ctr": "3.00%",
+      "pct": 94,
+      "barW": 94
+    },
+    {
+      "name": "[베리] 서재민_그대로",
+      "target": "한한여",
+      "cpl7": 46947,
+      "cpl3m": 45174,
+      "cps7": 102178,
+      "cps3m": 113742,
+      "pass7": 17,
+      "ctr": "1.08%",
+      "pct": 104,
+      "barW": 100
+    }
+  ],
+  "unclassified": [
+    "네이버 검색·UTM(none) 리드는 메타 성과에서 제외"
+  ]
+},
+{
+  "date": "2026-07-08",
+  "label": "7월 8일",
+  "apiSource": true,
+  "notes": [
+    "리드·통과 = 어드민 API(실제 DB) 기준 · 한일여만 메타 픽셀 기준(통과 데이터 없음)",
+    "한일남 '세나' 소재 UTM 미설정 — 7일 46만원 지출에 추적 리드 0 (랜딩 전환 점검 필요)",
+    "한일여는 UTM 미설정이라 메타 픽셀 기준(7/8 하루는 실제 3건으로 보정)",
+    "7/8은 선별 진행 중(미선별 22/26)이라 하루 통과율은 잠정치",
+    "능력남 몰리는 이유: 소재명에 모델명 '데보라' 포함으로 분류 오류였음 → 실제 리드 정상 유입(정정 반영)"
+  ],
+  "daily": {
+    "label": "7월 8일",
+    "targets": [
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "43만원",
+        "impressions": 10850,
+        "clicks": 123,
+        "leads": 6,
+        "cpl": 70948,
+        "ctr": "1.13%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "10만원",
+        "impressions": 2476,
+        "clicks": 52,
+        "leads": 2,
+        "cpl": 49539,
+        "ctr": "2.10%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "37만원",
+        "impressions": 11379,
+        "clicks": 286,
+        "leads": 6,
+        "cpl": 62065,
+        "ctr": "2.51%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "19만원",
+        "impressions": 5515,
+        "clicks": 79,
+        "leads": 4,
+        "cpl": 48412,
+        "ctr": "1.43%"
+      }
+    ]
+  },
+  "dailyTrend": [
+    {
+      "d": "6/25",
+      "results": 23,
+      "spend": 743145,
+      "cpl": 32311
+    },
+    {
+      "d": "6/26",
+      "results": 20,
+      "spend": 835500,
+      "cpl": 41775
+    },
+    {
+      "d": "6/27",
+      "results": 16,
+      "spend": 728820,
+      "cpl": 45551
+    },
+    {
+      "d": "6/28",
+      "results": 18,
+      "spend": 844701,
+      "cpl": 46928
+    },
+    {
+      "d": "6/29",
+      "results": 10,
+      "spend": 728478,
+      "cpl": 72848
+    },
+    {
+      "d": "6/30",
+      "results": 17,
+      "spend": 771501,
+      "cpl": 45382
+    },
+    {
+      "d": "7/1",
+      "results": 14,
+      "spend": 844864,
+      "cpl": 60347
+    },
+    {
+      "d": "7/2",
+      "results": 18,
+      "spend": 976473,
+      "cpl": 54248
+    },
+    {
+      "d": "7/3",
+      "results": 12,
+      "spend": 1049942,
+      "cpl": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 18,
+      "spend": 1010436,
+      "cpl": 56135
+    },
+    {
+      "d": "7/5",
+      "results": 20,
+      "spend": 1152581,
+      "cpl": 57629
+    },
+    {
+      "d": "7/6",
+      "results": 19,
+      "spend": 1066013,
+      "cpl": 56106
+    },
+    {
+      "d": "7/7",
+      "results": 17,
+      "spend": 1140311,
+      "cpl": 67077
+    },
+    {
+      "d": "7/8",
+      "results": 16,
+      "spend": 1090800,
+      "cpl": 68175
+    }
+  ],
+  "kpi": {
+    "off": 2,
+    "caution": 6,
+    "good": 6,
+    "totalSpend": "748만원",
+    "totalLeads": 186,
+    "totalPass": 52
+  },
+  "targets": [
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 42326,
+      "day7CPL": 45152,
+      "day7Leads": 63,
+      "day7Pass": 27,
+      "day7CPS": 105354,
+      "avg3mCPS": 106697,
+      "passRate": "42.9%",
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "284만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 43231,
+      "day7CPL": 46372,
+      "day7Leads": 14,
+      "day7Pass": 5,
+      "day7CPS": 129841,
+      "avg3mCPS": 113066,
+      "passRate": "35.7%",
+      "avg3mCTR": "2.70%",
+      "trend": "up",
+      "adCount": 3,
+      "spend7d": "65만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 25618,
+      "day7CPL": 29974,
+      "day7Leads": 91,
+      "day7Pass": 20,
+      "day7CPS": 136383,
+      "avg3mCPS": 147338,
+      "passRate": "22.0%",
+      "avg3mCTR": "2.40%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "273만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": 103289,
+      "day7CPL": 69880,
+      "day7Leads": 18,
+      "day7Pass": null,
+      "day7CPS": null,
+      "avg3mCPS": null,
+      "passRate": "—",
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 10,
+      "spend7d": "126만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한일 남성 2640_260406 (구)",
+      "target": "한일남",
+      "adCount": 6,
+      "spend7d": "157만원",
+      "leads7d": 42
+    },
+    {
+      "name": "한일 남성 2640_260611 (신)",
+      "target": "한일남",
+      "adCount": 4,
+      "spend7d": "115만원",
+      "leads7d": 49
+    },
+    {
+      "name": "한한 여성 2131_260406",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "284만원",
+      "leads7d": 63
+    },
+    {
+      "name": "한한 남성 2640_260625",
+      "target": "한한남",
+      "adCount": 3,
+      "spend7d": "65만원",
+      "leads7d": 14
+    },
+    {
+      "name": "한일 여성 2130_250528",
+      "target": "한일여",
+      "adCount": 10,
+      "spend7d": "126만원",
+      "leads7d": 16
+    }
+  ],
+  "off": [
+    {
+      "name": "세나_한국남자들은 왜 (리드 0 · UTM 미설정)",
+      "target": "한일남",
+      "cpl7": 459053,
+      "cpl3m": 25618,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.84%",
+      "pct": 800,
+      "barW": 100
+    },
+    {
+      "name": "제논_내딸이면 (통과 0)",
+      "target": "한한남",
+      "cpl7": 227587,
+      "cpl3m": 43231,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.24%",
+      "pct": 526,
+      "barW": 100
+    }
+  ],
+  "caution": [
+    {
+      "name": "능력남 몰리는 이유 (분류 버그 정정)",
+      "target": "한한남",
+      "cpl7": 42641,
+      "cpl3m": 33367,
+      "cps7": 106604,
+      "cps3m": 61966,
+      "pass7": 2,
+      "ctr": "1.73%",
+      "pct": 128,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상 (고기+담벼락)",
+      "target": "한한여",
+      "cpl7": 48174,
+      "cpl3m": 28801,
+      "cps7": 136492,
+      "cps3m": 74059,
+      "pass7": 6,
+      "ctr": "1.61%",
+      "pct": 167,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차 AI_2(1차)",
+      "target": "한일남",
+      "cpl7": 29093,
+      "cpl3m": 18576,
+      "cps7": 78966,
+      "cps3m": 94913,
+      "pass7": 7,
+      "ctr": "2.58%",
+      "pct": 157,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범 (통과CPS 악화)",
+      "target": "한일남",
+      "cpl7": 31726,
+      "cpl3m": 21028,
+      "cps7": 206219,
+      "cps3m": 134580,
+      "pass7": 2,
+      "ctr": "1.81%",
+      "pct": 151,
+      "barW": 100
+    },
+    {
+      "name": "[베리] 결국 (통과 1건·CPS 급등)",
+      "target": "한일남",
+      "cpl7": 27295,
+      "cpl3m": 26662,
+      "cps7": 327535,
+      "cps3m": 169571,
+      "pass7": 1,
+      "ctr": "2.23%",
+      "pct": 102,
+      "barW": 100
+    },
+    {
+      "name": "일본 여자랑 결혼하지 마세요 (통과 0)",
+      "target": "한일남",
+      "cpl7": 23850,
+      "cpl3m": 26036,
+      "cps7": null,
+      "cps3m": 291608,
+      "pass7": 0,
+      "ctr": "2.58%",
+      "pct": 92,
+      "barW": 92
+    }
+  ],
+  "good": [
+    {
+      "name": "아이츠니_한남일녀 잘맞는이유",
+      "target": "한일남",
+      "cpl7": 5966,
+      "cpl3m": 6752,
+      "cps7": 38778,
+      "cps3m": 49190,
+      "pass7": 2,
+      "ctr": "2.53%",
+      "pct": 88,
+      "barW": 88,
+      "trophy": true
+    },
+    {
+      "name": "한국남친이 좋은 3가지 이유 (메타 리드)",
+      "target": "한일여",
+      "cpl7": 34107,
+      "cpl3m": 103289,
+      "cps7": null,
+      "cps3m": null,
+      "pass7": 0,
+      "ctr": "2.54%",
+      "pct": 33,
+      "barW": 33,
+      "trophy": true
+    },
+    {
+      "name": "[베리]30대면 아줌마 아니에요",
+      "target": "한한남",
+      "cpl7": 26052,
+      "cpl3m": 42720,
+      "cps7": 69471,
+      "cps3m": 72625,
+      "pass7": 3,
+      "ctr": "3.14%",
+      "pct": 61,
+      "barW": 61,
+      "trophy": true
+    },
+    {
+      "name": "4월 2주차 AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 27248,
+      "cpl3m": 34791,
+      "cps7": 77204,
+      "cps3m": 170087,
+      "pass7": 6,
+      "ctr": "2.21%",
+      "pct": 78,
+      "barW": 78,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 28790,
+      "cpl3m": 33351,
+      "cps7": 86372,
+      "cps3m": 181049,
+      "pass7": 2,
+      "ctr": "1.99%",
+      "pct": 86,
+      "barW": 86
+    },
+    {
+      "name": "[베리] 서재민_그대로",
+      "target": "한한여",
+      "cpl7": 43497,
+      "cpl3m": 45174,
+      "cps7": 103305,
+      "cps3m": 113742,
+      "pass7": 16,
+      "ctr": "1.13%",
+      "pct": 96,
+      "barW": 96
+    }
+  ],
+  "unclassified": [
+    "네이버 검색·UTM(none) 리드는 메타 성과에서 제외"
+  ]
+},
+{
+  "date": "2026-07-07",
+  "label": "7월 7일",
+  "daily": {
+    "label": "7월 6일",
+    "targets": [
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "39만원",
+        "impressions": 9478,
+        "clicks": 109,
+        "leads": 12,
+        "cpl": 32478,
+        "ctr": "1.15%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "9만원",
+        "impressions": 2243,
+        "clicks": 51,
+        "leads": 0,
+        "cpl": null,
+        "ctr": "2.27%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "40만원",
+        "impressions": 14014,
+        "clicks": 320,
+        "leads": 8,
+        "cpl": 49443,
+        "ctr": "2.28%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "19만원",
+        "impressions": 5719,
+        "clicks": 74,
+        "leads": 1,
+        "cpl": 186181,
+        "ctr": "1.29%"
+      }
+    ]
+  },
+  "dailyTrend": [
+    {
+      "d": "6/23",
+      "results": 17,
+      "spend": 697739,
+      "cpl": 41043
+    },
+    {
+      "d": "6/24",
+      "results": 10,
+      "spend": 733855,
+      "cpl": 73386
+    },
+    {
+      "d": "6/25",
+      "results": 14,
+      "spend": 743145,
+      "cpl": 53082
+    },
+    {
+      "d": "6/26",
+      "results": 16,
+      "spend": 835500,
+      "cpl": 52219
+    },
+    {
+      "d": "6/27",
+      "results": 13,
+      "spend": 728820,
+      "cpl": 56063
+    },
+    {
+      "d": "6/28",
+      "results": 16,
+      "spend": 844701,
+      "cpl": 52794
+    },
+    {
+      "d": "6/29",
+      "results": 8,
+      "spend": 728478,
+      "cpl": 91060
+    },
+    {
+      "d": "6/30",
+      "results": 11,
+      "spend": 771501,
+      "cpl": 70136
+    },
+    {
+      "d": "7/1",
+      "results": 13,
+      "spend": 844864,
+      "cpl": 64990
+    },
+    {
+      "d": "7/2",
+      "results": 23,
+      "spend": 976473,
+      "cpl": 42455
+    },
+    {
+      "d": "7/3",
+      "results": 12,
+      "spend": 1049942,
+      "cpl": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 16,
+      "spend": 1010436,
+      "cpl": 63152
+    },
+    {
+      "d": "7/5",
+      "results": 17,
+      "spend": 1152581,
+      "cpl": 67799
+    },
+    {
+      "d": "7/6",
+      "results": 21,
+      "spend": 1065901,
+      "cpl": 50757
+    }
+  ],
+  "kpi": {
+    "off": 6,
+    "caution": 6,
+    "good": 8,
+    "totalSpend": "687만원",
+    "totalLeads": 113
+  },
+  "targets": [
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 44226,
+      "day7CPL": 48810,
+      "day7Leads": 58,
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "283만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 90770,
+      "day7CPL": 89904,
+      "day7Leads": 6,
+      "avg3mCTR": "2.73%",
+      "trend": "down",
+      "adCount": 3,
+      "spend7d": "54만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 55520,
+      "day7CPL": 69527,
+      "day7Leads": 38,
+      "avg3mCTR": "2.79%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "264만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": 122018,
+      "day7CPL": 78116,
+      "day7Leads": 11,
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 14,
+      "spend7d": "86만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한한여_잠재",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "283만원",
+      "leads7d": 58
+    },
+    {
+      "name": "한한남_등록",
+      "target": "한한남",
+      "adCount": 3,
+      "spend7d": "54만원",
+      "leads7d": 6
+    },
+    {
+      "name": "한일남_등록(구)",
+      "target": "한일남",
+      "adCount": 7,
+      "spend7d": "175만원",
+      "leads7d": 20
+    },
+    {
+      "name": "한일남_등록(신)",
+      "target": "한일남",
+      "adCount": 5,
+      "spend7d": "89만원",
+      "leads7d": 18
+    },
+    {
+      "name": "한일여_잠재",
+      "target": "한일여",
+      "adCount": 14,
+      "spend7d": "86만원",
+      "leads7d": 11
+    }
+  ],
+  "off": [
+    {
+      "name": "제논_내딸이면",
+      "target": "한한남",
+      "cpl7": 227587,
+      "cpl3m": 90770,
+      "ctr": "2.24%",
+      "pct": 251,
+      "barW": 100
+    },
+    {
+      "name": "아이츠니_한남_일녀_잘맞는이유는",
+      "target": "한일남",
+      "cpl7": 112870,
+      "cpl3m": 55520,
+      "ctr": "2.45%",
+      "pct": 203,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차_한일 남성 타겟_AI_2(1차)",
+      "target": "한일남",
+      "cpl7": 85711,
+      "cpl3m": 55520,
+      "ctr": "2.40%",
+      "pct": 154,
+      "barW": 100
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "cpl7": 85672,
+      "cpl3m": 55520,
+      "ctr": "2.07%",
+      "pct": 154,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차_한일 남성 타겟_AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 78596,
+      "cpl3m": 55520,
+      "ctr": "2.34%",
+      "pct": 142,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범",
+      "target": "한일남",
+      "cpl7": 73817,
+      "cpl3m": 55520,
+      "ctr": "1.87%",
+      "pct": 133,
+      "barW": 100
+    }
+  ],
+  "caution": [
+    {
+      "name": "세나_한국남자들은 왜",
+      "target": "한일남",
+      "cpl7": 71355,
+      "cpl3m": 55520,
+      "ctr": "2.93%",
+      "pct": 129,
+      "barW": 100
+    },
+    {
+      "name": "내딸이면_제논",
+      "target": "한한여",
+      "cpl7": 52874,
+      "cpl3m": 44226,
+      "ctr": "1.63%",
+      "pct": 120,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 51912,
+      "cpl3m": 44226,
+      "ctr": "1.34%",
+      "pct": 117,
+      "barW": 100
+    },
+    {
+      "name": "내딸이면_데보라_2",
+      "target": "한한여",
+      "cpl7": 49353,
+      "cpl3m": 44226,
+      "ctr": "1.36%",
+      "pct": 112,
+      "barW": 100
+    },
+    {
+      "name": "[베리] 서재민_그대로",
+      "target": "한한여",
+      "cpl7": 48720,
+      "cpl3m": 44226,
+      "ctr": "1.17%",
+      "pct": 110,
+      "barW": 100
+    },
+    {
+      "name": "[베리] 결국 일본 여자를 선택하는 이유",
+      "target": "한일남",
+      "cpl7": 56414,
+      "cpl3m": 55520,
+      "ctr": "2.29%",
+      "pct": 102,
+      "barW": 100
+    }
+  ],
+  "good": [
+    {
+      "name": "한국남친이 좋은 3가지 이유",
+      "target": "한일여",
+      "cpl7": 44008,
+      "cpl3m": 122018,
+      "ctr": "2.60%",
+      "pct": 36,
+      "barW": 36,
+      "trophy": true
+    },
+    {
+      "name": "고굽남",
+      "target": "한일여",
+      "cpl7": 43960,
+      "cpl3m": 122018,
+      "ctr": "1.95%",
+      "pct": 36,
+      "barW": 36,
+      "trophy": true
+    },
+    {
+      "name": "셀카남",
+      "target": "한일여",
+      "cpl7": 44076,
+      "cpl3m": 122018,
+      "ctr": "0.84%",
+      "pct": 36,
+      "barW": 36,
+      "trophy": true
+    },
+    {
+      "name": "다정한_고기",
+      "target": "한일여",
+      "cpl7": 48189,
+      "cpl3m": 122018,
+      "ctr": "1.65%",
+      "pct": 39,
+      "barW": 39,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자랑 결혼하지 마세요",
+      "target": "한일남",
+      "cpl7": 28572,
+      "cpl3m": 55520,
+      "ctr": "2.77%",
+      "pct": 51,
+      "barW": 51,
+      "trophy": true
+    },
+    {
+      "name": "능력남 몰리는 이유",
+      "target": "한한남",
+      "cpl7": 61260,
+      "cpl3m": 90770,
+      "ctr": "1.91%",
+      "pct": 67,
+      "barW": 67
+    },
+    {
+      "name": "[베리]30대면 아줌마 아니에요",
+      "target": "한한남",
+      "cpl7": 64028,
+      "cpl3m": 90770,
+      "ctr": "3.55%",
+      "pct": 71,
+      "barW": 71
+    },
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 42249,
+      "cpl3m": 44226,
+      "ctr": "1.43%",
+      "pct": 96,
+      "barW": 96
+    }
+  ],
+  "unclassified": [
+    "리드 - 잠재 - 봄 프로모션 리타게팅"
+  ]
 },
 {
   "date": "2026-07-05",
@@ -320,54 +4097,405 @@ const REPORTS = [
   "daily": {
     "label": "7월 4일",
     "targets": [
-      { "id": "한한여", "emoji": "🟣", "spend": "38만원", "impressions": 9968,  "clicks": 132, "leads": 8, "cpl": 48094, "ctr": "1.32%" },
-      { "id": "한한남", "emoji": "🔵", "spend": "8만원",  "impressions": 2578,  "clicks": 72,  "leads": 0, "cpl": null,  "ctr": "2.79%" },
-      { "id": "한일남", "emoji": "🩷", "spend": "40만원", "impressions": 14267, "clicks": 333, "leads": 8, "cpl": 50169, "ctr": "2.33%" },
-      { "id": "한일여", "emoji": "🟢", "spend": "14만원", "impressions": 3967,  "clicks": 65,  "leads": 2, "cpl": 70076, "ctr": "1.64%" }
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "38만원",
+        "impressions": 9968,
+        "clicks": 132,
+        "leads": 8,
+        "cpl": 48094,
+        "ctr": "1.32%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "8만원",
+        "impressions": 2578,
+        "clicks": 72,
+        "leads": 0,
+        "cpl": null,
+        "ctr": "2.79%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "40만원",
+        "impressions": 14267,
+        "clicks": 333,
+        "leads": 6,
+        "cpl": 66891,
+        "ctr": "2.33%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "14만원",
+        "impressions": 3967,
+        "clicks": 65,
+        "leads": 2,
+        "cpl": 70076,
+        "ctr": "1.64%"
+      }
     ]
   },
+  "dailyTrend": [
+    {
+      "d": "6/21",
+      "results": 23,
+      "spend": 994839,
+      "cpl": 43254
+    },
+    {
+      "d": "6/22",
+      "results": 17,
+      "spend": 874004,
+      "cpl": 51412
+    },
+    {
+      "d": "6/23",
+      "results": 17,
+      "spend": 697739,
+      "cpl": 41043
+    },
+    {
+      "d": "6/24",
+      "results": 10,
+      "spend": 733855,
+      "cpl": 73386
+    },
+    {
+      "d": "6/25",
+      "results": 14,
+      "spend": 743145,
+      "cpl": 53082
+    },
+    {
+      "d": "6/26",
+      "results": 16,
+      "spend": 835500,
+      "cpl": 52219
+    },
+    {
+      "d": "6/27",
+      "results": 13,
+      "spend": 728820,
+      "cpl": 56063
+    },
+    {
+      "d": "6/28",
+      "results": 16,
+      "spend": 844701,
+      "cpl": 52794
+    },
+    {
+      "d": "6/29",
+      "results": 8,
+      "spend": 728478,
+      "cpl": 91060
+    },
+    {
+      "d": "6/30",
+      "results": 11,
+      "spend": 771501,
+      "cpl": 70136
+    },
+    {
+      "d": "7/1",
+      "results": 13,
+      "spend": 844864,
+      "cpl": 64990
+    },
+    {
+      "d": "7/2",
+      "results": 23,
+      "spend": 976473,
+      "cpl": 42455
+    },
+    {
+      "d": "7/3",
+      "results": 12,
+      "spend": 1049942,
+      "cpl": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 16,
+      "spend": 1010436,
+      "cpl": 63152
+    }
+  ],
   "kpi": {
-    "off": 6,
-    "caution": 4,
-    "good": 7,
+    "off": 7,
+    "caution": 3,
+    "good": 9,
     "totalSpend": "623만원",
-    "totalLeads": 107
+    "totalLeads": 99
   },
   "targets": [
-    { "id": "한한여", "emoji": "🟣", "avg3mCPL": 44420,  "day7CPL": 53844, "day7Leads": 52, "avg3mCTR": "1.22%", "trend": "up",   "adCount": 6,  "spend7d": "280만원" },
-    { "id": "한한남", "emoji": "🔵", "avg3mCPL": 100395, "day7CPL": 91695, "day7Leads": 5,  "avg3mCTR": "2.72%", "trend": "down", "adCount": 3,  "spend7d": "46만원"  },
-    { "id": "한일남", "emoji": "🩷", "avg3mCPL": 47168,  "day7CPL": 59531, "day7Leads": 42, "avg3mCTR": "2.77%", "trend": "up",   "adCount": 8,  "spend7d": "250만원" },
-    { "id": "한일여", "emoji": "🟢", "avg3mCPL": 103860, "day7CPL": 58465, "day7Leads": 8,  "avg3mCTR": "1.45%", "trend": "good", "adCount": 14, "spend7d": "47만원"  }
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 44226,
+      "day7CPL": 53844,
+      "day7Leads": 52,
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "280만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 90770,
+      "day7CPL": 76413,
+      "day7Leads": 6,
+      "avg3mCTR": "2.73%",
+      "trend": "good",
+      "adCount": 3,
+      "spend7d": "46만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 55520,
+      "day7CPL": 75767,
+      "day7Leads": 33,
+      "avg3mCTR": "2.79%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "250만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": 122018,
+      "day7CPL": 58465,
+      "day7Leads": 8,
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 14,
+      "spend7d": "47만원"
+    }
   ],
   "campaigns": [
-    { "name": "한한여_잠재",     "target": "한한여", "adCount": 6,  "spend7d": "280만원", "leads7d": 52 },
-    { "name": "한한남_등록",     "target": "한한남", "adCount": 3,  "spend7d": "46만원",  "leads7d": 5  },
-    { "name": "한일남_등록(구)", "target": "한일남", "adCount": 7,  "spend7d": "179만원", "leads7d": 21 },
-    { "name": "한일남_등록(신)", "target": "한일남", "adCount": 5,  "spend7d": "71만원",  "leads7d": 21 },
-    { "name": "한일여_잠재",     "target": "한일여", "adCount": 14, "spend7d": "47만원",  "leads7d": 8  }
+    {
+      "name": "한한여_잠재",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "280만원",
+      "leads7d": 52
+    },
+    {
+      "name": "한한남_등록",
+      "target": "한한남",
+      "adCount": 3,
+      "spend7d": "46만원",
+      "leads7d": 6
+    },
+    {
+      "name": "한일남_등록(구)",
+      "target": "한일남",
+      "adCount": 7,
+      "spend7d": "179만원",
+      "leads7d": 19
+    },
+    {
+      "name": "한일남_등록(신)",
+      "target": "한일남",
+      "adCount": 5,
+      "spend7d": "71만원",
+      "leads7d": 14
+    },
+    {
+      "name": "한일여_잠재",
+      "target": "한일여",
+      "adCount": 14,
+      "spend7d": "47만원",
+      "leads7d": 8
+    }
   ],
   "off": [
-    { "name": "4월 2주차_한일 남성 타겟_AI_2(1차)", "target": "한일남", "cpl7": 112164, "cpl3m": 47168, "ctr": "2.44%", "pct": 238, "barW": 100 },
-    { "name": "일본 여자에 환상 가지지 마세요",      "target": "한일남", "cpl7": 75480,  "cpl3m": 47168, "ctr": "2.09%", "pct": 160, "barW": 100 },
-    { "name": "아이츠니_한남_일녀_잘맞는이유는",     "target": "한일남", "cpl7": 64938,  "cpl3m": 47168, "ctr": "2.37%", "pct": 138, "barW": 100 },
-    { "name": "[베리] 서재민_그대로",               "target": "한한여", "cpl7": 59646,  "cpl3m": 44420, "ctr": "1.18%", "pct": 134, "barW": 100 },
-    { "name": "제논_내딸이면",                      "target": "한한남", "cpl7": null,   "cpl3m": 100395, "ctr": "2.29%", "pct": null, "barW": 100, "pctLabel": "19만원 지출 · 결과 0건 🚨" },
-    { "name": "일본 여자랑 결혼하지 마세요",         "target": "한일남", "cpl7": null,   "cpl3m": 47168,  "ctr": "2.58%", "pct": null, "barW": 100, "pctLabel": "7만원 지출 · 결과 0건" }
+    {
+      "name": "아이츠니_한남_일녀_잘맞는이유는",
+      "target": "한일남",
+      "cpl7": 129876,
+      "cpl3m": 55520,
+      "ctr": "2.37%",
+      "pct": 234,
+      "barW": 100
+    },
+    {
+      "name": "제논_내딸이면",
+      "target": "한한남",
+      "cpl7": 192815,
+      "cpl3m": 90770,
+      "ctr": "2.29%",
+      "pct": 212,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차_한일 남성 타겟_AI_2(1차)",
+      "target": "한일남",
+      "cpl7": 112164,
+      "cpl3m": 55520,
+      "ctr": "2.44%",
+      "pct": 202,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범",
+      "target": "한일남",
+      "cpl7": 83993,
+      "cpl3m": 55520,
+      "ctr": "1.84%",
+      "pct": 151,
+      "barW": 100
+    },
+    {
+      "name": "[베리] 서재민_그대로",
+      "target": "한한여",
+      "cpl7": 59646,
+      "cpl3m": 44226,
+      "ctr": "1.18%",
+      "pct": 135,
+      "barW": 100
+    },
+    {
+      "name": "[베리] 결국 일본 여자를 선택하는 이유",
+      "target": "한일남",
+      "cpl7": 72956,
+      "cpl3m": 55520,
+      "ctr": "2.19%",
+      "pct": 131,
+      "barW": 100
+    },
+    {
+      "name": "일본 여자랑 결혼하지 마세요",
+      "target": "한일남",
+      "cpl7": 68224,
+      "cpl3m": 55520,
+      "ctr": "2.58%",
+      "pct": 123,
+      "barW": 100
+    }
   ],
   "caution": [
-    { "name": "세나_한국남자들은 왜",  "target": "한일남", "cpl7": 69606, "cpl3m": 47168, "ctr": "2.83%", "pct": 148, "barW": 100 },
-    { "name": "연봉 1억이상_고기",     "target": "한한여", "cpl7": 63888, "cpl3m": 44420, "ctr": "1.31%", "pct": 144, "barW": 100 },
-    { "name": "내딸이면_제논",         "target": "한한여", "cpl7": 58381, "cpl3m": 44420, "ctr": "1.68%", "pct": 131, "barW": 100 },
-    { "name": "소개팅 거절_평범",      "target": "한일남", "cpl7": 50396, "cpl3m": 47168, "ctr": "1.84%", "pct": 107, "barW": 100 }
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 63888,
+      "cpl3m": 44226,
+      "ctr": "1.31%",
+      "pct": 144,
+      "barW": 100
+    },
+    {
+      "name": "내딸이면_제논",
+      "target": "한한여",
+      "cpl7": 58381,
+      "cpl3m": 44226,
+      "ctr": "1.68%",
+      "pct": 132,
+      "barW": 100
+    },
+    {
+      "name": "세나_한국남자들은 왜",
+      "target": "한일남",
+      "cpl7": 59662,
+      "cpl3m": 55520,
+      "ctr": "2.83%",
+      "pct": 107,
+      "barW": 100
+    }
   ],
   "good": [
-    { "name": "고굽남",                             "target": "한일여", "cpl7": 29025, "cpl3m": 103860, "ctr": "1.90%", "pct": 28, "barW": 28, "trophy": true },
-    { "name": "[베리]30대면 아줌마 아니에요",         "target": "한한남", "cpl7": 31068, "cpl3m": 100395, "ctr": "4.01%", "pct": 31, "barW": 31, "trophy": true },
-    { "name": "[베리] 결국 일본 여자를 선택하는 이유", "target": "한일남", "cpl7": 31267, "cpl3m": 47168,  "ctr": "2.19%", "pct": 66, "barW": 66 },
-    { "name": "4월 2주차_한일 남성 타겟_AI_1(1차)",   "target": "한일남", "cpl7": 31589, "cpl3m": 47168,  "ctr": "2.25%", "pct": 67, "barW": 67 },
-    { "name": "능력남 몰리는 이유",                   "target": "한한남", "cpl7": 67842, "cpl3m": 100395, "ctr": "2.12%", "pct": 68, "barW": 68 },
-    { "name": "연봉 1억이상_담벼락",                  "target": "한한여", "cpl7": 31868, "cpl3m": 44420,  "ctr": "1.44%", "pct": 72, "barW": 72 },
-    { "name": "내딸이면_데보라_2",                    "target": "한한여", "cpl7": 34484, "cpl3m": 44420,  "ctr": "1.49%", "pct": 78, "barW": 78 }
+    {
+      "name": "한국남친이 좋은 3가지 이유",
+      "target": "한일여",
+      "cpl7": 27908,
+      "cpl3m": 122018,
+      "ctr": "2.44%",
+      "pct": 23,
+      "barW": 23,
+      "trophy": true
+    },
+    {
+      "name": "고굽남",
+      "target": "한일여",
+      "cpl7": 29025,
+      "cpl3m": 122018,
+      "ctr": "1.90%",
+      "pct": 24,
+      "barW": 24,
+      "trophy": true
+    },
+    {
+      "name": "셀카남",
+      "target": "한일여",
+      "cpl7": 29606,
+      "cpl3m": 122018,
+      "ctr": "0.77%",
+      "pct": 24,
+      "barW": 24,
+      "trophy": true
+    },
+    {
+      "name": "[베리]30대면 아줌마 아니에요",
+      "target": "한한남",
+      "cpl7": 31068,
+      "cpl3m": 90770,
+      "ctr": "4.01%",
+      "pct": 34,
+      "barW": 34,
+      "trophy": true
+    },
+    {
+      "name": "다정한_고기",
+      "target": "한일여",
+      "cpl7": 41282,
+      "cpl3m": 122018,
+      "ctr": "2.00%",
+      "pct": 34,
+      "barW": 34,
+      "trophy": true
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 31868,
+      "cpl3m": 44226,
+      "ctr": "1.44%",
+      "pct": 72,
+      "barW": 72
+    },
+    {
+      "name": "능력남 몰리는 이유",
+      "target": "한한남",
+      "cpl7": 67842,
+      "cpl3m": 90770,
+      "ctr": "2.12%",
+      "pct": 75,
+      "barW": 75
+    },
+    {
+      "name": "내딸이면_데보라_2",
+      "target": "한한여",
+      "cpl7": 34484,
+      "cpl3m": 44226,
+      "ctr": "1.49%",
+      "pct": 78,
+      "barW": 78
+    },
+    {
+      "name": "4월 2주차_한일 남성 타겟_AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 47383,
+      "cpl3m": 55520,
+      "ctr": "2.25%",
+      "pct": 85,
+      "barW": 85
+    }
   ],
   "unclassified": []
 },
@@ -377,55 +4505,799 @@ const REPORTS = [
   "daily": {
     "label": "7월 3일",
     "targets": [
-      { "id": "한한여", "emoji": "🟣", "spend": "40만원", "impressions": 10140, "clicks": 135, "leads": 6, "cpl": 66887,  "ctr": "1.33%" },
-      { "id": "한한남", "emoji": "🔵", "spend": "10만원", "impressions": 3249,  "clicks": 69,  "leads": 0, "cpl": null,   "ctr": "2.12%" },
-      { "id": "한일남", "emoji": "🩷", "spend": "33만원", "impressions": 11616, "clicks": 244, "leads": 3, "cpl": 110793, "ctr": "2.10%" },
-      { "id": "한일여", "emoji": "🟢", "spend": "22만원", "impressions": 6036,  "clicks": 82,  "leads": 3, "cpl": 72416,  "ctr": "1.36%" }
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "40만원",
+        "impressions": 10140,
+        "clicks": 135,
+        "leads": 6,
+        "cpl": 66887,
+        "ctr": "1.33%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "10만원",
+        "impressions": 3249,
+        "clicks": 69,
+        "leads": 1,
+        "cpl": 98993,
+        "ctr": "2.12%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "33만원",
+        "impressions": 11616,
+        "clicks": 244,
+        "leads": 2,
+        "cpl": 166190,
+        "ctr": "2.10%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "22만원",
+        "impressions": 6036,
+        "clicks": 82,
+        "leads": 3,
+        "cpl": 72416,
+        "ctr": "1.36%"
+      }
     ]
   },
+  "dailyTrend": [
+    {
+      "d": "6/20",
+      "results": 14,
+      "spend": 843440,
+      "cpl": 60246
+    },
+    {
+      "d": "6/21",
+      "results": 23,
+      "spend": 994839,
+      "cpl": 43254
+    },
+    {
+      "d": "6/22",
+      "results": 17,
+      "spend": 874004,
+      "cpl": 51412
+    },
+    {
+      "d": "6/23",
+      "results": 17,
+      "spend": 697739,
+      "cpl": 41043
+    },
+    {
+      "d": "6/24",
+      "results": 10,
+      "spend": 733855,
+      "cpl": 73386
+    },
+    {
+      "d": "6/25",
+      "results": 14,
+      "spend": 743145,
+      "cpl": 53082
+    },
+    {
+      "d": "6/26",
+      "results": 16,
+      "spend": 835500,
+      "cpl": 52219
+    },
+    {
+      "d": "6/27",
+      "results": 13,
+      "spend": 728820,
+      "cpl": 56063
+    },
+    {
+      "d": "6/28",
+      "results": 16,
+      "spend": 844701,
+      "cpl": 52794
+    },
+    {
+      "d": "6/29",
+      "results": 8,
+      "spend": 728478,
+      "cpl": 91060
+    },
+    {
+      "d": "6/30",
+      "results": 11,
+      "spend": 771501,
+      "cpl": 70136
+    },
+    {
+      "d": "7/1",
+      "results": 13,
+      "spend": 844864,
+      "cpl": 64990
+    },
+    {
+      "d": "7/2",
+      "results": 23,
+      "spend": 976473,
+      "cpl": 42455
+    },
+    {
+      "d": "7/3",
+      "results": 12,
+      "spend": 1049942,
+      "cpl": 87495
+    }
+  ],
   "kpi": {
-    "off": 4,
-    "caution": 5,
-    "good": 7,
+    "off": 5,
+    "caution": 4,
+    "good": 8,
     "totalSpend": "594만원",
-    "totalLeads": 105
+    "totalLeads": 96
   },
   "targets": [
-    { "id": "한한여", "emoji": "🟣", "avg3mCPL": 44366,  "day7CPL": 56528, "day7Leads": 49, "avg3mCTR": "1.22%", "trend": "up",   "adCount": 6,  "spend7d": "277만원" },
-    { "id": "한한남", "emoji": "🔵", "avg3mCPL": 98342,  "day7CPL": 83873, "day7Leads": 5,  "avg3mCTR": "2.72%", "trend": "good", "adCount": 3,  "spend7d": "42만원"  },
-    { "id": "한일남", "emoji": "🩷", "avg3mCPL": 47128,  "day7CPL": 53955, "day7Leads": 45, "avg3mCTR": "2.77%", "trend": "up",   "adCount": 8,  "spend7d": "243만원" },
-    { "id": "한일여", "emoji": "🟢", "avg3mCPL": 106459, "day7CPL": 54594, "day7Leads": 6,  "avg3mCTR": "1.44%", "trend": "good", "adCount": 14, "spend7d": "33만원"  }
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 44226,
+      "day7CPL": 56528,
+      "day7Leads": 49,
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "277만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 90770,
+      "day7CPL": 59909,
+      "day7Leads": 7,
+      "avg3mCTR": "2.73%",
+      "trend": "good",
+      "adCount": 3,
+      "spend7d": "42만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 55520,
+      "day7CPL": 71411,
+      "day7Leads": 34,
+      "avg3mCTR": "2.79%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "243만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": 122018,
+      "day7CPL": 54594,
+      "day7Leads": 6,
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 14,
+      "spend7d": "33만원"
+    }
   ],
   "campaigns": [
-    { "name": "한한여_잠재",     "target": "한한여", "adCount": 6,  "spend7d": "277만원", "leads7d": 49 },
-    { "name": "한한남_등록",     "target": "한한남", "adCount": 3,  "spend7d": "42만원",  "leads7d": 5  },
-    { "name": "한일남_등록(구)", "target": "한일남", "adCount": 7,  "spend7d": "174만원", "leads7d": 26 },
-    { "name": "한일남_등록(신)", "target": "한일남", "adCount": 5,  "spend7d": "69만원",  "leads7d": 19 },
-    { "name": "한일여_잠재",     "target": "한일여", "adCount": 14, "spend7d": "33만원",  "leads7d": 6  }
+    {
+      "name": "한한여_잠재",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "277만원",
+      "leads7d": 49
+    },
+    {
+      "name": "한한남_등록",
+      "target": "한한남",
+      "adCount": 3,
+      "spend7d": "42만원",
+      "leads7d": 7
+    },
+    {
+      "name": "한일남_등록(구)",
+      "target": "한일남",
+      "adCount": 7,
+      "spend7d": "174만원",
+      "leads7d": 20
+    },
+    {
+      "name": "한일남_등록(신)",
+      "target": "한일남",
+      "adCount": 5,
+      "spend7d": "69만원",
+      "leads7d": 14
+    },
+    {
+      "name": "한일여_잠재",
+      "target": "한일여",
+      "adCount": 14,
+      "spend7d": "33만원",
+      "leads7d": 6
+    }
   ],
   "off": [
-    { "name": "4월 2주차_한일 남성 타겟_AI_2(1차)", "target": "한일남", "cpl7": 121344, "cpl3m": 47128, "ctr": "2.46%", "pct": 257, "barW": 100 },
-    { "name": "일본 여자에 환상 가지지 마세요",      "target": "한일남", "cpl7": 102122, "cpl3m": 47128, "ctr": "2.33%", "pct": 217, "barW": 100 },
-    { "name": "[베리] 서재민_그대로",               "target": "한한여", "cpl7": 73706,  "cpl3m": 44366, "ctr": "1.20%", "pct": 166, "barW": 100 },
-    { "name": "제논_내딸이면",                      "target": "한한남", "cpl7": null,   "cpl3m": 98342, "ctr": "2.11%", "pct": null, "barW": 100, "pctLabel": "12만원 지출 · 결과 0건 🚨" }
+    {
+      "name": "소개팅 거절_평범",
+      "target": "한일남",
+      "cpl7": 160785,
+      "cpl3m": 55520,
+      "ctr": "1.62%",
+      "pct": 290,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차_한일 남성 타겟_AI_2(1차)",
+      "target": "한일남",
+      "cpl7": 121344,
+      "cpl3m": 55520,
+      "ctr": "2.46%",
+      "pct": 219,
+      "barW": 100
+    },
+    {
+      "name": "아이츠니_한남_일녀_잘맞는이유는",
+      "target": "한일남",
+      "cpl7": 98155,
+      "cpl3m": 55520,
+      "ctr": "2.47%",
+      "pct": 177,
+      "barW": 100
+    },
+    {
+      "name": "[베리] 서재민_그대로",
+      "target": "한한여",
+      "cpl7": 73706,
+      "cpl3m": 44226,
+      "ctr": "1.20%",
+      "pct": 167,
+      "barW": 100
+    },
+    {
+      "name": "제논_내딸이면",
+      "target": "한한남",
+      "cpl7": 121295,
+      "cpl3m": 90770,
+      "ctr": "2.11%",
+      "pct": 134,
+      "barW": 100
+    }
   ],
   "caution": [
-    { "name": "내딸이면_제논",                "target": "한한여", "cpl7": 58861, "cpl3m": 44366, "ctr": "1.75%", "pct": 133, "barW": 100 },
-    { "name": "연봉 1억이상_고기",            "target": "한한여", "cpl7": 57614, "cpl3m": 44366, "ctr": "1.26%", "pct": 130, "barW": 100 },
-    { "name": "세나_한국남자들은 왜",          "target": "한일남", "cpl7": 49619, "cpl3m": 47128, "ctr": "2.90%", "pct": 105, "barW": 100 },
-    { "name": "아이츠니_한남_일녀_잘맞는이유는", "target": "한일남", "cpl7": 49078, "cpl3m": 47128, "ctr": "2.47%", "pct": 104, "barW": 100 },
-    { "name": "소개팅 거절_평범",              "target": "한일남", "cpl7": 40196, "cpl3m": 47128, "ctr": "1.62%", "pct": 85,  "barW": 85 }
+    {
+      "name": "내딸이면_제논",
+      "target": "한한여",
+      "cpl7": 58861,
+      "cpl3m": 44226,
+      "ctr": "1.75%",
+      "pct": 133,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 57614,
+      "cpl3m": 44226,
+      "ctr": "1.26%",
+      "pct": 130,
+      "barW": 100
+    },
+    {
+      "name": "[베리] 결국 일본 여자를 선택하는 이유",
+      "target": "한일남",
+      "cpl7": 64867,
+      "cpl3m": 55520,
+      "ctr": "2.12%",
+      "pct": 117,
+      "barW": 100
+    },
+    {
+      "name": "세나_한국남자들은 왜",
+      "target": "한일남",
+      "cpl7": 58375,
+      "cpl3m": 55520,
+      "ctr": "2.89%",
+      "pct": 105,
+      "barW": 100
+    }
   ],
   "good": [
-    { "name": "고굽남",                             "target": "한일여", "cpl7": 24425, "cpl3m": 106459, "ctr": "1.93%", "pct": 23, "barW": 23, "trophy": true },
-    { "name": "[베리]30대면 아줌마 아니에요",         "target": "한한남", "cpl7": 33344, "cpl3m": 98342,  "ctr": "3.81%", "pct": 34, "barW": 34, "trophy": true },
-    { "name": "4월 2주차_한일 남성 타겟_AI_1(1차)",   "target": "한일남", "cpl7": 30780, "cpl3m": 47128,  "ctr": "2.38%", "pct": 65, "barW": 65 },
-    { "name": "연봉 1억이상_담벼락",                  "target": "한한여", "cpl7": 30023, "cpl3m": 44366,  "ctr": "1.33%", "pct": 68, "barW": 68 },
-    { "name": "능력남 몰리는 이유",                   "target": "한한남", "cpl7": 77127, "cpl3m": 98342,  "ctr": "2.00%", "pct": 78, "barW": 78 },
-    { "name": "[베리] 결국 일본 여자를 선택하는 이유", "target": "한일남", "cpl7": 38920, "cpl3m": 47128,  "ctr": "2.12%", "pct": 83, "barW": 83 },
-    { "name": "내딸이면_데보라_2",                    "target": "한한여", "cpl7": 39328, "cpl3m": 44366,  "ctr": "1.41%", "pct": 89, "barW": 89 }
+    {
+      "name": "고굽남",
+      "target": "한일여",
+      "cpl7": 24424,
+      "cpl3m": 122018,
+      "ctr": "1.93%",
+      "pct": 20,
+      "barW": 20,
+      "trophy": true
+    },
+    {
+      "name": "한국남친이 좋은 3가지 이유",
+      "target": "한일여",
+      "cpl7": 25718,
+      "cpl3m": 122018,
+      "ctr": "2.51%",
+      "pct": 21,
+      "barW": 21,
+      "trophy": true
+    },
+    {
+      "name": "셀카남",
+      "target": "한일여",
+      "cpl7": 26359,
+      "cpl3m": 122018,
+      "ctr": "0.78%",
+      "pct": 22,
+      "barW": 22,
+      "trophy": true
+    },
+    {
+      "name": "[베리]30대면 아줌마 아니에요",
+      "target": "한한남",
+      "cpl7": 33344,
+      "cpl3m": 90770,
+      "ctr": "3.81%",
+      "pct": 37,
+      "barW": 37,
+      "trophy": true
+    },
+    {
+      "name": "4월 2주차_한일 남성 타겟_AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 35177,
+      "cpl3m": 55520,
+      "ctr": "2.38%",
+      "pct": 63,
+      "barW": 63
+    },
+    {
+      "name": "능력남 몰리는 이유",
+      "target": "한한남",
+      "cpl7": 57846,
+      "cpl3m": 90770,
+      "ctr": "2.00%",
+      "pct": 64,
+      "barW": 64
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 30023,
+      "cpl3m": 44226,
+      "ctr": "1.33%",
+      "pct": 68,
+      "barW": 68
+    },
+    {
+      "name": "내딸이면_데보라_2",
+      "target": "한한여",
+      "cpl7": 39328,
+      "cpl3m": 44226,
+      "ctr": "1.41%",
+      "pct": 89,
+      "barW": 89
+    }
   ],
   "unclassified": []
+},
+{
+  "date": "2026-07-06",
+  "label": "7월 6일",
+  "daily": {
+    "label": "7월 5일",
+    "targets": [
+      {
+        "id": "한한여",
+        "emoji": "🟣",
+        "spend": "44만원",
+        "impressions": 11153,
+        "clicks": 136,
+        "leads": 7,
+        "cpl": 62181,
+        "ctr": "1.22%"
+      },
+      {
+        "id": "한한남",
+        "emoji": "🔵",
+        "spend": "9만원",
+        "impressions": 2382,
+        "clicks": 55,
+        "leads": 0,
+        "cpl": null,
+        "ctr": "2.31%"
+      },
+      {
+        "id": "한일남",
+        "emoji": "🩷",
+        "spend": "42만원",
+        "impressions": 14141,
+        "clicks": 392,
+        "leads": 8,
+        "cpl": 52121,
+        "ctr": "2.77%"
+      },
+      {
+        "id": "한일여",
+        "emoji": "🟢",
+        "spend": "21만원",
+        "impressions": 6249,
+        "clicks": 110,
+        "leads": 2,
+        "cpl": 102688,
+        "ctr": "1.76%"
+      }
+    ]
+  },
+  "dailyTrend": [
+    {
+      "d": "6/22",
+      "results": 17,
+      "spend": 874004,
+      "cpl": 51412
+    },
+    {
+      "d": "6/23",
+      "results": 17,
+      "spend": 697739,
+      "cpl": 41043
+    },
+    {
+      "d": "6/24",
+      "results": 10,
+      "spend": 733855,
+      "cpl": 73386
+    },
+    {
+      "d": "6/25",
+      "results": 14,
+      "spend": 743145,
+      "cpl": 53082
+    },
+    {
+      "d": "6/26",
+      "results": 16,
+      "spend": 835500,
+      "cpl": 52219
+    },
+    {
+      "d": "6/27",
+      "results": 13,
+      "spend": 728820,
+      "cpl": 56063
+    },
+    {
+      "d": "6/28",
+      "results": 16,
+      "spend": 844701,
+      "cpl": 52794
+    },
+    {
+      "d": "6/29",
+      "results": 8,
+      "spend": 728478,
+      "cpl": 91060
+    },
+    {
+      "d": "6/30",
+      "results": 11,
+      "spend": 771501,
+      "cpl": 70136
+    },
+    {
+      "d": "7/1",
+      "results": 13,
+      "spend": 844864,
+      "cpl": 64990
+    },
+    {
+      "d": "7/2",
+      "results": 23,
+      "spend": 976473,
+      "cpl": 42455
+    },
+    {
+      "d": "7/3",
+      "results": 12,
+      "spend": 1049942,
+      "cpl": 87495
+    },
+    {
+      "d": "7/4",
+      "results": 16,
+      "spend": 1010436,
+      "cpl": 63152
+    },
+    {
+      "d": "7/5",
+      "results": 17,
+      "spend": 1152363,
+      "cpl": 67786
+    }
+  ],
+  "kpi": {
+    "off": 6,
+    "caution": 4,
+    "good": 9,
+    "totalSpend": "653만원",
+    "totalLeads": 100
+  },
+  "targets": [
+    {
+      "id": "한한여",
+      "emoji": "🟣",
+      "avg3mCPL": 44226,
+      "day7CPL": 56406,
+      "day7Leads": 50,
+      "avg3mCTR": "1.21%",
+      "trend": "up",
+      "adCount": 6,
+      "spend7d": "282만원"
+    },
+    {
+      "id": "한한남",
+      "emoji": "🔵",
+      "avg3mCPL": 90770,
+      "day7CPL": 83128,
+      "day7Leads": 6,
+      "avg3mCTR": "2.73%",
+      "trend": "down",
+      "adCount": 3,
+      "spend7d": "50만원"
+    },
+    {
+      "id": "한일남",
+      "emoji": "🩷",
+      "avg3mCPL": 55520,
+      "day7CPL": 74761,
+      "day7Leads": 34,
+      "avg3mCTR": "2.79%",
+      "trend": "up",
+      "adCount": 8,
+      "spend7d": "254만원"
+    },
+    {
+      "id": "한일여",
+      "emoji": "🟢",
+      "avg3mCPL": 122018,
+      "day7CPL": 67309,
+      "day7Leads": 10,
+      "avg3mCTR": "1.45%",
+      "trend": "good",
+      "adCount": 14,
+      "spend7d": "67만원"
+    }
+  ],
+  "campaigns": [
+    {
+      "name": "한한여_잠재",
+      "target": "한한여",
+      "adCount": 6,
+      "spend7d": "282만원",
+      "leads7d": 50
+    },
+    {
+      "name": "한한남_등록",
+      "target": "한한남",
+      "adCount": 3,
+      "spend7d": "50만원",
+      "leads7d": 6
+    },
+    {
+      "name": "한일남_등록(구)",
+      "target": "한일남",
+      "adCount": 7,
+      "spend7d": "179만원",
+      "leads7d": 18
+    },
+    {
+      "name": "한일남_등록(신)",
+      "target": "한일남",
+      "adCount": 5,
+      "spend7d": "75만원",
+      "leads7d": 16
+    },
+    {
+      "name": "한일여_잠재",
+      "target": "한일여",
+      "adCount": 14,
+      "spend7d": "67만원",
+      "leads7d": 10
+    }
+  ],
+  "off": [
+    {
+      "name": "제논_내딸이면",
+      "target": "한한남",
+      "cpl7": 218454,
+      "cpl3m": 90770,
+      "ctr": "2.28%",
+      "pct": 241,
+      "barW": 100
+    },
+    {
+      "name": "아이츠니_한남_일녀_잘맞는이유는",
+      "target": "한일남",
+      "cpl7": 120590,
+      "cpl3m": 55520,
+      "ctr": "2.35%",
+      "pct": 217,
+      "barW": 100
+    },
+    {
+      "name": "4월 2주차_한일 남성 타겟_AI_2(1차)",
+      "target": "한일남",
+      "cpl7": 85208,
+      "cpl3m": 55520,
+      "ctr": "2.46%",
+      "pct": 153,
+      "barW": 100
+    },
+    {
+      "name": "[베리] 결국 일본 여자를 선택하는 이유",
+      "target": "한일남",
+      "cpl7": 82174,
+      "cpl3m": 55520,
+      "ctr": "2.29%",
+      "pct": 148,
+      "barW": 100
+    },
+    {
+      "name": "소개팅 거절_평범",
+      "target": "한일남",
+      "cpl7": 81073,
+      "cpl3m": 55520,
+      "ctr": "1.89%",
+      "pct": 146,
+      "barW": 100
+    },
+    {
+      "name": "[베리] 서재민_그대로",
+      "target": "한한여",
+      "cpl7": 63108,
+      "cpl3m": 44226,
+      "ctr": "1.14%",
+      "pct": 143,
+      "barW": 100
+    }
+  ],
+  "caution": [
+    {
+      "name": "세나_한국남자들은 왜",
+      "target": "한일남",
+      "cpl7": 75487,
+      "cpl3m": 55520,
+      "ctr": "2.97%",
+      "pct": 136,
+      "barW": 100
+    },
+    {
+      "name": "내딸이면_제논",
+      "target": "한한여",
+      "cpl7": 59429,
+      "cpl3m": 44226,
+      "ctr": "1.59%",
+      "pct": 134,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_고기",
+      "target": "한한여",
+      "cpl7": 53121,
+      "cpl3m": 44226,
+      "ctr": "1.42%",
+      "pct": 120,
+      "barW": 100
+    },
+    {
+      "name": "연봉 1억이상_담벼락",
+      "target": "한한여",
+      "cpl7": 46776,
+      "cpl3m": 44226,
+      "ctr": "1.38%",
+      "pct": 106,
+      "barW": 100
+    }
+  ],
+  "good": [
+    {
+      "name": "한국남친이 좋은 3가지 이유",
+      "target": "한일여",
+      "cpl7": 33144,
+      "cpl3m": 122018,
+      "ctr": "2.38%",
+      "pct": 27,
+      "barW": 27,
+      "trophy": true
+    },
+    {
+      "name": "셀카남",
+      "target": "한일여",
+      "cpl7": 35167,
+      "cpl3m": 122018,
+      "ctr": "0.84%",
+      "pct": 29,
+      "barW": 29,
+      "trophy": true
+    },
+    {
+      "name": "고굽남",
+      "target": "한일여",
+      "cpl7": 37085,
+      "cpl3m": 122018,
+      "ctr": "1.95%",
+      "pct": 30,
+      "barW": 30,
+      "trophy": true
+    },
+    {
+      "name": "다정한_고기",
+      "target": "한일여",
+      "cpl7": 45952,
+      "cpl3m": 122018,
+      "ctr": "2.15%",
+      "pct": 38,
+      "barW": 38,
+      "trophy": true
+    },
+    {
+      "name": "일본 여자랑 결혼하지 마세요",
+      "target": "한일남",
+      "cpl7": 23986,
+      "cpl3m": 55520,
+      "ctr": "2.92%",
+      "pct": 43,
+      "barW": 43,
+      "trophy": true
+    },
+    {
+      "name": "[베리]30대면 아줌마 아니에요",
+      "target": "한한남",
+      "cpl7": 45519,
+      "cpl3m": 90770,
+      "ctr": "3.70%",
+      "pct": 50,
+      "barW": 50,
+      "trophy": true
+    },
+    {
+      "name": "능력남 몰리는 이유",
+      "target": "한한남",
+      "cpl7": 63092,
+      "cpl3m": 90770,
+      "ctr": "2.10%",
+      "pct": 70,
+      "barW": 70
+    },
+    {
+      "name": "내딸이면_데보라_2",
+      "target": "한한여",
+      "cpl7": 35751,
+      "cpl3m": 44226,
+      "ctr": "1.48%",
+      "pct": 81,
+      "barW": 81
+    },
+    {
+      "name": "4월 2주차_한일 남성 타겟_AI_1(1차)",
+      "target": "한일남",
+      "cpl7": 52353,
+      "cpl3m": 55520,
+      "ctr": "2.30%",
+      "pct": 94,
+      "barW": 94
+    }
+  ],
+  "unclassified": [
+    "리드 - 잠재 - 봄 프로모션 리타게팅"
+  ]
 },
 {
   "date": "2026-07-02",
@@ -937,57 +5809,7 @@ const REPORTS = [
       { name:"세나_한국남자들은 왜",                  target:"한일남", cpl7:33443, cpl3m:47122, ctr:"3.01%", pct:71, barW:71 },
       { name:"아이츠니_한남_일녀_잘맞는이유는",       target:"한일남", cpl7:41357, cpl3m:47122, ctr:"2.31%", pct:88, barW:88 }
     ]
-  },
-{
-  "date": "2026-06-17",
-  "label": "6월 17일",
-  "daily": {
-    "label": "6월 16일",
-    "targets": [
-      { "id": "한한여", "emoji": "🟣", "spend": "40만원", "impressions": 12749, "clicks": 132, "leads": 9, "cpl": 44113, "ctr": "1.04%" },
-      { "id": "한한남", "emoji": "🔵", "spend": "5만원",  "impressions": 830,   "clicks": 28,  "leads": 0, "cpl": null,  "ctr": "3.37%" },
-      { "id": "한일남", "emoji": "🩷", "spend": "39만원", "impressions": 11306, "clicks": 253, "leads": 5, "cpl": 77926, "ctr": "2.24%" },
-      { "id": "한일여", "emoji": "🟢", "spend": "0원",    "impressions": 0,     "clicks": 0,   "leads": 0, "cpl": null,  "ctr": "—" }
-    ]
-  },
-  "kpi": {
-    "off": 4,
-    "caution": 1,
-    "good": 6,
-    "totalSpend": "564만원",
-    "totalLeads": 125
-  },
-  "targets": [
-    { "id": "한한여", "emoji": "🟣", "avg3mCPL": 40798,  "day7CPL": 34297,  "day7Leads": 74, "avg3mCTR": "1.22%", "trend": "good", "adCount": 5, "spend7d": "254만원" },
-    { "id": "한한남", "emoji": "🔵", "avg3mCPL": 94672,  "day7CPL": 342708, "day7Leads": 1,  "avg3mCTR": "2.77%", "trend": "up",   "adCount": 1, "spend7d": "34만원"  },
-    { "id": "한일남", "emoji": "🩷", "avg3mCPL": 48187,  "day7CPL": 55267,  "day7Leads": 50, "avg3mCTR": "2.86%", "trend": "up",   "adCount": 6, "spend7d": "276만원" },
-    { "id": "한일여", "emoji": "🟢", "avg3mCPL": 122018, "day7CPL": null,   "day7Leads": 0,  "avg3mCTR": "1.45%", "trend": "none", "adCount": 0, "spend7d": "0원"    }
-  ],
-  "campaigns": [
-    { "name": "한한여_잠재",     "target": "한한여", "adCount": 5, "spend7d": "254만원", "leads7d": 74 },
-    { "name": "한한남_등록",     "target": "한한남", "adCount": 1, "spend7d": "34만원",  "leads7d": 1  },
-    { "name": "한일남_등록(구)", "target": "한일남", "adCount": 6, "spend7d": "216만원", "leads7d": 32 },
-    { "name": "한일남_등록(신)", "target": "한일남", "adCount": 6, "spend7d": "60만원",  "leads7d": 18 }
-  ],
-  "off": [
-    { "name": "[베리]30대면 아줌마 아니에요",         "target": "한한남", "cpl7": 342708, "cpl3m": 94672,  "ctr": "2.79%", "pct": 362, "barW": 100 },
-    { "name": "일본 여자랑 결혼하지 마세요",          "target": "한일남", "cpl7": 82170,  "cpl3m": 48187,  "ctr": "2.16%", "pct": 171, "barW": 100 },
-    { "name": "[베리] 결국 일본 여자를 선택하는 이유", "target": "한일남", "cpl7": 69844,  "cpl3m": 48187,  "ctr": "1.80%", "pct": 145, "barW": 100 },
-    { "name": "[베리] 서재민_성공적인 결혼",          "target": "한한여", "cpl7": 55940,  "cpl3m": 40798,  "ctr": "0.80%", "pct": 137, "barW": 100 }
-  ],
-  "caution": [
-    { "name": "일본 여자에 환상 가지지 마세요", "target": "한일남", "cpl7": 52040, "cpl3m": 48187, "ctr": "2.49%", "pct": 108, "barW": 100 }
-  ],
-  "good": [
-    { "name": "연봉 1억이상_고기",                  "target": "한한여", "cpl7": 12524, "cpl3m": 40798, "ctr": "1.34%", "pct": 31, "barW": 31, "trophy": true },
-    { "name": "POV : 일본 여자친구",               "target": "한일남", "cpl7": 23757, "cpl3m": 48187, "ctr": "2.61%", "pct": 49, "barW": 49, "trophy": true },
-    { "name": "연봉 1억이상_담벼락",                "target": "한한여", "cpl7": 24176, "cpl3m": 40798, "ctr": "1.78%", "pct": 59, "barW": 59 },
-    { "name": "4월 2주차_한일 남성 타겟_AI_1(1차)", "target": "한일남", "cpl7": 35948, "cpl3m": 48187, "ctr": "2.48%", "pct": 75, "barW": 75 },
-    { "name": "4월 2주차_한일 남성 타겟_AI_2(1차)", "target": "한일남", "cpl7": 46785, "cpl3m": 48187, "ctr": "2.80%", "pct": 97, "barW": 97 },
-    { "name": "[베리] 서재민_그대로",              "target": "한한여", "cpl7": 39776, "cpl3m": 40798, "ctr": "1.01%", "pct": 98, "barW": 98 }
-  ],
-  "unclassified": []
-}
+  }
   // 새 날짜는 매일 스케줄 태스크가 여기에 자동 추가
 ];
 
@@ -1009,13 +5831,34 @@ function fmtCPL(v) {
   return (s % 1 === 0 ? s.toFixed(0) : s.toFixed(1)) + '만';
 }
 
+// 평균 대비 5단계 판정: ≤-20% 매우좋음 / -20~-10% 좋음 / ±10% 보통 / +10~20% 나쁨 / ≥+20% 매우나쁨
+function gradeClass(v, avg) {
+  if (v == null || !avg) return 'cpl-none';
+  const r = v / avg;
+  if (r <= 0.8) return 'cpl-vlow';
+  if (r <= 0.9) return 'cpl-low';
+  if (r < 1.1)  return 'cpl-mid';
+  if (r < 1.2)  return 'cpl-high';
+  return 'cpl-vhigh';
+}
+function gradeLabel(v, avg) {
+  if (v == null || !avg) return '—';
+  const r = v / avg;
+  if (r <= 0.8) return '🟢 매우 좋음';
+  if (r <= 0.9) return '🔵 좋음';
+  if (r < 1.1)  return '⚪ 보통';
+  if (r < 1.2)  return '🟠 나쁨';
+  return '🔴 매우 나쁨';
+}
 function cplClass(v, target) {
   if (v == null) return 'cpl-none';
   const avg = AVG_3M[target];
   if (!avg) return 'cpl-cell';
-  if (v > avg * 1.2) return 'cpl-cell cpl-high';
-  if (v < avg * 0.9) return 'cpl-cell cpl-low';
-  return 'cpl-cell cpl-mid';
+  return 'cpl-cell ' + gradeClass(v, avg);
+}
+function cpsClass(v, target) {
+  if (v == null) return 'cpl-none';
+  return 'cpl-cell ' + gradeClass(v, AVG_3M_CPS[target]);
 }
 
 function renderWeeklyTable() {
@@ -1023,7 +5866,7 @@ function renderWeeklyTable() {
   const emojis  = { '한한여':'🟣','한한남':'🔵','한일남':'🩷','한일여':'🟢' };
   let html = `
   <div class="weekly-section">
-    <div class="sec-title">📅 주차별 평균 CPL <span style="font-size:10px;font-weight:400;color:#aaa;margin-left:4px">월~일 기준 · 3개월 누적 (4월~5월)</span></div>
+    <div class="sec-title">📅 주차별 평균 CPL <span style="font-size:10px;font-weight:400;color:#aaa;margin-left:4px">월~일 기준 · 4/6~7/5 · 결과 기준 · 3M 평균 = 4/6~7/5</span></div>
     <div class="weekly-scroll">
     <table class="weekly-table">
       <thead><tr>
@@ -1092,9 +5935,12 @@ function renderTarget(t) {
   return `
     <div class="ts-card">
       <div class="ts-name">${t.emoji} ${t.id}</div>
-      <div class="ts-row"><span>3M 평균 CPL</span><span class="ts-val">${t.avg3mCPL.toLocaleString("ko-KR")}원</span></div>
+      <div class="ts-row"><span>기준 평균 CPL</span><span class="ts-val">${t.avg3mCPL ? t.avg3mCPL.toLocaleString("ko-KR")+"원" : "—"}</span></div>
+      <div class="ts-row"><span>CPL 등급</span><span class="ts-val ${gradeClass(t.day7CPL, AVG_3M[t.id])}">${gradeLabel(t.day7CPL, AVG_3M[t.id])}</span></div>
+      <div class="ts-row"><span>CPS 등급</span><span class="ts-val ${gradeClass(t.day7CPS, AVG_3M_CPS[t.id])}">${gradeLabel(t.day7CPS, AVG_3M_CPS[t.id])}</span></div>
       <div class="ts-row"><span>7일 CPL</span><span class="ts-val ${cplClass}">${cplDisplay}${arrow}</span></div>
-      <div class="ts-row"><span>7일 결과</span><span class="ts-val">${t.day7Leads}건</span></div>
+      <div class="ts-row"><span>7일 결과</span><span class="ts-val">${t.day7Leads}건${t.day7Pass != null ? " · 통과 " + t.day7Pass + "건" : ""}</span></div>
+      ${t.day7CPS !== undefined ? `<div class="ts-row"><span>7일 통과 CPS</span><span class="ts-val">${t.day7CPS ? t.day7CPS.toLocaleString("ko-KR") + "원" : "—"}</span></div><div class="ts-row"><span>3M 평균 CPS</span><span class="ts-val">${t.avg3mCPS ? t.avg3mCPS.toLocaleString("ko-KR") + "원" : "—"}</span></div>` : ""}
       <div class="ts-row"><span>3M 평균 CTR</span><span class="ts-val">${t.avg3mCTR}</span></div>
       <div class="ts-divider"></div>
       <div class="ts-row"><span>운영 소재</span><span class="ts-val">${t.adCount != null ? t.adCount + "개" : "—"}</span></div>
@@ -1108,11 +5954,11 @@ function renderTarget(t) {
 function renderCard(ad, type) {
   const valClass = type === "good" ? "green" : type === "off" ? "red" : "amber";
   const fillClass = type === "good" ? "fill-green" : type === "off" ? "fill-red" : "fill-amber";
-  const cpl7Fmt  = ad.cpl7 != null ? ad.cpl7.toLocaleString("ko-KR") + "원" : "결과 없음";
+  const cpl7Fmt  = ad.cpl7.toLocaleString("ko-KR") + "원";
   const cpl3mFmt = ad.cpl3m.toLocaleString("ko-KR") + "원";
-  const pctLabel = ad.pctLabel != null ? ad.pctLabel : (type === "good"
+  const pctLabel = type === "good"
     ? `평균 대비 ${ad.pct}% 수준${ad.trophy?" 🏆":""}`
-    : `평균 대비 +${ad.pct-100}%${ad.pct>=220?" 🚨":""}`);
+    : `평균 대비 ${ad.pct>=100?"+":""}${ad.pct-100}%${ad.pct>=220?" 🚨":""}`;
   return `
     <div class="ad-card ${type}">
       <div class="card-top">
@@ -1124,6 +5970,7 @@ function renderCard(ad, type) {
         <div><div class="m-label">3M 평균 CPL</div><div class="m-val">${cpl3mFmt}</div></div>
         <div><div class="m-label">링크CTR</div><div class="m-val ${valClass}">${ad.ctr}</div></div>
       </div>
+      ${ad.cps7 !== undefined ? `<div style="font-size:11px;color:#666;margin:2px 0 6px">통과 ${ad.pass7 != null ? ad.pass7 : 0}건 · 통과CPS ${ad.cps7 ? ad.cps7.toLocaleString("ko-KR") + "원" : "—"}${ad.cps3m ? " (3M " + ad.cps3m.toLocaleString("ko-KR") + "원)" : ""}</div>` : ""}
       <div class="bar-row">
         <div class="bar-bg"><div class="bar-fill ${fillClass}" style="width:${ad.barW}%"></div></div>
         <span class="bar-label">${pctLabel}</span>
@@ -1181,6 +6028,122 @@ function renderDaily(r) {
 }
 
 // ============================================================
+// DAILY RESULTS TREND CHART (14일)
+// ============================================================
+function renderTrend(r) {
+  if (!r.dailyTrend || !r.dailyTrend.length) return '';
+  const days = r.dailyTrend;
+  const W = 1120, H = 270, padL = 20, padR = 20, padT = 44, padB = 34;
+  const cw = (W - padL - padR) / days.length;
+  const maxRes = Math.max(...days.map(d => d.results), 1);
+  const allCpl = days.flatMap(d => [d.cplTotal, d.cplAd].filter(v => v != null));
+  const maxCpl = Math.max(...allCpl, 1);
+  let bars = '', labels = '';
+  const ptsT = [], ptsA = [];
+  days.forEach((d, i) => {
+    const x = padL + cw * i + cw * 0.5;
+    const bh = (H - padT - padB) * d.results / maxRes;
+    const bw = Math.min(cw * 0.5, 34);
+    bars += `<rect x="${x - bw/2}" y="${H - padB - bh}" width="${bw}" height="${Math.max(bh,1)}" rx="3" fill="#6EC8D8" opacity="0.75"/>`;
+    bars += `<text x="${x}" y="${H - padB - bh - 5}" text-anchor="middle" font-size="11" font-weight="700" fill="#1a1a1a">${d.results}</text>`;
+    labels += `<text x="${x}" y="${H - padB + 15}" text-anchor="middle" font-size="9" fill="#999">${d.d}</text>`;
+    if (d.cplTotal != null) ptsT.push([x, padT + (H - padT - padB) * (1 - d.cplTotal / maxCpl), d.cplTotal]);
+    if (d.cplAd != null)    ptsA.push([x, padT + (H - padT - padB) * (1 - d.cplAd / maxCpl), d.cplAd]);
+  });
+  const line = (pts, color) => `<polyline points="${pts.map(p => p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ')}" fill="none" stroke="${color}" stroke-width="2" opacity="0.8"/>`;
+  const dots = (pts, color) => pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.5" fill="${color}"><title>${p[2].toLocaleString("ko-KR")}원</title></circle>`).join('');
+  return `
+  <div class="camp-section">
+    <div class="section-hd">
+      <span class="section-title">📈 일별 결과 추이 (최근 ${days.length}일)</span>
+      <span class="badge" style="background:#e0f2f7;color:#0e7490">막대: 일 리드수 · <b style="color:#e03e3e">빨강=총 CPL</b> · <b style="color:#2563eb">파랑=광고 CPL</b></span>
+    </div>
+    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:14px 10px;overflow-x:auto">
+      <svg viewBox="0 0 ${W} ${H}" style="min-width:680px;width:100%;display:block" xmlns="http://www.w3.org/2000/svg">
+        ${bars}
+        ${line(ptsT,"#e03e3e")}${dots(ptsT,"#e03e3e")}
+        ${line(ptsA,"#2563eb")}${dots(ptsA,"#2563eb")}
+        ${labels}
+        <line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#e5e5e5"/>
+      </svg>
+    </div>
+    <div style="font-size:10px;color:#999;margin-top:6px">· 총 CPL = 광고비 ÷ 전체 리드(모든 유입) · 광고 CPL = 광고비 ÷ 광고 태깅 리드</div>
+  </div>`;
+}
+
+// ============================================================
+// CEO 코멘트 / 신규광고 / 주차별 CPS
+// ============================================================
+function renderCeo(r) {
+  if (!r.ceo || !r.ceo.length) return '';
+  return `
+  <div class="camp-section">
+    <div class="section-hd">
+      <span class="section-title">🧭 성과 분석 (CEO 보고용)</span>
+      <span class="badge" style="background:#f0fdf4;color:#166534">핵심 5줄</span>
+    </div>
+    <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:16px 18px">
+      <ol style="margin:0;padding-left:18px;font-size:13px;line-height:1.9;color:#1a1a1a">
+        ${r.ceo.map(t => `<li>${t}</li>`).join('')}
+      </ol>
+    </div>
+  </div>`;
+}
+
+function renderNewAds(r) {
+  if (!r.newAds || !r.newAds.length) return '';
+  const rows = r.newAds.map(a => `
+    <tr>
+      <td class="camp-name"><span class="camp-tag" style="${campTagStyle[a.target]}">${a.target}</span>${a.name}</td>
+      <td><span class="badge" style="background:${a.isToday?'#fee2e2':'#eef2ff'};color:${a.isToday?'#991b1b':'#3730a3'}">${a.launched}</span></td>
+      <td>${a.spend}</td><td>${a.ctr}</td>
+      <td style="font-weight:700">${a.leads}건</td>
+      <td style="font-weight:700" class="${a.cplCls||''}">${a.cpl}</td>
+    </tr>`).join('');
+  return `
+  <div class="camp-section">
+    <div class="section-hd">
+      <span class="section-title">🆕 7일 내 신규 세팅 광고 성과</span>
+      <span class="badge b-red">${r.newAdsNote || ''}</span>
+    </div>
+    <table class="camp-table">
+      <thead><tr>
+        <th>소재</th><th>최초 라이브</th>
+        <th style="text-align:right">광고비</th><th style="text-align:right">링크CTR</th>
+        <th style="text-align:right">리드</th><th style="text-align:right">CPL</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
+function renderWeeklyCps() {
+  if (typeof WEEKLY_CPS === 'undefined' || !WEEKLY_CPS.length) return '';
+  const targets = ['한한여','한한남','한일남','한일여'];
+  const emojis = { '한한여':'🟣','한한남':'🔵','한일남':'🩷','한일여':'🟢' };
+  let html = `
+  <div class="camp-section">
+    <div class="section-hd">
+      <span class="section-title">📊 주차별 평균 CPS (통과당 비용)</span>
+      <span class="badge" style="background:#eef2ff;color:#3730a3">월~일 기준 · 선별 완료분만</span>
+    </div>
+    <div class="weekly-scroll">
+    <table class="weekly-table">
+      <thead><tr><th class="week-col">주차</th>${targets.map(t=>`<th>${emojis[t]} ${t}</th>`).join('')}</tr></thead>
+      <tbody>`;
+  for (const row of WEEKLY_CPS) {
+    html += `<tr><td class="week-label">${row.week}</td>`;
+    for (const t of targets) {
+      const v = row[t];
+      html += `<td class="cpl-cell">${v ? (Math.round(v/1000)/10) + '만' : '—'}</td>`;
+    }
+    html += `</tr>`;
+  }
+  html += `</tbody></table></div></div>`;
+  return html;
+}
+
+// ============================================================
 // RENDER PAGE
 // ============================================================
 function renderPage(r) {
@@ -1189,10 +6152,20 @@ function renderPage(r) {
   <div class="container">
     <div class="page-header">
       <h2>📊 ${r.label} 리포트</h2>
-      <span class="subtitle">최근 7일 기준 · 3개월 평균 CPL 대비 분석</span>
+      <span class="subtitle">하루 성과 중심 · 주차 지표는 월~일 기준${r.apiSource ? " · 리드·통과 = 어드민 API" : ""}</span>
     </div>
 
-    ${renderWeeklyTable()}
+    ${r.notes && r.notes.length ? `<div style="background:#fff8e6;border:1px solid #f5d97e;border-radius:10px;padding:10px 14px;margin:12px 0;font-size:12px;line-height:1.7;color:#7a5b00">${r.notes.map(n => "⚠️ " + n).join("<br>")}</div>` : ""}
+
+    ${renderDaily(r)}
+
+    ${renderTrend(r)}
+
+    ${renderCeo(r)}
+
+    ${renderNewAds(r)}
+
+    <div class="divider"></div>
 
     <div class="kpi-row">
       <div class="kpi-card c-red">
@@ -1211,21 +6184,28 @@ function renderPage(r) {
         <div class="kpi-sub">3M 평균 CPL 하회</div>
       </div>
       <div class="kpi-card">
-        <div class="kpi-label">총 광고비 (7일)</div>
-        <div class="kpi-value">${r.kpi.totalSpend}</div>
-        <div class="kpi-sub">총 결과 ${r.kpi.totalLeads}건</div>
+        <div class="kpi-label">주차 광고비 (월~일)</div>
+        <div class="kpi-value">${r.kpi.weekSpend || r.kpi.totalSpend}</div>
+        <div class="kpi-sub">${r.kpi.weekNote || ""}</div>
       </div>
+    </div>
+
+    ${renderCampaignTable(r.campaigns)}
+
+    ${renderWeeklyTable()}
+
+    ${renderWeeklyCps()}
+
+    <div class="divider"></div>
+
+    <div class="section-hd" style="margin-bottom:10px">
+      <span class="section-title">🔍 소재 분석</span>
+      <span class="badge" style="background:#eef2ff;color:#3730a3">타겟별 요약 + 소재 등급</span>
     </div>
 
     <div class="target-row">
       ${r.targets.map(renderTarget).join("")}
     </div>
-
-    ${renderDaily(r)}
-
-    ${renderCampaignTable(r.campaigns)}
-
-    <div class="divider"></div>
 
     <div class="section">
       <div class="section-hd">
@@ -1243,8 +6223,6 @@ function renderPage(r) {
       <div class="cards">${r.caution.map(a => renderCard(a,"caution")).join("")}</div>
     </div>
 
-    <div class="divider"></div>
-
     <div class="section">
       <div class="section-hd">
         <span class="section-title">🟢 소재 GOOD</span>
@@ -1256,11 +6234,1080 @@ function renderPage(r) {
 </div>`;
 }
 
+
+// ============================================================
+// WEEKLY REPORT (주간 리포트)
+// ============================================================
+const MONTHLY = [
+{
+  "id": "monthly-202607",
+  "label": "🗓️ 2026년 7월 (진행중)",
+  "title": "7월 월간 리포트 (7/1 ~ 7/15 · 진행중)",
+  "overview": {
+    "spend": "1,583만원",
+    "spendSub": "메타만 (7/1~15 · 네이버 미집계)",
+    "rev": "집계중",
+    "roas": "—",
+    "roasSub": "결제 시차로 월말 확정",
+    "leads": 406,
+    "pass": 137,
+    "passRate": "39.3%",
+    "cpl": "38,991원",
+    "cps": "115,551원",
+    "ctr": "1.96%",
+    "consult": 36,
+    "paid": 3
+  },
+  "segments": [
+    {
+      "name": "한한여",
+      "emoji": "🟣",
+      "spend": "610만원",
+      "share": "39%",
+      "leads": 127,
+      "pass": 61,
+      "passRate": "48.0%",
+      "cpl": "48,050원",
+      "cps": "100,037원",
+      "note": "통과율 6월 37%→48% · 그대로→그대로_제논 교체(7/15)"
+    },
+    {
+      "name": "한일남",
+      "emoji": "🩷",
+      "spend": "595만원",
+      "share": "38%",
+      "leads": 182,
+      "pass": 39,
+      "passRate": "21.4%",
+      "cpl": "32,667원",
+      "cps": "152,446원",
+      "note": "리드 최다 · [맨스] 신규가 견인 시작"
+    },
+    {
+      "name": "한일여",
+      "emoji": "🟢",
+      "spend": "234만원",
+      "share": "15%",
+      "leads": "0 (미태깅)",
+      "pass": "—",
+      "passRate": "—",
+      "cpl": "—",
+      "cps": "—",
+      "note": "Typeform UTM 미설정 → 234만원 추적 불가"
+    },
+    {
+      "name": "한한남",
+      "emoji": "🔵",
+      "spend": "144만원",
+      "share": "9%",
+      "leads": 45,
+      "pass": 20,
+      "passRate": "44.4%",
+      "cpl": "32,105원",
+      "cps": "72,237원",
+      "note": "CPS 최우수 · 고스펙(신규) CPL 8,414원 견인"
+    }
+  ],
+  "creatives": [
+    {
+      "name": "[베리] 서재민_그대로",
+      "target": "한한여",
+      "spend": "3,205,377원",
+      "leads": 65,
+      "pass": 32,
+      "passRate": "49%",
+      "cpl": "49,313원",
+      "cps": "100,168원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "연봉 1억이상",
+      "target": "한한여",
+      "spend": "1,812,467원",
+      "leads": 37,
+      "pass": 21,
+      "passRate": "57%",
+      "cpl": "48,986원",
+      "cps": "86,308원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "4월2주 AI_2",
+      "target": "한일남",
+      "spend": "1,458,819원",
+      "leads": 32,
+      "pass": 12,
+      "passRate": "38%",
+      "cpl": "45,588원",
+      "cps": "121,568원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "세나 (7/14부터 UTM 정상화)",
+      "target": "한일남",
+      "spend": "974,903원",
+      "leads": 3,
+      "pass": 0,
+      "passRate": "0%",
+      "cpl": "324,968원",
+      "cps": "—",
+      "grade": "⚠️",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "4월2주 AI_1",
+      "target": "한일남",
+      "spend": "677,730원",
+      "leads": 25,
+      "pass": 8,
+      "passRate": "32%",
+      "cpl": "27,109원",
+      "cps": "84,716원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "소개팅 거절_평범",
+      "target": "한일남",
+      "spend": "664,943원",
+      "leads": 18,
+      "pass": 4,
+      "passRate": "22%",
+      "cpl": "36,941원",
+      "cps": "166,236원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "[베리]30대면 아줌마 (데보라 포함)",
+      "target": "한한남",
+      "spend": "654,137원",
+      "leads": 17,
+      "pass": 10,
+      "passRate": "59%",
+      "cpl": "38,479원",
+      "cps": "65,414원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "[베리] 결국 일본 여자를 선택",
+      "target": "한일남",
+      "spend": "596,817원",
+      "leads": 23,
+      "pass": 1,
+      "passRate": "4%",
+      "cpl": "25,949원",
+      "cps": "596,817원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "spend": "429,062원",
+      "leads": 9,
+      "pass": 2,
+      "passRate": "22%",
+      "cpl": "47,674원",
+      "cps": "214,531원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "능력남 몰리는 이유",
+      "target": "한한남",
+      "spend": "403,455원",
+      "leads": 11,
+      "pass": 7,
+      "passRate": "64%",
+      "cpl": "36,678원",
+      "cps": "57,636원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "일본 여자랑 결혼하지 마세요",
+      "target": "한일남",
+      "spend": "371,283원",
+      "leads": 14,
+      "pass": 0,
+      "passRate": "0%",
+      "cpl": "26,520원",
+      "cps": "—",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "내딸이면_데보라",
+      "target": "한한여",
+      "spend": "321,323원",
+      "leads": 6,
+      "pass": 5,
+      "passRate": "83%",
+      "cpl": "53,554원",
+      "cps": "64,265원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "내딸이면_제논",
+      "target": "한한여",
+      "spend": "299,835원",
+      "leads": 5,
+      "pass": 3,
+      "passRate": "60%",
+      "cpl": "59,967원",
+      "cps": "99,945원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "제논_내딸이면 (OFF 처리)",
+      "target": "한한남",
+      "spend": "227,587원",
+      "leads": 1,
+      "pass": 0,
+      "passRate": "0%",
+      "cpl": "227,587원",
+      "cps": "—",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "아이츠니(=세나 실체)",
+      "target": "한일남",
+      "spend": "104,803원",
+      "leads": 22,
+      "pass": 4,
+      "passRate": "18%",
+      "cpl": "4,764원",
+      "cps": "26,201원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "맨스_일본여자가좋아하는 (7/14 신규)",
+      "target": "한일남",
+      "spend": "100,436원",
+      "leads": 16,
+      "pass": 4,
+      "passRate": "25%",
+      "cpl": "6,277원",
+      "cps": "25,109원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "[베리] 고스펙 아줌마 (7/14 신규)",
+      "target": "한한남",
+      "spend": "44,749원",
+      "leads": 4,
+      "pass": 2,
+      "passRate": "50%",
+      "cpl": "11,187원",
+      "cps": "22,374원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "맨스_일본여친소개 (7/14 신규)",
+      "target": "한일남",
+      "spend": "17,872원",
+      "leads": 1,
+      "pass": 0,
+      "passRate": "0%",
+      "cpl": "17,872원",
+      "cps": "—",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "맨스_일본여자내조 (7/14 신규·표본1)",
+      "target": "한일남",
+      "spend": "6,005원",
+      "leads": 1,
+      "pass": 1,
+      "passRate": "100%",
+      "cpl": "6,005원",
+      "cps": "6,005원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "맨스_프리미엄 (7/14 신규·표본1)",
+      "target": "한일남",
+      "spend": "1,430원",
+      "leads": 1,
+      "pass": 0,
+      "passRate": "0%",
+      "cpl": "1,430원",
+      "cps": "—",
+      "grade": "⚪",
+      "cls": ""
+    }
+  ],
+  "analysis": [
+    "<b>7/1~15 리드 406건·통과 137건(39.3%)</b> — 6월(25.6%) 대비 <b>통과율 14%p 급개선</b>. 광고비 1,583만원(메타), 평균 CPL 38,991원·CPS 115,551원. (미선별 36건 남아 통과·CPS는 더 개선 예정)",
+    "<b>신규 소재가 판을 바꿨다.</b> [베리]고스펙(한한남) CPL 8,414원, [맨스]일본여자가좋아하는 CPL 24,277원(3배 증액에도 유지), 서재민_그대로_제논 CPL 21,537원(기존 대비 -56%). <b>7/14~15 신규 3종이 전부 상위</b>.",
+    "<b>한한여 통과율 37%→54% 급등이 이번 달 최대 성과.</b> 연봉1억(57%)·데보라(83%)가 견인. 반면 그대로는 CPL 49,313원으로 피로 누적 → 교체 대상.",
+    "<b>여전한 낭비 3건</b>: ① 세나 97만원(7/14 UTM 정상화 전까지 미추적) ② 한일여 220만원 추적불가(Typeform) ③ 결국·결혼하지 97만원 통과율 0~4%. <b>합계 약 414만원(28%)</b>.",
+    "<b>To-Be</b>: ① 한한남 [베리]고스펙 증액 1순위(CPL 8,414원·광고비 9%뿐) ② [맨스] 시리즈 계속 확대 ③ 한일여 Typeform UTM 연동(234만원 측정 복구) ④ 결국·환상 등 통과율 낮은 구소재 정리."
+  ]
+},
+{
+  "id": "monthly-202606",
+  "label": "🗓️ 2026년 6월",
+  "title": "6월 월간 리포트 (6/1 ~ 6/30)",
+  "overview": {
+    "spend": "2,396만원",
+    "spendSub": "메타 2,206만 + 네이버 190만(7.9%)",
+    "rev": "2,534만원",
+    "roas": "105.8%",
+    "roasSub": "손익분기 근접",
+    "leads": 820,
+    "pass": 192,
+    "passRate": "25.6%",
+    "cpl": "29,220원",
+    "cps": "124,795원",
+    "ctr": "1.88%",
+    "consult": 119,
+    "paid": 7
+  },
+  "segments": [
+    {
+      "name": "한일남",
+      "emoji": "🩷",
+      "spend": "1,007만원",
+      "share": "46%",
+      "leads": 409,
+      "pass": 64,
+      "passRate": "15.6%",
+      "cpl": "24,627원",
+      "cps": "157,384원",
+      "note": "리드 최다(50%)·CPL 최저 / 통과율 최악"
+    },
+    {
+      "name": "한한여",
+      "emoji": "🟣",
+      "spend": "904만원",
+      "share": "41%",
+      "leads": 214,
+      "pass": 80,
+      "passRate": "37.4%",
+      "cpl": "42,260원",
+      "cps": "113,046원",
+      "note": "통과 최다 · 그대로 소재가 절반"
+    },
+    {
+      "name": "한일여",
+      "emoji": "🟢",
+      "spend": "154만원",
+      "share": "7%",
+      "leads": "0 (미태깅)",
+      "pass": "—",
+      "passRate": "—",
+      "cpl": "—",
+      "cps": "—",
+      "note": "Typeform UTM 미설정 → 추적 불가"
+    },
+    {
+      "name": "한한남",
+      "emoji": "🔵",
+      "spend": "140만원",
+      "share": "6%",
+      "leads": 29,
+      "pass": 18,
+      "passRate": "62.1%",
+      "cpl": "48,174원",
+      "cps": "77,614원",
+      "note": "통과율·CPS 최우수 / 볼륨 최소"
+    }
+  ],
+  "creatives": [
+    {
+      "name": "[베리] 서재민_그대로",
+      "target": "한한여",
+      "spend": "4,857,412원",
+      "leads": 102,
+      "pass": 40,
+      "passRate": "39%",
+      "cpl": "47,622원",
+      "cps": "121,435원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "4월2주 AI_2",
+      "target": "한일남",
+      "spend": "1,920,425원",
+      "leads": 75,
+      "pass": 15,
+      "passRate": "20%",
+      "cpl": "25,606원",
+      "cps": "128,028원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "[베리] 결국 일본 여자를 선택",
+      "target": "한일남",
+      "spend": "1,724,306원",
+      "leads": 63,
+      "pass": 11,
+      "passRate": "17%",
+      "cpl": "27,370원",
+      "cps": "156,755원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "연봉 1억이상",
+      "target": "한한여",
+      "spend": "1,648,729원",
+      "leads": 55,
+      "pass": 18,
+      "passRate": "33%",
+      "cpl": "29,977원",
+      "cps": "91,596원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "소개팅 거절_평범",
+      "target": "한일남",
+      "spend": "1,627,096원",
+      "leads": 84,
+      "pass": 13,
+      "passRate": "15%",
+      "cpl": "19,370원",
+      "cps": "125,161원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "세나 (태깅오류·실적은 아이츠니로 집계)",
+      "target": "한일남",
+      "spend": "1,540,127원",
+      "leads": 0,
+      "pass": 0,
+      "passRate": "—",
+      "cpl": "리드0",
+      "cps": "—",
+      "grade": "⚠️",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "내딸이면_제논",
+      "target": "한한여",
+      "spend": "1,251,811원",
+      "leads": 17,
+      "pass": 6,
+      "passRate": "35%",
+      "cpl": "73,636원",
+      "cps": "208,635원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "일본 여자에 환상 가지지 마세요",
+      "target": "한일남",
+      "spend": "1,216,332원",
+      "leads": 36,
+      "pass": 4,
+      "passRate": "11%",
+      "cpl": "33,787원",
+      "cps": "304,083원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "[베리]30대면 아줌마",
+      "target": "한한남",
+      "spend": "1,150,867원",
+      "leads": 22,
+      "pass": 14,
+      "passRate": "64%",
+      "cpl": "52,312원",
+      "cps": "82,205원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "[베리] 서재민_성공적인 결혼",
+      "target": "한한여",
+      "spend": "803,127원",
+      "leads": 21,
+      "pass": 8,
+      "passRate": "38%",
+      "cpl": "38,244원",
+      "cps": "100,391원",
+      "grade": "⚪",
+      "cls": ""
+    },
+    {
+      "name": "4월2주 AI_1",
+      "target": "한일남",
+      "spend": "673,800원",
+      "leads": 34,
+      "pass": 4,
+      "passRate": "12%",
+      "cpl": "19,818원",
+      "cps": "168,450원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "아이츠니(=세나 실체)",
+      "target": "한일남",
+      "spend": "583,863원",
+      "leads": 90,
+      "pass": 12,
+      "passRate": "13%",
+      "cpl": "6,487원",
+      "cps": "48,655원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "POV: 일본 여자친구",
+      "target": "한일남",
+      "spend": "399,966원",
+      "leads": 17,
+      "pass": 4,
+      "passRate": "24%",
+      "cpl": "23,527원",
+      "cps": "99,992원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "일본 여자랑 결혼하지 마세요",
+      "target": "한일남",
+      "spend": "386,681원",
+      "leads": 10,
+      "pass": 1,
+      "passRate": "10%",
+      "cpl": "38,668원",
+      "cps": "386,681원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "능력남 몰리는 이유",
+      "target": "한한남",
+      "spend": "246,185원",
+      "leads": 7,
+      "pass": 4,
+      "passRate": "57%",
+      "cpl": "35,169원",
+      "cps": "61,546원",
+      "grade": "🏆",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "내딸이면_데보라",
+      "target": "한한여",
+      "spend": "231,323원",
+      "leads": 4,
+      "pass": 3,
+      "passRate": "75%",
+      "cpl": "57,831원",
+      "cps": "77,108원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    },
+    {
+      "name": "박돈경_말고",
+      "target": "한한여",
+      "spend": "174,816원",
+      "leads": 1,
+      "pass": 1,
+      "passRate": "100%",
+      "cpl": "174,816원",
+      "cps": "174,816원",
+      "grade": "🔴",
+      "cls": "cpl-high"
+    },
+    {
+      "name": "[베리] 서재민_육각형",
+      "target": "한한여",
+      "spend": "76,476원",
+      "leads": 3,
+      "pass": 1,
+      "passRate": "33%",
+      "cpl": "25,492원",
+      "cps": "76,476원",
+      "grade": "🟢",
+      "cls": "cpl-low"
+    }
+  ],
+  "analysis": [
+    "<b>6월 ROAS 105.8% — 손익분기 근접.</b> 광고비 2,396만원으로 매출 2,534만원. 4·5월(305%·273%) 대비 급락했으나, 결혼정보 특성상 6월 리드의 결제가 7~8월에 잡히므로 <b>실제 6월 ROAS는 상향될 것</b>(D-10 기준 137%).",
+    "<b>구조적 문제: 리드는 한일남이, 통과는 한한여가 만든다.</b> 한일남이 리드의 50%(409건)를 CPL 24,627원으로 싸게 가져오지만 <b>통과율 15.6%로 최악</b>. 반면 한한여는 통과율 37.4%로 통과의 42%를 담당. → 리드 수 기준 예산 배분이 매출과 어긋남.",
+    "<b>최고 효율은 한한남 (통과율 62.1%·CPS 77,614원)</b> — 전 타겟 중 압도적이나 광고비는 6%(140만원)뿐. <b>증액 1순위</b>였으나 볼륨을 못 키움.",
+    "<b>최대 낭비 3건</b>: ① 세나 154만원 리드0(태깅오류로 아이츠니에 집계) ② 한일여 154만원 추적불가(Typeform UTM 미설정) ③ 환상·결혼하지 160만원 통과율 10~11%. <b>합계 약 470만원(20%)이 측정 불가/저품질</b>.",
+    "<b>숨은 에이스: 아이츠니(=세나 실체) CPL 6,487원·CPS 48,655원</b>으로 6월 최고 효율인데 광고비는 58만원(2.6%)뿐. <b>7월 [맨스] 시리즈가 이 자리를 대체 중</b> → 소재 교체가 정답임을 6월 데이터도 뒷받침."
+  ]
+}
+];
+
+function renderMonthlyPage(m) {
+  const o = m.overview;
+  const segRows = m.segments.map(s => `
+    <tr>
+      <td class="camp-name">${s.emoji} ${s.name}</td>
+      <td>${s.spend}</td><td>${s.share}</td>
+      <td>${s.leads}건</td><td>${s.pass}${typeof s.pass === "number" ? "건" : ""}</td>
+      <td style="font-weight:700">${s.passRate}</td>
+      <td style="font-weight:700">${s.cpl}</td><td style="font-weight:700">${s.cps}</td>
+      <td style="text-align:left;font-size:11px">${s.note}</td>
+    </tr>`).join("");
+  const crRows = m.creatives.map(c => `
+    <tr>
+      <td class="camp-name">${c.grade} <span class="camp-tag" style="${campTagStyle[c.target]}">${c.target}</span>${c.name}</td>
+      <td>${c.spend}</td><td>${c.leads}건</td><td>${c.pass}건</td>
+      <td style="font-weight:700">${c.passRate||"—"}</td>
+      <td class="${c.cls}" style="font-weight:700">${c.cpl}</td>
+      <td class="${c.cls}" style="font-weight:700">${c.cps}</td>
+    </tr>`).join("");
+  return `
+<div class="page" id="page-${m.id}">
+  <div class="container">
+    <div class="page-header">
+      <h2>🗓️ ${m.title}</h2>
+      <span class="subtitle">메타 + 네이버 통합 · 리드/통과 = 어드민 API</span>
+    </div>
+
+    <div class="kpi-row" style="flex-wrap:wrap">
+      <div class="kpi-card"><div class="kpi-label">총 광고비</div><div class="kpi-value">${o.spend}</div><div class="kpi-sub">${o.spendSub}</div></div>
+      <div class="kpi-card"><div class="kpi-label">매출 / ROAS</div><div class="kpi-value">${o.roas}</div><div class="kpi-sub">매출 ${o.rev} · ${o.roasSub}</div></div>
+      <div class="kpi-card"><div class="kpi-label">리드 / 통과</div><div class="kpi-value">${o.leads}건</div><div class="kpi-sub">통과 ${o.pass}건 (${o.passRate})</div></div>
+      <div class="kpi-card"><div class="kpi-label">평균 CPL</div><div class="kpi-value">${o.cpl}</div><div class="kpi-sub">리드당</div></div>
+      <div class="kpi-card"><div class="kpi-label">평균 CPS</div><div class="kpi-value">${o.cps}</div><div class="kpi-sub">통과당</div></div>
+      <div class="kpi-card"><div class="kpi-label">평균 CTR</div><div class="kpi-value">${o.ctr}</div><div class="kpi-sub">1차상담 ${o.consult}건 · 결제 ${o.paid}건</div></div>
+    </div>
+
+    <div class="camp-section">
+      <div class="section-hd"><span class="section-title">🧭 6월 총평 (CEO 보고용)</span><span class="badge" style="background:#f0fdf4;color:#166534">핵심 5줄</span></div>
+      <div style="background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:16px 18px">
+        <ol style="margin:0;padding-left:18px;font-size:13px;line-height:1.95;color:#1a1a1a">
+          ${m.analysis.map(t => `<li style="margin-bottom:8px">${t}</li>`).join("")}
+        </ol>
+      </div>
+    </div>
+
+    <div class="camp-section">
+      <div class="section-hd"><span class="section-title">🎯 타겟별 성과</span></div>
+      <div class="weekly-scroll">
+      <table class="camp-table" style="min-width:900px">
+        <thead><tr>
+          <th>타겟</th><th style="text-align:right">광고비</th><th style="text-align:right">비중</th>
+          <th style="text-align:right">리드</th><th style="text-align:right">통과</th><th style="text-align:right">통과율</th>
+          <th style="text-align:right">CPL</th><th style="text-align:right">CPS</th><th>비고</th>
+        </tr></thead>
+        <tbody>${segRows}</tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="camp-section">
+      <div class="section-hd"><span class="section-title">🔍 소재별 성과 (광고비순)</span><span class="badge" style="background:#eef2ff;color:#3730a3">🏆최고 · 🟢양호 · ⚪보통 · 🔴부진</span></div>
+      <div class="weekly-scroll">
+      <table class="camp-table" style="min-width:760px">
+        <thead><tr>
+          <th>소재</th><th style="text-align:right">광고비</th><th style="text-align:right">리드</th>
+          <th style="text-align:right">통과</th><th style="text-align:right">통과율</th><th style="text-align:right">CPL</th><th style="text-align:right">CPS</th>
+        </tr></thead>
+        <tbody>${crRows}</tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+const WEEKLY = [
+{
+  "id": "weekly-20260712",
+  "label": "📅 주간 7/6~7/12",
+  "title": "주간 리포트 (7/6 ~ 7/12)",
+  "compareLabel": "전주(6/29~7/5) 대비 · 선별 완료(확정)",
+  "groups": [
+    {
+      "name": "한한 여성",
+      "grade": "⚠️",
+      "spendPrev": "2,820,319원",
+      "spendCur": "2,830,804원",
+      "spendChg": "▲ +0.4%",
+      "cplPrev": "약 40,000원",
+      "cplCur": "51,469원",
+      "cplChg": "악화 +29%",
+      "cplDir": "bad",
+      "ctrChg": "▼ -0.2%p",
+      "cvrChg": "—",
+      "cpsPrev": "90,978원",
+      "cpsCur": "101,100원",
+      "cpsChg": "+11%",
+      "cpsDir": "bad"
+    },
+    {
+      "name": "한일 여성",
+      "grade": "✅",
+      "spendPrev": "673,094원",
+      "spendCur": "1,213,822원",
+      "spendChg": "▲ +80.3%",
+      "cplPrev": "약 74,000원",
+      "cplCur": "40,461원",
+      "cplChg": "개선 -45%",
+      "cplDir": "good",
+      "ctrChg": "▲",
+      "cvrChg": "—",
+      "cpsPrev": "—",
+      "cpsCur": "—",
+      "cpsChg": "—",
+      "cpsDir": ""
+    },
+    {
+      "name": "남성 전체",
+      "grade": "⚠️",
+      "spendPrev": "3,040,862원",
+      "spendCur": "3,464,618원",
+      "spendChg": "▲ +13.9%",
+      "cplPrev": "약 30,000원",
+      "cplCur": "39,779원",
+      "cplChg": "악화 +33%",
+      "cplDir": "bad",
+      "ctrChg": "▲ +0.2%p",
+      "cvrChg": "▼",
+      "cpsPrev": "104,857원",
+      "cpsCur": "164,982원",
+      "cpsChg": "악화 +57%",
+      "cpsDir": "bad"
+    }
+  ],
+  "groupNotes": [
+    "남성 = 한일남(275만) + 한한남(71만) 메타 합산",
+    "한일 여성 리드는 타입폼 실측 30명 기준(메타 픽셀 20건 대비 상향)",
+    "세나=옛 아이츠니(46190) 태깅 오류 — 세나 리드는 '46190아이츠니'로 집계됨. 진짜 아이츠니는 46213(한국에서일본여자)",
+    "선별 완료(미선별 0) — 통과 59건·CPS 확정. 한한남 CPS 64,855원(통과율73%) 최우수 · 한일남 CPS 275,122원(통과율14%) 최악"
+  ],
+  "channels": [
+    {
+      "name": "한한 여성 메타",
+      "spend": "2,830,804원",
+      "leads": "55건",
+      "cpl": "51,469원",
+      "ctr": "1.1%",
+      "cvr": "27.3%",
+      "note": "⚠️ CPL 상승",
+      "cps": "101,100원"
+    },
+    {
+      "name": "한일 남성 메타",
+      "spend": "2,751,218원",
+      "leads": "72건",
+      "cpl": "38,211원",
+      "ctr": "2.6%",
+      "cvr": "5.6%*",
+      "note": "🔴 통과율14%·CPS 높음",
+      "cps": "275,122원"
+    },
+    {
+      "name": "한한 남성 메타",
+      "spend": "713,400원",
+      "leads": "15건",
+      "cpl": "47,560원",
+      "ctr": "2.2%",
+      "cvr": "46.7%",
+      "note": "✅ 통과율73%·CPS 최저",
+      "cps": "64,855원"
+    },
+    {
+      "name": "한일 여성 메타",
+      "spend": "1,213,822원",
+      "leads": "30건 (타입폼)",
+      "cpl": "40,461원",
+      "ctr": "1.5%",
+      "cvr": "—",
+      "note": "✅ CPL 대폭 개선",
+      "cps": "—"
+    }
+  ],
+  "channelTotal": "7,509,244원",
+  "summary": [
+    {
+      "grade": "✅",
+      "cls": "b-green",
+      "text": "【성과·한일여】 타입폼 실측 30명 반영 → CPL 40,461원(전주 대비 -45% 개선). 한국남친3가지(CPL 35,328) 견인 · 전 타겟 중 획득효율 최고 → 증액 여지 큼."
+    },
+    {
+      "grade": "✅",
+      "cls": "b-green",
+      "text": "【발견·세나】 세나는 리드0이 아니었음 — 옛 아이츠니(46190) utm_content를 복제해 세나 리드가 '아이츠니'로 오집계(주간 13리드·CPL 36,538원, 우량). 그간 '아이츠니 최고 소재'가 사실 세나. 진짜 아이츠니는 46213(신규·미검증)."
+    },
+    {
+      "grade": "⚠️",
+      "cls": "b-amber",
+      "text": "【문제·CPL 상승】 원인 = ① CPM +22%(28,983→35,225원, 4주 광고비 +38% 과속 증액) + ② 링크CTR 하락(2.12→1.89%, 그대로·AI_2 소재 피로) 합작. CPS 급등(+107·200%)은 선별 미성숙 착시(통과 완료 시 정상화)."
+    },
+    {
+      "grade": "✅",
+      "cls": "b-green",
+      "text": "【조치 완료】 내딸이면_제논(한한여·리드0) OFF 처리 완료. 아이츠니 신규(46213·리드2) 관찰 중."
+    },
+    {
+      "grade": "✅",
+      "cls": "b-green",
+      "text": "【To-Be 해결】 ① UTM 정상화 — 세나 content 수정(46190→46197)·한일여 Typeform hidden field 연동으로 추적 복구 ② 증액 속도 완화(주 +10~15%)로 CPM 안정 ③ 그대로·AI_2 신규 변형 투입해 CTR 회복 ④ 제논 OFF ⑤ 매출 엔진 한일남(남성 고가 멤버십 595만원)·한일여 효율소재 우선 증액. → CPL을 손익분기(56,564원) 아래 방어."
+    }
+  ],
+  "deepTitle": "일별 흐름 — 7/6~7/12 (메타 리드·CPL)",
+  "deepCols": [
+    "결과",
+    "광고비",
+    "CPL"
+  ],
+  "deep": [
+    {
+      "item": "7/6",
+      "a": "19건",
+      "b": "1,066,013원",
+      "chg": "56,106원",
+      "dir": ""
+    },
+    {
+      "item": "7/7",
+      "a": "17건",
+      "b": "1,140,311원",
+      "chg": "67,077원",
+      "dir": "bad"
+    },
+    {
+      "item": "7/8",
+      "a": "16건",
+      "b": "1,090,865원",
+      "chg": "68,179원",
+      "dir": "bad"
+    },
+    {
+      "item": "7/9",
+      "a": "13건",
+      "b": "1,033,236원",
+      "chg": "79,480원",
+      "dir": "bad"
+    },
+    {
+      "item": "7/10",
+      "a": "21건",
+      "b": "1,017,430원",
+      "chg": "48,449원",
+      "dir": "good"
+    },
+    {
+      "item": "7/11",
+      "a": "19건",
+      "b": "957,542원",
+      "chg": "50,397원",
+      "dir": "good"
+    },
+    {
+      "item": "7/12",
+      "a": "14건",
+      "b": "1,203,847원",
+      "chg": "85,989원",
+      "dir": "bad"
+    }
+  ],
+  "overview": {
+    "spend": "751만원",
+    "spendDelta": "전주 653만 · +98만 (+15%)",
+    "leads": 172,
+    "pass": 49,
+    "passNote": " (선별 완료)",
+    "leadsDelta": "전주 172건 · ±0 (0%)",
+    "cpl": "43,658원",
+    "cplDelta": "전주 37,990원 · +5,668 (+15%)",
+    "cplDir": "bad",
+    "cps": "153,250원",
+    "cpsNote": "",
+    "cpsDelta": "전주 108,905원 · +44,345 (+41%)",
+    "cpsDir": "bad",
+    "ctr": "1.89%",
+    "ctrDelta": "전주 1.97% · -0.08%p",
+    "ctrDir": "bad"
+  }
+},
+{
+  id: "weekly-20260705",
+  label: "📅 주간 6/29~7/5",
+  title: "주간 리포트 (6/29 ~ 7/5)",
+  compareLabel: "전주(6/22~28) 대비",
+  groups: [
+    { name:"한한 여성", grade:"✅", spendPrev:"2,560,444원", spendCur:"2,876,898원", spendChg:"▲ +12.4%",
+      cplPrev:"52,250원", cplCur:"47,005원", cplChg:"개선 -10.0%", cplDir:"good", ctrChg:"▲ +0.8%p", cvrChg:"▲ +0.6%p" },
+    { name:"일본 여성", grade:"✅", spendPrev:"—", spendCur:"673,094원", spendChg:"신규",
+      cplPrev:"—", cplCur:"44,873원", cplChg:"—", cplDir:"", ctrChg:"1.6%", cvrChg:"—" },
+    { name:"남성 전체", grade:"⚠️", spendPrev:"2,997,518원", spendCur:"3,296,384원", spendChg:"▲ +10.0%",
+      cplPrev:"20,641원", cplCur:"27,332원", cplChg:"악화 +32.4%", cplDir:"bad", ctrChg:"▲ +0.3%p", cvrChg:"▼ -0.7%p" }
+  ],
+  groupNotes: [
+    "남성 광고비 = 한한 남성 메타 + 한일 남성 메타 + 한일 남성 검색 · 남성 CPL은 한일 남성 메타 기준 (비중 최대)",
+    "일본 여성 CPL = 673,094원 ÷ 15건 (일본 + 서경인 타겟 합산)"
+  ],
+  channels: [
+    { name:"한한 여성 메타",       spend:"2,820,303원", leads:"—",   cpl:"47,005원",  ctr:"1.3%",  cvr:"5.9%", note:"✅ CPL 개선" },
+    { name:"한한 여성 검색",       spend:"56,595원",    leads:"—",   cpl:"28,298원",  ctr:"4.0%",  cvr:"5.3%", note:"⚠️ CVR 하락" },
+    { name:"한한 남성 메타",       spend:"498,769원",   leads:"—",   cpl:"124,692원", ctr:"2.5%",  cvr:"1.1%", note:"🚨 CPL 급등" },
+    { name:"한일 남성 메타",       spend:"2,541,871원", leads:"—",   cpl:"27,332원",  ctr:"2.5%",  cvr:"4.0%", note:"⚠️ CPL 소폭 악화" },
+    { name:"한일 남성 검색",       spend:"255,744원",   leads:"—",   cpl:"23,249원",  ctr:"9.0%",  cvr:"5.0%", note:"✅ CPL 개선" },
+    { name:"한일 여성 (일본)",     spend:"359,493원",   leads:"14건", cpl:"25,678원",  ctr:"2.37%", cvr:"—",   note:"✅ 효율 양호" },
+    { name:"한일 여성 (서경인)",   spend:"313,601원",   leads:"1건",  cpl:"313,601원", ctr:"0.82%", cvr:"—",   note:"🚨 효율 매우 낮음" }
+  ],
+  channelTotal: "6,846,376원",
+  summary: [
+    { grade:"✅", cls:"b-green", text:"한한 여성 : 광고비 증가에도 CPL 개선세 유지 (52,250원 → 47,005원)" },
+    { grade:"✅", cls:"b-green", text:"일본 여성 : 신규 집행 — 일본 타겟 CPL 25,678원으로 효율적 / 서경인 타겟 CPL 313,601원으로 비효율 → 타겟 조정 필요" },
+    { grade:"⚠️", cls:"b-amber", text:"남성 : 광고비 10% 증가했으나 CPL 상승 — 한한 남성 메타 CVR 급락(광고비 3배 증가, CVR 1.1%)이 주요 원인" }
+  ],
+  deepTitle: "한일 여성 심층 비교 — 6/1~6/7 vs 6/29~7/5",
+  deepCols: ["6/1~6/7", "6/29~7/5", "변화"],
+  deep: [
+    { item:"총 광고비",      a:"1,287,293원", b:"673,094원",  chg:"▼ -47.7%",       dir:"" },
+    { item:"서경인 광고비",  a:"323,745원",   b:"313,601원",  chg:"▼ -3.1%",        dir:"" },
+    { item:"일본 광고비",    a:"963,548원",   b:"359,493원",  chg:"▼ -62.7%",       dir:"" },
+    { item:"총 링크 클릭",   a:"578",         b:"307",        chg:"▼ -46.9%",       dir:"" },
+    { item:"서경인 CTR",     a:"0.59%",       b:"0.82%",      chg:"▲ +0.23%p",      dir:"good" },
+    { item:"일본 CTR",       a:"1.73%",       b:"2.37%",      chg:"▲ +0.64%p",      dir:"good" },
+    { item:"서경인 리드",    a:"—",           b:"1건",        chg:"—",              dir:"" },
+    { item:"일본 리드",      a:"9건",         b:"14건",       chg:"▲ +5건",         dir:"good" },
+    { item:"총 리드",        a:"9건",         b:"15건",       chg:"▲ +6건",         dir:"good" },
+    { item:"일본 CPL",       a:"107,061원",   b:"25,678원",   chg:"개선 -76.0%",    dir:"good" },
+    { item:"전체 CPL",       a:"143,033원",   b:"44,873원",   chg:"개선 -68.6%",    dir:"good" }
+  ]
+}
+];
+
+function renderWeeklyPage(w) {
+  const dirCls = d => d === "good" ? "cpl-low" : d === "bad" ? "cpl-high" : "";
+  const groupRows = w.groups.map(g => `
+    <tr>
+      <td class="camp-name">${g.grade} ${g.name}</td>
+      <td>${g.spendPrev}</td><td>${g.spendCur}</td><td>${g.spendChg}</td>
+      <td>${g.cplPrev}</td><td style="font-weight:700">${g.cplCur}</td>
+      <td class="${dirCls(g.cplDir)}" style="font-weight:700">${g.cplChg}</td>
+      <td>${g.cpsPrev||"—"}</td><td style="font-weight:700">${g.cpsCur||"—"}</td>
+      <td class="${dirCls(g.cpsDir)}" style="font-weight:700">${g.cpsChg||"—"}</td>
+      <td>${g.ctrChg}</td><td>${g.cvrChg}</td>
+    </tr>`).join("");
+  const chRows = w.channels.map(c => `
+    <tr>
+      <td class="camp-name">${c.name}</td>
+      <td>${c.spend}</td><td>${c.leads}</td><td style="font-weight:700">${c.cpl}</td>
+      <td style="font-weight:700">${c.cps||"—"}</td>
+      <td>${c.ctr}</td><td>${c.cvr}</td>
+      <td style="text-align:left">${c.note}</td>
+    </tr>`).join("");
+  const sumRows = w.summary.map(s => `
+    <div style="display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px 16px;margin-bottom:8px">
+      <span class="badge ${s.cls}" style="flex-shrink:0;margin-top:1px">${s.grade}</span>
+      <span style="font-size:12px;line-height:1.6">${s.text}</span>
+    </div>`).join("");
+  const deepRows = w.deep.map(d => `
+    <tr>
+      <td class="camp-name">${d.item}</td>
+      <td>${d.a}</td><td>${d.b}</td>
+      <td class="${dirCls(d.dir)}" style="font-weight:700">${d.chg}</td>
+    </tr>`).join("");
+  return `
+<div class="page" id="page-${w.id}">
+  <div class="container">
+    <div class="page-header">
+      <h2>📅 ${w.title}</h2>
+      <span class="subtitle">${w.compareLabel} · 메타 + 검색 통합</span>
+    </div>
+
+    ${w.overview ? `<div class="kpi-row" style="flex-wrap:wrap">
+      <div class="kpi-card"><div class="kpi-label">총 광고비 (7일)</div><div class="kpi-value">${w.overview.spend}</div><div class="kpi-sub">메타+검색 합계</div>${w.overview.spendDelta?`<div class="kpi-delta">${w.overview.spendDelta}</div>`:""}</div>
+      <div class="kpi-card"><div class="kpi-label">총 리드 / 통과</div><div class="kpi-value">${w.overview.leads}건</div><div class="kpi-sub">통과 ${w.overview.pass}건${w.overview.passNote||""}</div>${w.overview.leadsDelta?`<div class="kpi-delta">${w.overview.leadsDelta}</div>`:""}</div>
+      <div class="kpi-card"><div class="kpi-label">평균 CPL</div><div class="kpi-value">${w.overview.cpl}</div><div class="kpi-sub">리드당</div>${w.overview.cplDelta?`<div class="kpi-delta ${w.overview.cplDir||""}">${w.overview.cplDelta}</div>`:""}</div>
+      <div class="kpi-card"><div class="kpi-label">평균 CPS</div><div class="kpi-value">${w.overview.cps}</div><div class="kpi-sub">통과당${w.overview.cpsNote||""}</div>${w.overview.cpsDelta?`<div class="kpi-delta ${w.overview.cpsDir||""}">${w.overview.cpsDelta}</div>`:""}</div>
+      <div class="kpi-card"><div class="kpi-label">평균 CTR</div><div class="kpi-value">${w.overview.ctr}</div><div class="kpi-sub">링크 클릭</div>${w.overview.ctrDelta?`<div class="kpi-delta ${w.overview.ctrDir||""}">${w.overview.ctrDelta}</div>`:""}</div>
+    </div>` : ""}
+
+    <div class="camp-section">
+      <div class="section-hd">
+        <span class="section-title">💰 광고비 대비 효율 — ${w.compareLabel}</span>
+      </div>
+      <div class="weekly-scroll">
+      <table class="camp-table" style="min-width:1120px">
+        <thead><tr>
+          <th>구분</th>
+          <th style="text-align:right">광고비 전주</th><th style="text-align:right">광고비 금주</th><th style="text-align:right">변화</th>
+          <th style="text-align:right">CPL 전주</th><th style="text-align:right">CPL 금주</th><th style="text-align:right">CPL 변화</th>
+          <th style="text-align:right">CPS 전주</th><th style="text-align:right">CPS 금주</th><th style="text-align:right">CPS 변화</th>
+          <th style="text-align:right">CTR 변화</th><th style="text-align:right">CVR 변화</th>
+        </tr></thead>
+        <tbody>${groupRows}</tbody>
+      </table>
+      </div>
+      <div style="font-size:10px;color:#999;margin-top:6px;line-height:1.7">${w.groupNotes.map(n => "· " + n).join("<br>")}</div>
+    </div>
+
+    <div class="camp-section">
+      <div class="section-hd">
+        <span class="section-title">📋 채널별 상세 (금주)</span>
+        <span class="badge" style="background:#eef2ff;color:#3730a3">총 광고비 ${w.channelTotal}</span>
+      </div>
+      <div class="weekly-scroll">
+      <table class="camp-table" style="min-width:760px">
+        <thead><tr>
+          <th>구분</th>
+          <th style="text-align:right">광고비</th><th style="text-align:right">리드</th><th style="text-align:right">CPL</th>
+          <th style="text-align:right">CPS</th>
+          <th style="text-align:right">CTR</th><th style="text-align:right">CVR</th>
+          <th>평가</th>
+        </tr></thead>
+        <tbody>${chRows}</tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-hd"><span class="section-title">💡 효율 요약</span></div>
+      ${sumRows}
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="camp-section">
+      <div class="section-hd">
+        <span class="section-title">🟢 ${w.deepTitle}</span>
+      </div>
+      <table class="camp-table" style="max-width:680px">
+        <thead><tr>
+          <th>항목</th>
+          <th style="text-align:right">${w.deepCols[0]}</th>
+          <th style="text-align:right">${w.deepCols[1]}</th>
+          <th style="text-align:right">${w.deepCols[2]}</th>
+        </tr></thead>
+        <tbody>${deepRows}</tbody>
+      </table>
+    </div>
+  </div>
+</div>`;
+}
+
 // ============================================================
 // BOOT
 // ============================================================
 const pagesEl = document.getElementById("pages");
 const tabsEl  = document.getElementById("dateTabs");
+const weeklyEl = document.getElementById("weeklyTabs");
+const monthlyEl = document.getElementById("monthlyTabs");
 const sorted  = [...REPORTS].sort((a,b) => b.date.localeCompare(a.date));
 
 sorted.forEach((r, i) => {
@@ -1271,6 +7318,26 @@ sorted.forEach((r, i) => {
   btn.dataset.date = r.date;
   btn.onclick = () => switchTo(r.date);
   tabsEl.appendChild(btn);
+});
+
+[...MONTHLY].forEach(mo => {
+  pagesEl.innerHTML += renderMonthlyPage(mo);
+  const mb = document.createElement("button");
+  mb.className = "date-tab weekly";
+  mb.textContent = mo.label;
+  mb.dataset.date = mo.id;
+  mb.onclick = () => switchTo(mo.id);
+  monthlyEl.appendChild(mb);
+});
+
+[...WEEKLY].reverse().forEach(w => {
+  pagesEl.innerHTML += renderWeeklyPage(w);
+  const btn = document.createElement("button");
+  btn.className = "date-tab weekly";
+  btn.textContent = w.label;
+  btn.dataset.date = w.id;
+  btn.onclick = () => switchTo(w.id);
+  weeklyEl.appendChild(btn);
 });
 
 if (sorted.length > 0) {
